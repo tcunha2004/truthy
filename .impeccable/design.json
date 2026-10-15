@@ -1,0 +1,683 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T14:45:08+00:00",
+  "title": "Design System: truthy",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Page White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "bg-alt": {
+        "role": "neutral",
+        "displayName": "Apple Mist",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "oklch(15% 0.003 286.4)",
+          "oklch(26% 0.003 286.4)",
+          "oklch(37% 0.003 286.4)",
+          "oklch(48% 0.003 286.4)",
+          "oklch(59% 0.003 286.4)",
+          "oklch(70% 0.003 286.4)",
+          "oklch(82% 0.003 286.4)",
+          "oklch(95% 0.003 286.4)"
+        ]
+      },
+      "bg-inverse": {
+        "role": "neutral",
+        "displayName": "Inverse Band",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "oklch(15% 0.000 0.0)",
+          "oklch(26% 0.000 0.0)",
+          "oklch(37% 0.000 0.0)",
+          "oklch(48% 0.000 0.0)",
+          "oklch(59% 0.000 0.0)",
+          "oklch(70% 0.000 0.0)",
+          "oklch(82% 0.000 0.0)",
+          "oklch(95% 0.000 0.0)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Surface",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1d1d1f",
+        "tonalRamp": [
+          "oklch(15% 0.004 286.1)",
+          "oklch(26% 0.004 286.1)",
+          "oklch(37% 0.004 286.1)",
+          "oklch(48% 0.004 286.1)",
+          "oklch(59% 0.004 286.1)",
+          "oklch(70% 0.004 286.1)",
+          "oklch(82% 0.004 286.1)",
+          "oklch(95% 0.004 286.1)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Secondary",
+        "canonical": "#6e6e73",
+        "tonalRamp": [
+          "oklch(15% 0.008 286.1)",
+          "oklch(26% 0.008 286.1)",
+          "oklch(37% 0.008 286.1)",
+          "oklch(48% 0.008 286.1)",
+          "oklch(59% 0.008 286.1)",
+          "oklch(70% 0.008 286.1)",
+          "oklch(82% 0.008 286.1)",
+          "oklch(95% 0.008 286.1)"
+        ]
+      },
+      "ink-inverse": {
+        "role": "neutral",
+        "displayName": "Inverse Ink",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "oklch(15% 0.003 286.4)",
+          "oklch(26% 0.003 286.4)",
+          "oklch(37% 0.003 286.4)",
+          "oklch(48% 0.003 286.4)",
+          "oklch(59% 0.003 286.4)",
+          "oklch(70% 0.003 286.4)",
+          "oklch(82% 0.003 286.4)",
+          "oklch(95% 0.003 286.4)"
+        ]
+      },
+      "ink-inverse-2": {
+        "role": "neutral",
+        "displayName": "Inverse Ink Secondary",
+        "canonical": "#a1a1a6",
+        "tonalRamp": [
+          "oklch(15% 0.007 286.2)",
+          "oklch(26% 0.007 286.2)",
+          "oklch(37% 0.007 286.2)",
+          "oklch(48% 0.007 286.2)",
+          "oklch(59% 0.007 286.2)",
+          "oklch(70% 0.007 286.2)",
+          "oklch(82% 0.007 286.2)",
+          "oklch(95% 0.007 286.2)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#d2d2d7",
+        "tonalRamp": [
+          "oklch(15% 0.007 286.3)",
+          "oklch(26% 0.007 286.3)",
+          "oklch(37% 0.007 286.3)",
+          "oklch(48% 0.007 286.3)",
+          "oklch(59% 0.007 286.3)",
+          "oklch(70% 0.007 286.3)",
+          "oklch(82% 0.007 286.3)",
+          "oklch(95% 0.007 286.3)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Truthy Green",
+        "canonical": "#08803a",
+        "tonalRamp": [
+          "oklch(15% 0.142 150.0)",
+          "oklch(26% 0.142 150.0)",
+          "oklch(37% 0.142 150.0)",
+          "oklch(48% 0.142 150.0)",
+          "oklch(59% 0.142 150.0)",
+          "oklch(70% 0.142 150.0)",
+          "oklch(82% 0.142 150.0)",
+          "oklch(95% 0.142 150.0)"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "Truthy Green, Pressed",
+        "canonical": "#076f32",
+        "tonalRamp": [
+          "oklch(15% 0.128 150.1)",
+          "oklch(26% 0.128 150.1)",
+          "oklch(37% 0.128 150.1)",
+          "oklch(48% 0.128 150.1)",
+          "oklch(59% 0.128 150.1)",
+          "oklch(70% 0.128 150.1)",
+          "oklch(82% 0.128 150.1)",
+          "oklch(95% 0.128 150.1)"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "On Green",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "oklch(15% 0.000 89.9)",
+          "oklch(26% 0.000 89.9)",
+          "oklch(37% 0.000 89.9)",
+          "oklch(48% 0.000 89.9)",
+          "oklch(59% 0.000 89.9)",
+          "oklch(70% 0.000 89.9)",
+          "oklch(82% 0.000 89.9)",
+          "oklch(95% 0.000 89.9)"
+        ]
+      },
+      "true": {
+        "role": "secondary",
+        "displayName": "Open Green",
+        "canonical": "#127a2e",
+        "tonalRamp": [
+          "oklch(15% 0.144 147.0)",
+          "oklch(26% 0.144 147.0)",
+          "oklch(37% 0.144 147.0)",
+          "oklch(48% 0.144 147.0)",
+          "oklch(59% 0.144 147.0)",
+          "oklch(70% 0.144 147.0)",
+          "oklch(82% 0.144 147.0)",
+          "oklch(95% 0.144 147.0)"
+        ]
+      },
+      "false": {
+        "role": "secondary",
+        "displayName": "Closed Red",
+        "canonical": "#b42318",
+        "tonalRamp": [
+          "oklch(15% 0.182 29.5)",
+          "oklch(26% 0.182 29.5)",
+          "oklch(37% 0.182 29.5)",
+          "oklch(48% 0.182 29.5)",
+          "oklch(59% 0.182 29.5)",
+          "oklch(70% 0.182 29.5)",
+          "oklch(82% 0.182 29.5)",
+          "oklch(95% 0.182 29.5)"
+        ]
+      },
+      "bg-dark": {
+        "role": "neutral",
+        "displayName": "Page White (dark theme)",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "oklch(15% 0.000 0.0)",
+          "oklch(26% 0.000 0.0)",
+          "oklch(37% 0.000 0.0)",
+          "oklch(48% 0.000 0.0)",
+          "oklch(59% 0.000 0.0)",
+          "oklch(70% 0.000 0.0)",
+          "oklch(82% 0.000 0.0)",
+          "oklch(95% 0.000 0.0)"
+        ]
+      },
+      "bg-alt-dark": {
+        "role": "neutral",
+        "displayName": "Apple Mist (dark theme)",
+        "canonical": "#161617",
+        "tonalRamp": [
+          "oklch(15% 0.002 286.2)",
+          "oklch(26% 0.002 286.2)",
+          "oklch(37% 0.002 286.2)",
+          "oklch(48% 0.002 286.2)",
+          "oklch(59% 0.002 286.2)",
+          "oklch(70% 0.002 286.2)",
+          "oklch(82% 0.002 286.2)",
+          "oklch(95% 0.002 286.2)"
+        ]
+      },
+      "bg-inverse-dark": {
+        "role": "neutral",
+        "displayName": "Inverse Band (dark theme)",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "oklch(15% 0.003 286.4)",
+          "oklch(26% 0.003 286.4)",
+          "oklch(37% 0.003 286.4)",
+          "oklch(48% 0.003 286.4)",
+          "oklch(59% 0.003 286.4)",
+          "oklch(70% 0.003 286.4)",
+          "oklch(82% 0.003 286.4)",
+          "oklch(95% 0.003 286.4)"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Surface (dark theme)",
+        "canonical": "#1d1d1f",
+        "tonalRamp": [
+          "oklch(15% 0.004 286.1)",
+          "oklch(26% 0.004 286.1)",
+          "oklch(37% 0.004 286.1)",
+          "oklch(48% 0.004 286.1)",
+          "oklch(59% 0.004 286.1)",
+          "oklch(70% 0.004 286.1)",
+          "oklch(82% 0.004 286.1)",
+          "oklch(95% 0.004 286.1)"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink (dark theme)",
+        "canonical": "#f5f5f7",
+        "tonalRamp": [
+          "oklch(15% 0.003 286.4)",
+          "oklch(26% 0.003 286.4)",
+          "oklch(37% 0.003 286.4)",
+          "oklch(48% 0.003 286.4)",
+          "oklch(59% 0.003 286.4)",
+          "oklch(70% 0.003 286.4)",
+          "oklch(82% 0.003 286.4)",
+          "oklch(95% 0.003 286.4)"
+        ]
+      },
+      "ink-2-dark": {
+        "role": "neutral",
+        "displayName": "Ink Secondary (dark theme)",
+        "canonical": "#a1a1a6",
+        "tonalRamp": [
+          "oklch(15% 0.007 286.2)",
+          "oklch(26% 0.007 286.2)",
+          "oklch(37% 0.007 286.2)",
+          "oklch(48% 0.007 286.2)",
+          "oklch(59% 0.007 286.2)",
+          "oklch(70% 0.007 286.2)",
+          "oklch(82% 0.007 286.2)",
+          "oklch(95% 0.007 286.2)"
+        ]
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Hairline (dark theme)",
+        "canonical": "#424245",
+        "tonalRamp": [
+          "oklch(15% 0.005 286.2)",
+          "oklch(26% 0.005 286.2)",
+          "oklch(37% 0.005 286.2)",
+          "oklch(48% 0.005 286.2)",
+          "oklch(59% 0.005 286.2)",
+          "oklch(70% 0.005 286.2)",
+          "oklch(82% 0.005 286.2)",
+          "oklch(95% 0.005 286.2)"
+        ]
+      },
+      "accent-dark": {
+        "role": "primary",
+        "displayName": "Truthy Green (dark theme)",
+        "canonical": "#30d158",
+        "tonalRamp": [
+          "oklch(15% 0.200 147.0)",
+          "oklch(26% 0.200 147.0)",
+          "oklch(37% 0.200 147.0)",
+          "oklch(48% 0.200 147.0)",
+          "oklch(59% 0.200 147.0)",
+          "oklch(70% 0.200 147.0)",
+          "oklch(82% 0.200 147.0)",
+          "oklch(95% 0.200 147.0)"
+        ]
+      },
+      "accent-hover-dark": {
+        "role": "primary",
+        "displayName": "Truthy Green, Pressed (dark theme)",
+        "canonical": "#3ddc64",
+        "tonalRamp": [
+          "oklch(15% 0.200 147.4)",
+          "oklch(26% 0.200 147.4)",
+          "oklch(37% 0.200 147.4)",
+          "oklch(48% 0.200 147.4)",
+          "oklch(59% 0.200 147.4)",
+          "oklch(70% 0.200 147.4)",
+          "oklch(82% 0.200 147.4)",
+          "oklch(95% 0.200 147.4)"
+        ]
+      },
+      "on-accent-dark": {
+        "role": "primary",
+        "displayName": "On Green (dark theme)",
+        "canonical": "#00230b",
+        "tonalRamp": [
+          "oklch(15% 0.061 150.4)",
+          "oklch(26% 0.061 150.4)",
+          "oklch(37% 0.061 150.4)",
+          "oklch(48% 0.061 150.4)",
+          "oklch(59% 0.061 150.4)",
+          "oklch(70% 0.061 150.4)",
+          "oklch(82% 0.061 150.4)",
+          "oklch(95% 0.061 150.4)"
+        ]
+      },
+      "true-dark": {
+        "role": "secondary",
+        "displayName": "Open Green (dark theme)",
+        "canonical": "#30d158",
+        "tonalRamp": [
+          "oklch(15% 0.200 147.0)",
+          "oklch(26% 0.200 147.0)",
+          "oklch(37% 0.200 147.0)",
+          "oklch(48% 0.200 147.0)",
+          "oklch(59% 0.200 147.0)",
+          "oklch(70% 0.200 147.0)",
+          "oklch(82% 0.200 147.0)",
+          "oklch(95% 0.200 147.0)"
+        ]
+      },
+      "false-dark": {
+        "role": "secondary",
+        "displayName": "Closed Red (dark theme)",
+        "canonical": "#ff6961",
+        "tonalRamp": [
+          "oklch(15% 0.185 25.9)",
+          "oklch(26% 0.185 25.9)",
+          "oklch(37% 0.185 25.9)",
+          "oklch(48% 0.185 25.9)",
+          "oklch(59% 0.185 25.9)",
+          "oklch(70% 0.185 25.9)",
+          "oklch(82% 0.185 25.9)",
+          "oklch(95% 0.185 25.9)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The one hero headline per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Band headlines."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Tile headlines."
+      },
+      "stat": {
+        "displayName": "Stat",
+        "purpose": "Ledger figures in the inverse band."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Paragraph under a display or headline, ink-2, 34-40ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text and input text."
+      },
+      "item-title": {
+        "displayName": "Item Title",
+        "purpose": "Job titles in lists."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "Company, location, chips, ledger labels."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Nav links, small buttons, provenance, field labels."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Job status, salary sub-label, footer, notes."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "The literal true / false only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ambient",
+        "value": "0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.05)",
+        "purpose": "Job list and search bar (light theme)."
+      },
+      {
+        "name": "ambient-dark",
+        "value": "0 4px 24px rgba(0,0,0,.5)",
+        "purpose": "Same role, dark theme."
+      },
+      {
+        "name": "hairline-ring",
+        "value": "inset 0 0 0 1px var(--line)",
+        "purpose": "Search bar, company pills, swatches; hover swaps to ink-2."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 3px solid var(--focus); outline-offset: 2px",
+        "purpose": "All :focus-visible. --focus is rgba(8,128,58,.4) light / rgba(48,209,88,.45) dark."
+      },
+      {
+        "name": "input-focus",
+        "value": "0 0 0 4px var(--focus)",
+        "purpose": "Text field focus halo, with accent border."
+      },
+      {
+        "name": "search-focus",
+        "value": "var(--shadow), inset 0 0 0 2px var(--accent)",
+        "purpose": "Search bar :focus-within."
+      },
+      {
+        "name": "glass-nav",
+        "value": "backdrop-filter: saturate(180%) blur(20px); background: color-mix(in srgb, var(--bg) 80%, transparent)",
+        "purpose": "Sticky nav only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "The single easing for all transitions and animations."
+      },
+      {
+        "name": "duration-state",
+        "value": "0.2s",
+        "purpose": "Hover, press, chip and row state changes."
+      },
+      {
+        "name": "duration-theme",
+        "value": "0.4s",
+        "purpose": "Background and color cross-fade on theme switch."
+      },
+      {
+        "name": "check-draw",
+        "value": "stroke-dashoffset 20 to 0 over 0.6s, staggered 260ms per row after 500ms",
+        "purpose": "Listing verification moment on load."
+      },
+      {
+        "name": "pulse",
+        "value": "2.4s infinite, 8px fading ring",
+        "purpose": "Provenance dot."
+      },
+      {
+        "name": "press",
+        "value": "transform: scale(.98)",
+        "purpose": "Button :active."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none",
+        "purpose": "Under prefers-reduced-motion: reduce."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "860px",
+        "purpose": "max-width; the single layout breakpoint."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid green pill for the main action on a view (Search jobs, Sign in).",
+      "html": "<button class=\"ds-btn\">Search jobs</button> <button class=\"ds-btn\" disabled>Apply</button>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:980px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:background-color .2s var(--ease),transform .2s var(--ease)} .ds-btn:hover{background:var(--accent-hover)} .ds-btn:active{transform:scale(.98)} .ds-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-btn[disabled]{opacity:.38;cursor:not-allowed} "
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action with an accent ring.",
+      "html": "<button class=\"ds-btn ds-ghost\">Save search</button>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:980px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:background-color .2s var(--ease),transform .2s var(--ease)} .ds-btn:hover{background:var(--accent-hover)} .ds-btn:active{transform:scale(.98)} .ds-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-btn[disabled]{opacity:.38;cursor:not-allowed} .ds-ghost{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)} .ds-ghost:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Neutral action on an ink wash (Clear filters, Remove filter).",
+      "html": "<button class=\"ds-btn ds-quiet\">Clear filters</button>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:980px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:background-color .2s var(--ease),transform .2s var(--ease)} .ds-btn:hover{background:var(--accent-hover)} .ds-btn:active{transform:scale(.98)} .ds-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-btn[disabled]{opacity:.38;cursor:not-allowed} .ds-quiet{background:color-mix(in srgb,var(--ink) 8%,transparent);color:var(--ink)} .ds-quiet:hover{background:color-mix(in srgb,var(--ink) 12%,transparent)}"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Toggle filter pill; selected inverts to ink.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-chip\" aria-pressed=\"true\">Remote</button><button class=\"ds-chip\" aria-pressed=\"false\">Brazil</button><button class=\"ds-chip\" aria-pressed=\"false\">Shows salary</button></div>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-row{display:flex;gap:8px;flex-wrap:wrap} .ds-chip{height:34px;padding:0 14px;border-radius:980px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer;transition:border-color .2s var(--ease),background-color .2s var(--ease)} .ds-chip:hover{border-color:var(--ink-2)} .ds-chip[aria-pressed=\"true\"]{background:var(--ink);color:var(--bg);border-color:var(--ink)} .ds-chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}"
+    },
+    {
+      "name": "Search Bar",
+      "kind": "input",
+      "refersTo": "search-bar",
+      "description": "Signature hero search: role and location fields plus the primary button in one pill.",
+      "html": "<form class=\"ds-search\" role=\"search\" onsubmit=\"return false\"><label><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg><input type=\"search\" placeholder=\"Role, skill or company\" aria-label=\"Role or skill\"></label><label><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg><input type=\"text\" placeholder=\"Anywhere\" aria-label=\"Location\"></label><button class=\"ds-btn\" type=\"submit\">Search jobs</button></form>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:980px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:background-color .2s var(--ease),transform .2s var(--ease)} .ds-btn:hover{background:var(--accent-hover)} .ds-btn:active{transform:scale(.98)} .ds-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-btn[disabled]{opacity:.38;cursor:not-allowed} .ds-search{width:min(760px,100%);display:grid;grid-template-columns:1.4fr 1fr auto;align-items:center;background:var(--surface);border-radius:980px;padding:6px;box-shadow:var(--shadow),inset 0 0 0 1px var(--line)} .ds-search label{display:flex;align-items:center;gap:10px;padding:0 18px;height:52px;color:var(--ink-2)} .ds-search label+label{border-left:1px solid var(--line)} .ds-search input{border:0;outline:0;background:none;width:100%;font:inherit;font-size:17px;color:var(--ink);caret-color:var(--accent)} .ds-search input::placeholder{color:var(--ink-2)} .ds-search .ds-btn{height:52px;padding:0 26px} .ds-search:focus-within{box-shadow:var(--shadow),inset 0 0 0 2px var(--accent)}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Form input with label above; accent border and halo on focus, red on error.",
+      "html": "<div class=\"ds-row\"><label class=\"ds-field\">Email<input type=\"email\" placeholder=\"you@email.com\"></label><label class=\"ds-field ds-error\">Password<input type=\"password\" value=\"12345\"><em>Use at least 8 characters.</em></label></div>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start} .ds-field{display:grid;gap:6px;width:min(320px,100%);font-size:13px;color:var(--ink-2)} .ds-field input{height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);padding:0 14px;font:inherit;font-size:17px;color:var(--ink);caret-color:var(--accent)} .ds-field input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 4px var(--focus)} .ds-error input{border-color:var(--false)} .ds-error em{color:var(--false);font-style:normal;font-size:12px}"
+    },
+    {
+      "name": "Job List",
+      "kind": "card",
+      "refersTo": "job-list",
+      "description": "Signature product shot: verified job rows with provenance, open / closed / saved states, and missing salary shown as missing.",
+      "html": "<div class=\"ds-jobs\"><article class=\"ds-job\"><div class=\"ds-logo\">In</div><div><h3>Desenvolvedor(a) Front-end Pleno</h3><div class=\"ds-meta\"><span>Inter</span><span><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>Belo Horizonte · Hybrid</span><span class=\"ds-status\"><svg class=\"ds-i ds-ck\" viewBox=\"0 0 24 24\"><path d=\"m4.5 12.5 5 5 10-11\"/></svg>Open · via Greenhouse</span></div></div><div class=\"ds-pay\">R$ 9.000–12.000<small>per month</small></div><button class=\"ds-save\" aria-pressed=\"true\" aria-label=\"Saved\"><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M6.5 3.5h11v17L12 16.5l-5.5 4Z\"/></svg></button></article><article class=\"ds-job\"><div class=\"ds-logo\">A</div><div><h3>Senior Software Engineer, Backend</h3><div class=\"ds-meta\"><span>Airbnb</span><span><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z\"/></svg>Remote · Brazil</span><span class=\"ds-status\"><svg class=\"ds-i ds-ck\" viewBox=\"0 0 24 24\"><path d=\"m4.5 12.5 5 5 10-11\"/></svg>Open · via Greenhouse</span></div></div><div class=\"ds-pay\">—<small>Salary not listed</small></div><button class=\"ds-save\" aria-pressed=\"false\" aria-label=\"Save job\"><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M6.5 3.5h11v17L12 16.5l-5.5 4Z\"/></svg></button></article><article class=\"ds-job ds-closed\"><div class=\"ds-logo\">S</div><div><h3>Mobile Engineer (iOS)</h3><div class=\"ds-meta\"><span>Swile</span><span><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/></svg>São Paulo · On-site</span><span class=\"ds-status\"><svg class=\"ds-i ds-ck\" viewBox=\"0 0 24 24\"><path d=\"m6 6 12 12M18 6 6 18\"/></svg>Closed · removed from Lever 2h ago</span></div></div><div class=\"ds-pay\">—<small>Salary not listed</small></div><button class=\"ds-save\" aria-pressed=\"false\" aria-label=\"Save job\" disabled><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><path d=\"M6.5 3.5h11v17L12 16.5l-5.5 4Z\"/></svg></button></article></div>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none} .ds-jobs{width:min(860px,100%);background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden} .ds-job{display:grid;grid-template-columns:44px 1fr auto auto;align-items:center;gap:16px;padding:18px 20px;border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);transition:background-color .2s var(--ease)} .ds-job:first-child{border-top:0} .ds-job:hover{background:color-mix(in srgb,var(--ink) 3%,transparent)} .ds-logo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:650;font-size:17px;background:var(--bg-alt);letter-spacing:-0.03em} .ds-job h3{margin:0;font-size:17px;font-weight:600;letter-spacing:-0.02em;line-height:1.3} .ds-meta{font-size:14px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:2px} .ds-meta span{display:inline-flex;align-items:center;gap:5px} .ds-status{font-size:12px;font-weight:500;color:var(--true)} .ds-ck{width:14px;height:14px;stroke-width:2.4} .ds-pay{font-size:15px;font-weight:500;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums} .ds-pay small{display:block;font-size:12px;color:var(--ink-2);font-weight:400} .ds-save{width:36px;height:36px;border-radius:50%;border:0;background:transparent;color:var(--ink-2);display:grid;place-items:center;cursor:pointer;font-size:20px} .ds-save:hover{background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink)} .ds-save:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-save[aria-pressed=\"true\"]{color:var(--accent)} .ds-save[aria-pressed=\"true\"] svg{fill:currentColor} .ds-save[disabled]{opacity:.38;cursor:not-allowed} .ds-closed h3{text-decoration:line-through;text-decoration-thickness:1.5px;color:var(--ink-2)} .ds-closed .ds-logo{opacity:.45} .ds-closed .ds-status{color:var(--false)}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Sticky 48px glass bar: wordmark with true-dot, links, EN/PT toggle, theme toggle, Sign in.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-mark\" href=\"#\">truthy<i></i></a><nav class=\"ds-links\"><a href=\"#\">Jobs</a><a href=\"#\">Companies</a><a href=\"#\">Saved</a></nav><div class=\"ds-lang\"><button aria-pressed=\"true\">EN</button><button aria-pressed=\"false\">PT</button></div><button class=\"ds-theme\" aria-label=\"Switch to dark theme\"><svg class=\"ds-i\" viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4\"/></svg></button><a class=\"ds-btn ds-sm\" href=\"#\">Sign in</a></header>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-i{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none} .ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 22px;border-radius:980px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:background-color .2s var(--ease),transform .2s var(--ease)} .ds-btn:hover{background:var(--accent-hover)} .ds-btn:active{transform:scale(.98)} .ds-btn:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-btn[disabled]{opacity:.38;cursor:not-allowed} .ds-nav{height:48px;display:flex;align-items:center;gap:28px;padding:0 16px;font-size:13px;background:color-mix(in srgb,var(--bg) 80%,transparent);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)} .ds-mark{font-size:21px;font-weight:650;letter-spacing:-0.03em;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px} .ds-mark i{width:7px;height:7px;border-radius:50%;background:var(--true);margin-top:4px} .ds-links{display:flex;gap:24px;margin-right:auto} .ds-links a,.ds-lang button{color:var(--ink);opacity:.82;text-decoration:none} .ds-links a:hover{opacity:1} .ds-lang{display:flex;gap:2px} .ds-lang button{background:none;border:0;font:inherit;font-size:12px;padding:4px 6px;border-radius:6px;cursor:pointer} .ds-lang button[aria-pressed=\"true\"]{opacity:1;font-weight:600;background:color-mix(in srgb,var(--ink) 8%,transparent)} .ds-theme{width:32px;height:32px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;cursor:pointer;font-size:18px;opacity:.82} .ds-theme:hover{opacity:1;background:color-mix(in srgb,var(--ink) 8%,transparent)} .ds-sm{height:30px;padding:0 14px;font-size:13px;text-decoration:none}"
+    },
+    {
+      "name": "Company Pill",
+      "kind": "chip",
+      "refersTo": "company-pill",
+      "description": "Link to a company page with its ATS source.",
+      "html": "<a class=\"ds-company\" href=\"#\"><span class=\"ds-clogo\">C</span>CI&amp;T <small>Lever</small></a>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-company{display:inline-flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:980px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font-size:15px;font-weight:500;text-decoration:none} .ds-company:hover{box-shadow:inset 0 0 0 1px var(--ink-2)} .ds-company:focus-visible{outline:3px solid var(--focus);outline-offset:2px} .ds-clogo{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:650;background:var(--bg-alt)} .ds-company small{color:var(--ink-2);font-weight:400;font-size:13px}"
+    },
+    {
+      "name": "Tile",
+      "kind": "card",
+      "refersTo": "tile",
+      "description": "28px-radius feature tile on a mist band, headline on top and real UI at the bottom.",
+      "html": "<div class=\"ds-band\"><div class=\"ds-tile\"><h3>Straight from the source.</h3><p>truthy reads each company’s official hiring board. No reposts, no middlemen.</p><div class=\"ds-step\"><b>Airbnb</b> Greenhouse board<span>official API</span></div></div></div>",
+      "css": ":host{--bg:#ffffff;--bg-alt:#f5f5f7;--surface:#ffffff;--ink:#1d1d1f;--ink-2:#6e6e73;--line:#d2d2d7;--accent:#08803a;--accent-hover:#076f32;--on-accent:#ffffff;--true:#127a2e;--false:#b42318;--focus:rgba(8,128,58,.4);--shadow:0 4px 24px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.05);--ease:cubic-bezier(.16,1,.3,1);font-family:\"SF Pro Display\", \"SF Pro Text\", -apple-system, BlinkMacSystemFont, Inter, \"Segoe UI\", sans-serif;letter-spacing:-0.012em;color:var(--ink)} .ds-band{background:var(--bg-alt);padding:24px} .ds-tile{border-radius:28px;background:var(--surface);padding:48px;display:flex;flex-direction:column;gap:32px} .ds-tile h3{margin:0;font-size:clamp(30px,3.4vw,44px);line-height:1.08;font-weight:650;letter-spacing:-0.035em} .ds-tile p{margin:-20px 0 0;color:var(--ink-2);max-width:36ch;font-size:19px;line-height:1.4} .ds-step{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:12px;background:var(--bg-alt);font-size:15px} .ds-step b{font-weight:600} .ds-step span{color:var(--ink-2);margin-left:auto;font-size:13px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Product Shot Is a Verified Listing",
+    "overview": "truthy borrows apple.com's product-page craft and points it at job search: wide quiet bands, very large tightly tracked headlines, one restrained accent, pill-shaped controls, and generously rounded tiles. Where Apple puts a device in the hero, truthy puts the thing it sells: a list of real, verified job rows on a soft grey stage. Everything else steps back so that listing reads as the product.\n\nThe tone is calm and confident with one wink. The name is a programming joke (`return true`), so a single monospace `true` in accent green sits inside the headline, and the same `true` / `false` vocabulary marks whether a job is open or closed. That is the only place monospace appears; the interface never dresses up as a terminal. Provenance (which ATS, when it was checked) is shown as first-class information, in small grey meta text next to every listing, never hidden in a tooltip.\n\nLight is the primary theme (white and #f5f5f7 bands, near-black ink). Dark is a full alternate (black and #161617 bands, a brighter green), switched by a sun/moon button and remembered per browser. Both themes are driven by the same CSS custom property names, so components never branch on theme. Confirmed rejections: looking like LinkedIn or Indeed (logo-card grids, corporate blue, sponsored slots), a terminal costume (black screen, green mono everywhere), and a cold, humourless finish.",
+    "keyCharacteristics": [
+      "Alternating full-width bands: white, #f5f5f7, and one full-bleed inverse (black) band per page at most.",
+      "Display type at 650 weight with tight negative tracking (-0.035em); body at 17px / 1.47.",
+      "One accent: truthy green, used for the primary action, links, the open state, and saved state.",
+      "Pills for every control (buttons, chips, search bar, company links); 18px and 28px radii for containers.",
+      "Flat, soft depth: one ambient shadow token plus 1px hairlines, never hard edges.",
+      "Monospace only for the literal `true` / `false`.",
+      "Bilingual EN / PT-BR; layouts must survive PT strings that run ~20-30% longer."
+    ],
+    "rules": [
+      {
+        "name": "The One Green Rule",
+        "body": "Green means \"action\" or \"true\", nothing else. No green backgrounds on bands, no green headlines beyond the mono `true`, no green badges for promotion.",
+        "section": "colors"
+      },
+      {
+        "name": "The Same Names Rule",
+        "body": "Components read only the semantic variables (`--bg`, `--surface`, `--ink`, `--accent`, ...). Theme switching is a `data-theme` attribute on `<html>`; no component carries a `.dark` branch.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Paid Highlight Rule",
+        "body": "No color, border, or badge may single a listing out as featured or sponsored. Saved (filled accent bookmark) is the only per-row emphasis, and it is the user's own.",
+        "section": "colors"
+      },
+      {
+        "name": "The Literal Mono Rule",
+        "body": "Monospace is set only on the words `true` and `false`. Not on IDs, timestamps, ATS names, code-flavoured labels, or buttons.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tight Display Rule",
+        "body": "Anything 30px and up is weight 650 with -0.035em tracking (stats -0.04em). Don't set large type at 400 or with default tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "All UI text is sentence case. No uppercase labels, no letter-spaced eyebrows above headlines.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glass Nav Rule",
+        "body": "The only translucent surface is the sticky 48px nav: `bg` at 80% with `backdrop-filter: saturate(180%) blur(20px)` and a 60% hairline underneath. No other glass panels.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Press Is Round Rule",
+        "body": "Buttons, chips, the search bar, company links, the save button and the theme toggle are pills or circles. Only the stacked mobile search button squares off to 12px.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** drive every color from the semantic CSS variables and switch themes with `data-theme` on `<html>`; default to light.",
+      "**Do** show provenance on every listing: source ATS on open jobs, removal source and time on closed ones, last-checked time near lists.",
+      "**Do** render missing data as missing (\"Salary not listed\" / \"Salário não informado\").",
+      "**Do** keep closed jobs visible in context with the struck-through title and `false` red status rather than silently removing them from a list the user is looking at.",
+      "**Do** use the 650 weight and -0.035em tracking for every heading 30px and up, with `text-wrap: balance`.",
+      "**Do** write every string in both EN and PT-BR and test layouts with the PT version.",
+      "**Do** use the single ease `cubic-bezier(.16, 1, .3, 1)` and honour `prefers-reduced-motion`.",
+      "**Do** inline outline SVG icons at 1em, stroke 1.6, `currentColor`."
+    ],
+    "donts": [
+      "**Don't** look like LinkedIn or Indeed: no grids of logo cards, no corporate blue, no sponsored or featured slots.",
+      "**Don't** use monospace for anything other than the literal `true` / `false`, and don't build a terminal look (black screens, green mono text, prompts, cursors).",
+      "**Don't** highlight a listing with color, badges, borders or position that the user didn't choose.",
+      "**Don't** use green as a decorative fill or headline color; it is for action and \"true\" only.",
+      "**Don't** put white text on the dark-theme green; use `on-accent` (#00230b).",
+      "**Don't** add hard or offset shadows, hover lifts, or extra glass panels beyond the nav.",
+      "**Don't** add uppercase eyebrows or kicker labels above headlines.",
+      "**Don't** invent metrics, logos, or testimonials; show only what the data confirms."
+    ]
+  }
+}

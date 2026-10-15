@@ -1,0 +1,131 @@
+{
+  "title": "Escolha o mundo visual do truthy",
+  "question": "O sorteio escolheu \"Linha truthy\" (sinalização de metrô). Mantenha, escolha uma alternativa ou sorteie de novo.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Linha truthy",
+      "kicker": "THE ROLL",
+      "lineage": "Programa de identidade do Metrô de São Paulo (modernismo brasileiro, Cauduro Martino)",
+      "thesis": "A busca de vagas como um mapa de metrô: cada empresa é uma estação, cada ATS é uma linha, e o painel diz se a linha está operando agora.",
+      "palette": ["#0A2A66", "#FFFFFF", "#FFD100", "#E2231A", "#00875A", "#8C9196"],
+      "materials": ["placas esmaltadas de sinalização", "azulejo branco de estação", "pictogramas e diagrama de linhas"],
+      "viewport": "Placa azul-marinho com 'truthy' e 'Próxima estação: sua vaga'; a busca é 'para onde você vai?' (cargo + local); abaixo, o diagrama real das linhas Lever e Greenhouse com as 15 empresas como estações e o painel 'Situação das linhas: operação normal · verificado há 12 min'.",
+      "risk": "Se a metáfora virar enfeite, o diagrama vira desenho decorativo; ele precisa ser navegável de verdade. Fala mais forte com quem conhece SP.",
+      "raised": [
+        { "from": "challenger-film-bench", "raise": "Estado é marca, não cor: estação cheia = vaga aberta, anel vazio = fechada, bandeira = salva. Funciona sem depender de cor." },
+        { "from": "challenger-brick", "raise": "Um único módulo de grade (o azulejo) alinha tudo, do diagrama ao card de vaga." },
+        { "from": "challenger-specimen", "raise": "Uma família tipográfica só; hierarquia apenas por escala, como nas placas de estação." },
+        { "from": "challenger-understory", "raise": "Orçamento de destaque: só uma coisa por tela leva o amarelo, a ação principal." },
+        { "from": "challenger-chaekgeori", "raise": "Listas se reorganizam em células inteiras; nenhuma placa é cortada ao meio no mobile." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Carteira de Trabalho",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "CTPS, a carteira azul que todo trabalhador brasileiro conhece",
+      "thesis": "Cada vaga como um registro na carteira: datada, carimbada e assinada pela fonte oficial.",
+      "palette": ["#1D3A6E", "#E6EFE9", "#2C6E49", "#B3261E", "#1A1A1A"],
+      "materials": ["guilloché de papel de segurança", "carimbo de borracha", "campos datilografados"],
+      "viewport": "A carteira aberta em duas páginas: campos 'Empregador / Cargo / Admissão' preenchidos com vagas reais, cada uma com o carimbo 'VERIFICADO NA FONTE' e a data; a busca é o próximo campo em branco.",
+      "risk": "Burocracia pesa e pode soar 'só CLT' para vagas PJ e gringa. É a direção mais óbvia para o público brasileiro, a que eu escolheria de primeira."
+    },
+    {
+      "id": "challenger-vhs",
+      "label": "Parede de locadora",
+      "verdict": "competitive",
+      "lineage": "locadoras de vídeo dos anos 90",
+      "thesis": "Vagas como fitas na parede: se está na prateleira, está aberta; se sumiu, fica o vão com a etiqueta 'preenchida'.",
+      "palette": ["#0E0E10", "#E23B2E", "#2B6CF0", "#F7D21E", "#F2F2F2"],
+      "materials": ["capas de fita", "etiquetas escritas à mão", "letras de vinil recortado"],
+      "viewport": "Uma prateleira por área (Frontend, Backend, Dados) com lombadas de cargo e empresa; vagas fechadas aparecem como vãos com etiqueta amarela.",
+      "case": "Dramatiza melhor que todas a vaga fechada (o vão na prateleira), mas a nostalgia fala só com parte do público.",
+      "risk": "Vira gimmick nostálgico se as lombadas sacrificarem a leitura de cargo, salário e local.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-vhs-rental-wall-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/vernacular-ephemera-vhs-rental-wall.webp"
+    },
+    {
+      "id": "challenger-film-bench",
+      "label": "Mesa de corte de filme",
+      "verdict": "declined",
+      "lineage": "mesa de montagem com trilho perfurado",
+      "thesis": "Vagas como quadros num trilho; as descartadas ficam penduradas em pinos.",
+      "palette": ["#0B0B0B", "#F26B1D", "#FFFFFF"],
+      "materials": ["grão de filme", "fita adesiva laranja"],
+      "viewport": "Um trilho perfurado atravessando a tela com vagas como quadros.",
+      "risk": "Ofício de cinema, distante do dev.",
+      "case": "Perde nos dois eixos: o dev não se reconhece numa ilha de edição.",
+      "kept": "Estado como marca (cheio, vazio, bandeira), não como cor.",
+      "hero": "https://impeccable.style/worlds/cards/operate-a-cutting-bench-select-rail-hero.webp"
+    },
+    {
+      "id": "challenger-brick",
+      "label": "Manual de blocos de montar",
+      "verdict": "declined",
+      "lineage": "livretos de instrução de brinquedos de montar",
+      "thesis": "Da busca à candidatura em passos numerados.",
+      "palette": ["#7EC8E3", "#111111", "#D7261E", "#FFD400"],
+      "materials": ["linha preta de contorno", "grade de pinos"],
+      "viewport": "Passos numerados gigantes até o botão de candidatura.",
+      "risk": "Infantiliza uma busca de emprego.",
+      "case": "Perde nos dois eixos: passos não explicam por que a vaga é verdadeira.",
+      "kept": "Um módulo de grade único rege todo alinhamento.",
+      "hero": "https://impeccable.style/worlds/cards/games-toys-physics-play-brick-build-instructions-hero.webp"
+    },
+    {
+      "id": "challenger-specimen",
+      "label": "Espécime tipográfico",
+      "verdict": "declined",
+      "lineage": "espécimes interativos de fontes variáveis",
+      "thesis": "A marca como letra gigante que reage ao filtro.",
+      "palette": ["#FAFAFA", "#111111", "#3D5AFE"],
+      "materials": ["papel liso", "tinta preta"],
+      "viewport": "Uma palavra enorme que muda de peso conforme o filtro.",
+      "risk": "Lindo para designers, mudo sobre vagas.",
+      "case": "Perde nos dois eixos: não mostra procedência nem vaga.",
+      "kept": "Uma família só, hierarquia por escala.",
+      "hero": "https://impeccable.style/worlds/cards/variable-font-specimen-hero.webp"
+    },
+    {
+      "id": "challenger-understory",
+      "label": "Floresta luminescente",
+      "verdict": "declined",
+      "lineage": "botânica alienígena noturna",
+      "thesis": "Vagas brilham ao se aproximar.",
+      "palette": ["#0A0F0D", "#5CE1E6", "#B79CFF", "#9BE38A"],
+      "materials": ["esporos de luz", "veias pulsantes"],
+      "viewport": "Um chão escuro onde vagas acendem perto do cursor.",
+      "risk": "Cai direto no visual neon de startup de IA.",
+      "case": "Perde nos dois eixos: esconde a informação atrás de efeito.",
+      "kept": "Só um elemento por tela recebe o destaque máximo.",
+      "hero": "https://impeccable.style/worlds/cards/dream-surreal-impossible-worlds-luminescent-alien-understory-hero.webp"
+    },
+    {
+      "id": "challenger-chaekgeori",
+      "label": "Estante em perspectiva invertida",
+      "verdict": "declined",
+      "lineage": "pintura coreana chaekgeori",
+      "thesis": "Empresas como caixas numa estante que se abre para você.",
+      "palette": ["#3F7F6B", "#B5452F", "#EFE9DD", "#2A2A2A"],
+      "materials": ["pigmento mineral", "seda pintada"],
+      "viewport": "Uma estante de caixas, cada uma uma empresa.",
+      "risk": "Referência culturalmente distante do público.",
+      "case": "Perde nos dois eixos: o público não reconhece a forma.",
+      "kept": "Reorganização em células inteiras, nunca cortadas.",
+      "hero": "https://impeccable.style/worlds/cards/graphic-worlds-publishing-chaekgeori-reverse-perspective-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "O padrão da categoria",
+    "thesis": "Um job board limpo e bem-feito: barra de busca no topo, lista de cards com logo e botão.",
+    "palette": ["#FFFFFF", "#111827", "#2563EB"],
+    "materials": ["grade limpa", "logos das empresas"],
+    "viewport": "Headline + busca centralizada, contadores e uma lista de vagas em cards.",
+    "risk": "Indistinguível de LinkedIn e Indeed por definição, justamente o que você não quer."
+  },
+  "steer": true
+}

@@ -1,0 +1,46 @@
+import { createHash, randomBytes } from "node:crypto";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { cache } from "react";
+import { db } from "./db";
+
+export type User = { id: string; name: string | null; email: string; avatar_url: string | null };
+
+export const SESSION_COOKIE = "session";
+export const SESSION_DAYS = 30;
+
+// O banco guarda só o hash: se vazar, ninguém consegue montar um cookie válido.
+const hash = (token: string) => createHash("sha256").update(token).digest("hex");
+
+// Cria a sessão no banco e devolve o token que vai no cookie.
+export async function createSession(userId: string) {
+  const token = randomBytes(32).toString("base64url");
+  await db.query(
+    `INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, now() + make_interval(days => $3))`,
+    [hash(token), userId, SESSION_DAYS],
+  );
+  return token;
+}
+
+// Checagem segura: o cookie só vale se o hash dele estiver no banco e a sessão não tiver expirado.
+// cache(): layout e página na mesma requisição fazem uma consulta só.
+export const getUser = cache(async (): Promise<User | null> => {
+  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  const { rows } = await db.query(
+    `SELECT u.id, u.name, u.email, u.avatar_url FROM sessions s JOIN users u ON u.id = s.user_id
+     WHERE s.id = $1 AND s.expires_at > now() AND u.deleted_at IS NULL`,
+    [hash(token)],
+  );
+  return rows[0] ?? null;
+});
+
+// ponytail: sessões expiradas ficam no banco; um DELETE ... WHERE expires_at < now() periódico resolve
+export async function logout() {
+  "use server";
+  const jar = await cookies();
+  const token = jar.get(SESSION_COOKIE)?.value;
+  if (token) await db.query(`DELETE FROM sessions WHERE id = $1`, [hash(token)]);
+  jar.delete(SESSION_COOKIE);
+  redirect("/");
+}

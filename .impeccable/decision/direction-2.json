@@ -1,0 +1,116 @@
+{
+  "title": "Escolha o mundo visual do truthy (rodada 2)",
+  "question": "O novo sorteio escolheu \"Cupom de vagas\" (cupom fiscal). Mantenha, escolha uma alternativa ou sorteie de novo.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Cupom de vagas",
+      "kicker": "THE ROLL",
+      "lineage": "Cupom fiscal térmico brasileiro: CNPJ, itens, 'CPF na nota?' e a chave de consulta",
+      "thesis": "Cada busca imprime um cupom: vagas como itens linha a linha, com fonte e hora da verificação, e no rodapé 'posts patrocinados ..... 0,00'.",
+      "palette": ["#1F3CFF", "#F6F6F2", "#26232E", "#12A150", "#FFE14D"],
+      "materials": ["papel térmico", "picote serrilhado", "tabulação de preço com pontilhado"],
+      "viewport": "Fundo azul de maquininha; no centro, um cupom longo saindo da impressora: 'TRUTHY — CUPOM DE VAGAS', a pergunta 'Cargo na nota?' é a busca de verdade, e logo abaixo itens reais (cargo, empresa, salário/mês, 'verificado 14:02 via Greenhouse'), fechando com 'TOTAL: jobs that return true'.",
+      "risk": "Papel térmico puxa para fonte mono e pode escorregar na 'fantasia de terminal'; a tipografia precisa ser de impressora de cupom, não de console.",
+      "raised": [
+        { "from": "challenger-emission-rail", "raise": "Estado é forma de linha: vaga aberta impressa sólida, sem verificação recente tracejada, vaga fechada riscada como 'ITEM CANCELADO'." },
+        { "from": "challenger-signboard", "raise": "Frescor visível: linhas verificadas agora saem em preto denso; as mais antigas desbotam, como papel térmico de verdade." },
+        { "from": "challenger-cloud-edge", "raise": "Cor só nas bordas e marcas; o corpo do cupom fica acromático para a leitura." },
+        { "from": "challenger-neon", "raise": "Um traço contínuo: o picote liga a busca à candidatura oficial sem interrupção." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "Classificados",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Caderno de Classificados dos jornais brasileiros, seção 'Empregos'",
+      "thesis": "A forma original do anúncio de emprego, refeita honesta: todo anúncio do mesmo tamanho, nenhum comprado maior.",
+      "palette": ["#F1F1EE", "#141414", "#0047BB", "#E30613"],
+      "materials": ["papel-jornal", "colunas estreitas e densas", "fios e cabeçalhos em caixa-alta"],
+      "viewport": "Um caderno 'EMPREGOS' em colunas: a busca é o cabeçalho da seção, as vagas reais preenchem as colunas em blocos iguais, e um fio vermelho circula a que você salvou.",
+      "risk": "Jornal com fios e colunas é um dos visuais mais comuns em interfaces geradas por IA. É familiar; o ganho é a regra 'todo anúncio do mesmo tamanho'."
+    },
+    {
+      "id": "challenger-highlife",
+      "label": "Capa de disco tropical",
+      "verdict": "competitive",
+      "lineage": "capas de LP pintadas à mão, letreiro exuberante e cor tropical",
+      "thesis": "truthy como um disco: nome pintado em arco, cores de manga e palmeira, e as vagas como faixas do lado A.",
+      "palette": ["#F28C28", "#1F8A4C", "#3BA7E0", "#D7263D", "#14213D"],
+      "materials": ["letreiro pintado com contorno duplo", "papelão impresso em cor chapada"],
+      "viewport": "Capa em cor chapada com 'truthy' em arco; a busca vira o seletor de faixas e as vagas reais são a lista de faixas, cada uma com duração trocada por 'verificada há 12 min'.",
+      "case": "Ganha em identificação (alegre, brasileiro, nada frio), mas perde em clareza: não mostra procedência tão bem quanto o cupom.",
+      "risk": "Pode parecer festa demais para uma busca de emprego se a lista de vagas não for séria e legível.",
+      "hero": "https://impeccable.style/worlds/cards/highlife-sleeve-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/highlife-sleeve.webp"
+    },
+    {
+      "id": "challenger-emission-rail",
+      "label": "Trilho espectral",
+      "verdict": "declined",
+      "lineage": "placas de espectrograma",
+      "thesis": "Cada vaga é uma linha fina num trilho; estado pela forma da linha.",
+      "palette": ["#2A2B2E", "#E8E4DA", "#F5C400"],
+      "materials": ["vidro de espectrograma", "linhas finas de emissão"],
+      "viewport": "Um trilho horizontal com vagas como risquinhos.",
+      "risk": "Abstrato e científico demais.",
+      "case": "Perde nos dois eixos: o dev não se reconhece num laboratório.",
+      "kept": "Estado pela forma da linha: sólida, tracejada, riscada.",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-emission-line-rail-hero.webp"
+    },
+    {
+      "id": "challenger-signboard",
+      "label": "Beco de letreiros em Tóquio",
+      "verdict": "declined",
+      "lineage": "letreiros empilhados por andar",
+      "thesis": "Empresas como prédios, vagas como andares acesos.",
+      "palette": ["#0D0D10", "#F4F4F0", "#E8322B", "#E8552B"],
+      "materials": ["asfalto molhado", "painéis retroiluminados"],
+      "viewport": "Uma rua noturna com prédios-empresa e andares-vaga acesos.",
+      "risk": "Escuro com neon cai no visual de startup.",
+      "case": "Perde nos dois eixos: cultura distante e clareza igual à do cupom.",
+      "kept": "Estado vivo pela intensidade: o que está fresco brilha mais.",
+      "hero": "https://impeccable.style/worlds/cards/vernacular-ephemera-signboard-canyon-midnight-hero.webp"
+    },
+    {
+      "id": "challenger-cloud-edge",
+      "label": "Borda iridescente de nuvem",
+      "verdict": "declined",
+      "lineage": "fenômeno óptico em nuvens",
+      "thesis": "Branco calmo com cor só na borda.",
+      "palette": ["#FFFFFF", "#5B6670", "#9EE6C8", "#F4B6C2", "#A78BFA"],
+      "materials": ["céu branco", "franjas de cor"],
+      "viewport": "Muito branco, texto cinza e uma franja de cor.",
+      "risk": "Etéreo, sem personalidade de produto.",
+      "case": "Perde nos dois eixos: não fala de vagas nem de verdade.",
+      "kept": "Cor confinada às bordas; texto acromático.",
+      "hero": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge-hero.webp"
+    },
+    {
+      "id": "challenger-neon",
+      "label": "Neon feito à mão",
+      "verdict": "declined",
+      "lineage": "letreiros de neon curvados no fogo",
+      "thesis": "O nome como um circuito contínuo de luz.",
+      "palette": ["#0B0B12", "#2D5BFF", "#E5483A"],
+      "materials": ["tubo de vidro", "gás azul-cobalto"],
+      "viewport": "'truthy' em neon numa sala escura.",
+      "risk": "Exatamente o brilho neon que você não quer.",
+      "case": "Perde nos dois eixos: decorativo e sem informação.",
+      "kept": "Um traço contínuo do começo ao fim.",
+      "hero": "https://impeccable.style/worlds/cards/magnetism-electricity-plasma-hand-bent-neon-circuit-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "O padrão da categoria",
+    "thesis": "Um job board limpo e bem-feito: barra de busca no topo, lista de cards com logo e botão.",
+    "palette": ["#FFFFFF", "#111827", "#2563EB"],
+    "materials": ["grade limpa", "logos das empresas"],
+    "viewport": "Headline + busca centralizada, contadores e uma lista de vagas em cards.",
+    "risk": "Indistinguível de LinkedIn e Indeed por definição, justamente o que você não quer."
+  },
+  "steer": true
+}
