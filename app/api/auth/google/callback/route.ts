@@ -6,7 +6,7 @@ type IdToken = { sub: string; email: string; email_verified: boolean; name?: str
 
 // Passo 2 do fluxo OAuth: o Google devolve a pessoa aqui com ?code=...&state=...
 export async function GET(req: NextRequest) {
-  const done = (path: string) => {
+  const done = (path = "/login?error=google") => {
     const res = NextResponse.redirect(new URL(path, req.url));
     res.cookies.delete("oauth_state"); // o state só vale para uma tentativa
     return res;
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   // 1. O state que voltou é o mesmo que guardamos? Se não, alguém forjou esta volta.
   const code = req.nextUrl.searchParams.get("code");
   const state = req.nextUrl.searchParams.get("state");
-  if (!code || !state || state !== req.cookies.get("oauth_state")?.value) return done("/login");
+  if (!code || !state || state !== req.cookies.get("oauth_state")?.value) return done();
 
   // 2. Troca o code por tokens, direto com o Google (servidor ↔ servidor, via HTTPS).
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
@@ -28,12 +28,12 @@ export async function GET(req: NextRequest) {
       grant_type: "authorization_code",
     }),
   });
-  if (!tokenRes.ok) return done("/login");
+  if (!tokenRes.ok) return done();
   const { id_token } = await tokenRes.json();
 
   // 3. Lê o JWT (header.payload.assinatura). Sem checar assinatura: veio direto do Google via HTTPS.
   const google: IdToken = JSON.parse(Buffer.from(id_token.split(".")[1], "base64url").toString());
-  if (!google.email_verified) return done("/login");
+  if (!google.email_verified) return done();
 
   // 4. Upsert: se a pessoa já existe (mesmo sub), atualiza; senão, cria.
   // ponytail: chave só no google_sub; quando entrar email/senha, ligar contas pelo email aqui

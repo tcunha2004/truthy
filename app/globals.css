@@ -87,6 +87,9 @@ code.false { color: var(--false); }
 .nav .links a, .lang button { color: var(--ink); opacity: .82; }
 .nav .links a:hover { opacity: 1; text-decoration: none; }
 .lang { display: flex; gap: 2px; }
+.who { display: flex; align-items: center; gap: 12px; }
+.who span { color: var(--ink-2); }
+.avatar { width: 28px; height: 28px; border-radius: var(--r-pill); display: grid; place-items: center; background: var(--bg-alt); color: var(--ink); font-size: 13px; font-weight: 650; font-style: normal; object-fit: cover; }
 .lang button { background: none; border: 0; font: inherit; font-size: 12px; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
 .lang button[aria-pressed="true"] { opacity: 1; font-weight: 600; background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .theme { width: 32px; height: 32px; border-radius: 50%; border: 0; background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; font-size: 18px; opacity: .82; }
@@ -231,6 +234,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .seg a { height: 34px; display: grid; place-items: center; border-radius: var(--r-pill); font-size: 14px; color: var(--ink); opacity: .82; transition: background-color .2s var(--ease), color .2s var(--ease); }
 .seg a:hover { opacity: 1; text-decoration: none; }
 .seg a[aria-current="page"] { background: var(--ink); color: var(--bg); opacity: 1; font-weight: 500; }
+.auth-error { margin-top: 20px; font-size: 13px; color: var(--false); }
 .auth-form { display: grid; gap: 16px; margin-top: 28px; }
 .auth-form .btn { margin-top: 8px; width: 100%; }
 .or { display: flex; align-items: center; gap: 12px; margin: 20px 0; font-size: 13px; color: var(--ink-2); }
@@ -281,7 +285,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
-  .nav .links { display: none; }
+  .nav .links, .who span { display: none; }
   .nav .wrap { justify-content: space-between; }
   .hero { padding-top: 56px; }
   .search { grid-template-columns: 1fr; border-radius: var(--r-lg); gap: 0; }

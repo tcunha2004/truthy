@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { dicts, getLang } from "./i18n";
+import { getUser } from "./session";
 
 type Mode = "login" | "signup";
 
@@ -13,7 +15,8 @@ async function submit() {
   "use server";
 }
 
-export async function AuthPage({ mode }: { mode: Mode }) {
+export async function AuthPage({ mode, error }: { mode: Mode; error?: boolean }) {
+  if (await getUser()) redirect("/");
   const t = dicts[await getLang()].auth;
   const signup = mode === "signup";
 
@@ -29,6 +32,8 @@ export async function AuthPage({ mode }: { mode: Mode }) {
           <Link href="/login" aria-current={signup ? undefined : "page"}>{t.login}</Link>
           <Link href="/signup" aria-current={signup ? "page" : undefined}>{t.signup}</Link>
         </nav>
+
+        {error && <p className="auth-error" role="alert">{t.googleError}</p>}
 
         <form action={submit} className="auth-form">
           {signup && (

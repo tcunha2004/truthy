@@ -13,6 +13,7 @@ const en = {
     companies: "Companies",
     saved: "Saved",
     signin: "Sign in",
+    signout: "Sign out",
     language: "Language",
     toDark: "Switch to dark theme",
     toLight: "Switch to light theme",
@@ -106,6 +107,7 @@ const en = {
     passwordHint: "Use at least 8 characters.",
     or: "or",
     google: "Continue with Google",
+    googleError: "Couldn’t sign in with Google. Please try again.",
   },
 };
 
@@ -122,6 +124,7 @@ const pt: Dict = {
     companies: "Empresas",
     saved: "Salvas",
     signin: "Entrar",
+    signout: "Sair",
     language: "Idioma",
     toDark: "Mudar para o tema escuro",
     toLight: "Mudar para o tema claro",
@@ -214,6 +217,7 @@ const pt: Dict = {
     passwordHint: "Use pelo menos 8 caracteres.",
     or: "ou",
     google: "Continuar com o Google",
+    googleError: "Não foi possível entrar com o Google. Tente de novo.",
   },
 };
 
