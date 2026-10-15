@@ -4,7 +4,7 @@ export type Lang = "en" | "pt";
 
 const en = {
   meta: {
-    title: "truthy — jobs that return true",
+    title: "truthy",
     description: "No sponsored posts, just jobs that return true. Tech jobs pulled straight from each company's own hiring system.",
   },
   nav: {
@@ -113,7 +113,7 @@ export type Dict = typeof en;
 
 const pt: Dict = {
   meta: {
-    title: "truthy — vagas que retornam true",
+    title: "truthy",
     description: "Sem posts patrocinados, só vagas que retornam true. Vagas de tech direto do sistema de recrutamento de cada empresa.",
   },
   nav: {
