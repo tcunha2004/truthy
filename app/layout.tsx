@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <nav className="links" aria-label={t.nav.main}>
               <Link href="/jobs">{t.nav.jobs}</Link>
               <Link href="/companies">{t.nav.companies}</Link>
-              <Link href="/saved">{t.nav.saved}</Link>
+              {user && <Link href="/saved">{t.nav.saved}</Link>}
             </nav>
             <LangToggle lang={lang} label={t.nav.language} />
             <ThemeToggle toDark={t.nav.toDark} toLight={t.nav.toLight} />
