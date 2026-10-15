@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { OpenStatus, SaveButton, SearchForm } from "./client";
 import { Icon } from "./icons";
+import { getCompanies } from "./db";
 import { dicts, getLang, locales } from "./i18n";
 
 type Pay = { cur: string; min: number; max: number } | null;
@@ -14,16 +15,10 @@ const sampleJobs: { logo: string; title: string; company: string; remote: boolea
   { logo: "S", title: "Mobile Engineer (iOS)", company: "Swile", remote: false, where: ["São Paulo · On-site", "São Paulo · Presencial"], ats: "Lever", pay: null, closed: true },
 ];
 
-const companies = [
-  ["Airbnb", "Greenhouse"], ["Twilio", "Greenhouse"], ["Smartsheet", "Greenhouse"], ["Inter", "Greenhouse"],
-  ["Getnet", "Greenhouse"], ["Capco", "Greenhouse"], ["Flex", "Greenhouse"], ["Gofasti", "Greenhouse"],
-  ["CI&T", "Lever"], ["Swile", "Lever"], ["Firstup", "Lever"], ["Supermove", "Lever"],
-  ["Jobgether", "Lever"], ["Bluelight", "Lever"], ["Smart Working Solutions", "Lever"],
-];
-
 export default async function Home() {
   const lang = await getLang();
   const t = dicts[lang];
+  const companies = await getCompanies();
   const money = (p: NonNullable<Pay>) =>
     new Intl.NumberFormat(locales[lang], { style: "currency", currency: p.cur, maximumFractionDigits: 0 }).formatRange(p.min, p.max);
   let openOrder = 0;
@@ -106,9 +101,12 @@ export default async function Home() {
           <h2>{t.co.h}</h2>
           <p className="lead">{t.co.lead}</p>
           <div className="companies">
-            {companies.map(([name, ats]) => (
-              <Link key={name} className="company" href={`/companies?q=${encodeURIComponent(name)}`}>
-                <span className="logo" aria-hidden="true">{name[0]}</span>{name} <small>{ats}</small>
+            {companies.map((c) => (
+              <Link key={c.slug} className="company" href={`/companies?q=${encodeURIComponent(c.name)}`}>
+                {c.logo
+                  ? <img className="logo" src={c.logo} alt="" width={30} height={30} />
+                  : <span className="logo" aria-hidden="true">{c.name[0]}</span>}
+                {c.name} <small>{c.ats}</small>
               </Link>
             ))}
           </div>
