@@ -30,7 +30,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="wrap">
             <Link className="mark" href="/">truthy<i aria-hidden="true" /></Link>
             <nav className="links" aria-label={t.nav.main}>
-              <Link href="/jobs">{t.nav.jobs}</Link>
+              {/* deslogado vai direto pro login: sem passar pela rota /jobs, sem flash do erro antes do redirect */}
+              <Link href={user ? "/jobs" : "/login"}>{t.nav.jobs}</Link>
               <Link href="/companies">{t.nav.companies}</Link>
               {user && <Link href="/saved">{t.nav.saved}</Link>}
             </nav>
