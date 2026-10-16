@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { loginAction, signupAction } from "./auth-actions";
+import type { AuthError } from "./auth-error";
 import { dicts, getLang } from "./i18n";
 import { getUser } from "./session";
 
@@ -10,12 +12,7 @@ export async function authMetadata(mode: Mode) {
   return { title: `${t.auth[mode]} · truthy` };
 }
 
-// ponytail: design only, submit does nothing until auth is wired (email/password + Google)
-async function submit() {
-  "use server";
-}
-
-export async function AuthPage({ mode, error }: { mode: Mode; error?: boolean }) {
+export async function AuthPage({ mode, error }: { mode: Mode; error?: AuthError }) {
   if (await getUser()) redirect("/");
   const t = dicts[await getLang()].auth;
   const signup = mode === "signup";
@@ -33,11 +30,11 @@ export async function AuthPage({ mode, error }: { mode: Mode; error?: boolean })
           <Link href="/signup" aria-current={signup ? "page" : undefined}>{t.signup}</Link>
         </nav>
 
-        {error && <p className="auth-error" role="alert">{t.googleError}</p>}
+        {error && <p className="auth-error" role="alert">{t.errors[error]}</p>}
 
-        <form action={submit} className="auth-form">
+        <form action={signup ? signupAction : loginAction} className="auth-form">
           {signup && (
-            <label className="field">{t.name}<input name="name" autoComplete="name" required /></label>
+            <label className="field">{t.name}<input name="name" autoComplete="name" maxLength={100} required /></label>
           )}
           <label className="field">{t.email}<input type="email" name="email" autoComplete="email" placeholder={t.emailPh} required /></label>
           <label className="field">
@@ -47,6 +44,7 @@ export async function AuthPage({ mode, error }: { mode: Mode; error?: boolean })
               name="password"
               autoComplete={signup ? "new-password" : "current-password"}
               minLength={signup ? 8 : undefined}
+              maxLength={128}
               aria-describedby={signup ? "pw-hint" : undefined}
               required
             />

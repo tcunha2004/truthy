@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/app/db";
-import { SESSION_COOKIE, SESSION_DAYS, createSession } from "@/app/session";
+import { upsertGoogleUser } from "@/app/auth-users";
+import { startSession } from "@/app/session";
 
 type IdToken = { sub: string; email: string; email_verified: boolean; name?: string; picture?: string };
 
@@ -35,26 +36,14 @@ export async function GET(req: NextRequest) {
   const google: IdToken = JSON.parse(Buffer.from(id_token.split(".")[1], "base64url").toString());
   if (!google.email_verified) return done();
 
-  // 4. Upsert: se a pessoa já existe (mesmo sub), atualiza; senão, cria.
-  // O nome só vem do Google na primeira vez: depois é do usuário (ele edita no onboarding/perfil).
-  // ponytail: chave só no google_sub; quando entrar email/senha, ligar contas pelo email aqui
-  const { rows } = await db.query(
-    `INSERT INTO users (google_sub, email, name, avatar_url) VALUES ($1, $2, $3, $4)
-     ON CONFLICT (google_sub) DO UPDATE
-       SET email = EXCLUDED.email, name = COALESCE(users.name, EXCLUDED.name), avatar_url = EXCLUDED.avatar_url
-     RETURNING id, EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.onboarded_at IS NOT NULL) AS onboarded`,
-    [google.sub, google.email, google.name ?? null, google.picture ?? null],
-  );
+  // 4. Cria ou entra na conta Google. Contas Google e de senha não são vinculadas (decisão da spec;
+  // vínculo só depois que houver verificação de e-mail): se o e-mail já é de uma conta de senha, não loga.
+  const user = await upsertGoogleUser(db, google);
+  if (!user.ok) return done(`/login?error=${user.error}`);
 
   // 5. Cria a sessão e entrega o cookie. A partir daqui, o login é nosso, não do Google.
   // Quem ainda não concluiu o perfil vai para o onboarding.
-  const res = done(rows[0].onboarded ? "/" : "/onboarding");
-  res.cookies.set(SESSION_COOKIE, await createSession(rows[0].id), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * SESSION_DAYS,
-    path: "/",
-  });
+  const res = done(user.onboarded ? "/" : "/onboarding");
+  await startSession(user.userId, res.cookies);
   return res;
 }
