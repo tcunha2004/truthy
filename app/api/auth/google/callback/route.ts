@@ -36,17 +36,19 @@ export async function GET(req: NextRequest) {
   if (!google.email_verified) return done();
 
   // 4. Upsert: se a pessoa já existe (mesmo sub), atualiza; senão, cria.
+  // O nome só vem do Google na primeira vez: depois é do usuário (ele edita no onboarding/perfil).
   // ponytail: chave só no google_sub; quando entrar email/senha, ligar contas pelo email aqui
   const { rows } = await db.query(
     `INSERT INTO users (google_sub, email, name, avatar_url) VALUES ($1, $2, $3, $4)
      ON CONFLICT (google_sub) DO UPDATE
-       SET email = EXCLUDED.email, name = EXCLUDED.name, avatar_url = EXCLUDED.avatar_url
-     RETURNING id`,
+       SET email = EXCLUDED.email, name = COALESCE(users.name, EXCLUDED.name), avatar_url = EXCLUDED.avatar_url
+     RETURNING id, EXISTS (SELECT 1 FROM profiles p WHERE p.user_id = users.id AND p.onboarded_at IS NOT NULL) AS onboarded`,
     [google.sub, google.email, google.name ?? null, google.picture ?? null],
   );
 
   // 5. Cria a sessão e entrega o cookie. A partir daqui, o login é nosso, não do Google.
-  const res = done("/");
+  // Quem ainda não concluiu o perfil vai para o onboarding.
+  const res = done(rows[0].onboarded ? "/" : "/onboarding");
   res.cookies.set(SESSION_COOKIE, await createSession(rows[0].id), {
     httpOnly: true,
     sameSite: "lax",

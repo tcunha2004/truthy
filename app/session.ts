@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { db } from "./db";
 
-export type User = { id: string; name: string | null; email: string; avatar_url: string | null };
+export type User = { id: string; name: string | null; email: string; avatar_url: string | null; onboarded: boolean };
 
 export const SESSION_COOKIE = "session";
 export const SESSION_DAYS = 30;
@@ -28,12 +28,21 @@ export const getUser = cache(async (): Promise<User | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const { rows } = await db.query(
-    `SELECT u.id, u.name, u.email, u.avatar_url FROM sessions s JOIN users u ON u.id = s.user_id
+    `SELECT u.id, u.name, u.email, u.avatar_url, p.onboarded_at IS NOT NULL AS onboarded
+     FROM sessions s JOIN users u ON u.id = s.user_id LEFT JOIN profiles p ON p.user_id = u.id
      WHERE s.id = $1 AND s.expires_at > now() AND u.deleted_at IS NULL`,
     [hash(token)],
   );
   return rows[0] ?? null;
 });
+
+// Páginas autenticadas: sem login vai para /login; sem onboarding concluído vai para /onboarding.
+export async function requireUser(): Promise<User> {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  if (!user.onboarded) redirect("/onboarding");
+  return user;
+}
 
 // ponytail: sessões expiradas ficam no banco; um DELETE ... WHERE expires_at < now() periódico resolve
 export async function logout() {
