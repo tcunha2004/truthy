@@ -56,8 +56,7 @@ WITH hits AS (
     AND ($1::vector IS NULL OR j.embedding IS NOT NULL)
     AND (NOT $2::boolean OR j.is_remote)
     AND ($3::text IS NULL OR $3::text = ANY (j.countries))
-    AND ($4::text IS NULL OR c.kind = $4::text)
-    AND ($5::text IS NULL OR c.slug = $5::text)
+    AND ($4::text IS NULL OR c.slug = $4::text)
 ),
 grouped AS (
   SELECT h.company_id, h.title, min(h.dist) AS dist, max(h.published_at) AS published_at,
@@ -71,12 +70,12 @@ grouped AS (
 SELECT g.title, c.name AS company, c.slug, g.versions, count(*) OVER ()::int AS total
 FROM grouped g
 JOIN companies c ON c.id = g.company_id
-WHERE g.dist IS NULL OR g.dist <= (SELECT min(dist) FROM grouped) + $8::float8
+WHERE g.dist IS NULL OR g.dist <= (SELECT min(dist) FROM grouped) + $7::float8
 ORDER BY g.dist NULLS LAST, g.published_at DESC NULLS LAST, c.slug, g.title
-LIMIT $6 OFFSET $7`;
+LIMIT $5 OFFSET $6`;
 
 export async function searchJobs(f: JobFilters, vector: string | null): Promise<{ total: number; groups: JobGroup[] }> {
-  const { rows } = await db.query(SEARCH_SQL, [vector, f.remote, f.country, f.kind, f.company, PAGE_SIZE, (f.page - 1) * PAGE_SIZE, RELEVANCE_CUTOFF]);
+  const { rows } = await db.query(SEARCH_SQL, [vector, f.remote, f.country, f.company, PAGE_SIZE, (f.page - 1) * PAGE_SIZE, RELEVANCE_CUTOFF]);
   return {
     total: rows[0]?.total ?? 0,
     groups: rows.map((r) => ({ title: r.title, company: r.company, slug: r.slug, versions: r.versions })),

@@ -40,12 +40,12 @@ export function ThemeToggle({ toDark, toLight }: { toDark: string; toLight: stri
 }
 
 // Chips rápidos da landing → o parâmetro da /jobs que cada um liga.
-const chips = { remote: ["remote", "1"], br: ["country", "BR"], intl: ["kind", "internacional"] } as const;
+const chips = { remote: ["remote", "1"], br: ["country", "BR"] } as const;
 type Chip = keyof typeof chips;
 const chipKeys = Object.keys(chips) as Chip[];
 
 export function SearchForm({ t }: { t: Dict["hero"] }) {
-  const [on, setOn] = useState<Record<Chip, boolean>>({ remote: true, br: false, intl: false });
+  const [on, setOn] = useState<Record<Chip, boolean>>({ remote: true, br: false });
   return (
     <>
       <form className="search one" role="search" action="/jobs">
@@ -94,7 +94,6 @@ export type CompanyCard = {
   slug: string;
   href: string;
   name: string;
-  kind: "nacional" | "internacional" | null;
   logo: string | null;
   meta: string;
   open: string;
@@ -104,9 +103,7 @@ export type CompanyCard = {
 
 export function CompanyBrowser({ companies, initialQuery, t }: { companies: CompanyCard[]; initialQuery: string; t: Dict["companies"] }) {
   const [q, setQ] = useState(initialQuery);
-  const [kind, setKind] = useState<CompanyCard["kind"] | "all">("all");
-  const byKind = (k: typeof kind) => companies.filter((c) => k === "all" || c.kind === k);
-  const shown = byKind(kind).filter((c) => fold(c.name).includes(fold(q.trim())));
+  const shown = companies.filter((c) => fold(c.name).includes(fold(q.trim())));
 
   return (
     <>
@@ -115,13 +112,6 @@ export function CompanyBrowser({ companies, initialQuery, t }: { companies: Comp
           <Icon name="search" />
           <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.search} aria-label={t.search} />
         </label>
-        <div className="filters" role="group" aria-label={t.filters}>
-          {(["all", "nacional", "internacional"] as const).map((k) => (
-            <button key={k} type="button" className="chip" aria-pressed={kind === k} onClick={() => setKind(k)}>
-              {t[k]} <span className="num">{byKind(k).length}</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="co-stage">
@@ -154,7 +144,7 @@ export function CompanyBrowser({ companies, initialQuery, t }: { companies: Comp
           <div className="empty">
             <b>{t.emptyH}</b>
             <p>{t.emptyP}</p>
-            <button type="button" className="btn quiet sm" onClick={() => { setQ(""); setKind("all"); }}>{t.clear}</button>
+            <button type="button" className="btn quiet sm" onClick={() => setQ("")}>{t.clear}</button>
           </div>
         )}
       </div>

@@ -9,7 +9,6 @@ export const db = (g.pool ??= new Pool({ connectionString: process.env.DATABASE_
 export type Company = {
   slug: string;
   name: string;
-  kind: "nacional" | "internacional" | null;
   ats: string;
   lastFetchedAt: Date | null;
   open: number;
@@ -24,7 +23,7 @@ const logoFor = (slug: string) => {
 
 export async function getCompanies(): Promise<Company[]> {
   const { rows } = await db.query(`
-    SELECT c.slug, c.name, c.kind, s.name AS ats, c.last_fetched_at,
+    SELECT c.slug, c.name, s.name AS ats, c.last_fetched_at,
            count(j.id) FILTER (WHERE j.is_active AND j.deleted_at IS NULL)::int AS open
     FROM companies c
     JOIN sources s ON s.id = c.source_id
@@ -35,7 +34,6 @@ export async function getCompanies(): Promise<Company[]> {
   return rows.map((r) => ({
     slug: r.slug,
     name: r.name,
-    kind: r.kind,
     ats: ats(r.ats),
     lastFetchedAt: r.last_fetched_at,
     open: r.open,

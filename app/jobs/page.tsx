@@ -69,17 +69,6 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
                     </label>
                   </div>
                 </fieldset>
-                <fieldset className="picks">
-                  <legend>{t.origin}</legend>
-                  <div className="picks-row">
-                    {(["", "nacional", "internacional"] as const).map((k) => (
-                      <label key={k || "all"} className="chip pick">
-                        <input type="radio" name="kind" value={k} defaultChecked={(f.kind ?? "") === k} />
-                        {k ? t[k] : t.all}
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
                 <div className="jf-row">
                   <label className="field">
                     {t.country}
