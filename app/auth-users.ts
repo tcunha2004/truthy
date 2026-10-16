@@ -53,10 +53,13 @@ export async function logIn(deps: Deps, input: { email: string; password: string
   const email = normalizeEmail(input.email);
   const emailLimit = limits.loginEmail(email);
   const ipLimit = limits.loginIp(input.ip);
-  // Reserva as duas tentativas antes de autenticar (atômico); as que passam do máximo nem chegam ao banco.
-  const emailOk = await take(redis, emailLimit);
-  const ipOk = await take(redis, ipLimit);
-  if (!emailOk || !ipOk) return { ok: false, error: "rate" };
+  // Reserva as tentativas antes de autenticar (atômico); as que passam do máximo nem chegam ao banco.
+  // Uma tentativa barrada por um limite não pode gastar o outro: senão um IP já bloqueado ainda travaria o login de qualquer e-mail.
+  if (!(await take(redis, emailLimit))) return { ok: false, error: "rate" };
+  if (!(await take(redis, ipLimit))) {
+    await refund(redis, emailLimit.key);
+    return { ok: false, error: "rate" };
+  }
 
   const { rows } = await db.query(
     `SELECT id, password_hash, ${ONBOARDED} AS onboarded FROM users WHERE email = $1 AND deleted_at IS NULL`,

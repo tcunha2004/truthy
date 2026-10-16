@@ -1,6 +1,6 @@
 import type { RedisClientType } from "redis";
 
-export type RateStore = Pick<RedisClientType, "del" | "decr" | "multi">;
+export type RateStore = Pick<RedisClientType, "del" | "eval" | "multi">;
 export type Limit = { key: string; max: number; windowSec: number };
 
 export const limits = {
@@ -16,9 +16,12 @@ export async function take(r: RateStore, limit: Limit): Promise<boolean> {
   return Number(count) <= limit.max;
 }
 
+// Só decrementa se a chave existe e é maior que zero: um DECR cego numa chave que expirou criaria uma chave negativa e sem TTL.
+const REFUND = `local v = tonumber(redis.call('GET', KEYS[1])); if v and v > 0 then redis.call('DECR', KEYS[1]) end`;
+
 // Devolve uma tentativa reservada (login com sucesso não gasta o limite do IP).
 export async function refund(r: RateStore, key: string): Promise<void> {
-  await r.decr(key);
+  await r.eval(REFUND, { keys: [key] });
 }
 
 export async function clear(r: RateStore, key: string): Promise<void> {

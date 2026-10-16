@@ -39,6 +39,20 @@ test("refund devolve a tentativa", async () => {
   assert.equal(await take(r, limit), true);
 });
 
+test("refund numa chave que não existe não cria chave", async () => {
+  const k = key();
+  await refund(r, k);
+  assert.equal(await r.exists(k), 0);
+});
+
+test("refund não deixa a contagem negativa", async () => {
+  const limit = { key: key(), max: 5, windowSec: 60 };
+  await take(r, limit);
+  await refund(r, limit.key);
+  await refund(r, limit.key);
+  assert.equal(await r.get(limit.key), "0");
+});
+
 test("a chave expira com a janela", async () => {
   const limit = { key: key(), max: 1, windowSec: 1 };
   await take(r, limit);

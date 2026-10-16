@@ -134,6 +134,26 @@ test("cadastro com dados inválidos também consome o limite do IP", async () =>
   assert.deepEqual(await signup(email(), { ip: i }), { ok: false, error: "rate" });
 });
 
+test("login barrado pelo IP não gasta o limite do e-mail", async () => {
+  const victim = email();
+  await signup(victim);
+  const i = ip();
+  for (let n = 0; n < 20; n++) await login(email(), "errada", i); // IP esgotado
+  for (let n = 0; n < 10; n++) assert.deepEqual(await login(victim, "errada", i), { ok: false, error: "rate" });
+  // de outro IP, a vítima ainda tem as 5 tentativas dela
+  for (let n = 0; n < 5; n++) assert.deepEqual(await login(victim, "errada", ip()), { ok: false, error: "credentials" });
+});
+
+test("login barrado pelo e-mail não gasta o limite do IP", async () => {
+  const locked = email();
+  await signup(locked);
+  const i = ip();
+  for (let n = 0; n < 5; n++) await login(locked, "errada", i); // e-mail esgotado (5 do IP gastas)
+  for (let n = 0; n < 30; n++) assert.deepEqual(await login(locked, "errada", i), { ok: false, error: "rate" });
+  // o mesmo IP ainda tem as 15 restantes para outros e-mails
+  for (let n = 0; n < 15; n++) assert.deepEqual(await login(email(), "errada", i), { ok: false, error: "credentials" });
+});
+
 test("login com sucesso não gasta o limite do IP", async () => {
   const e = email();
   await signup(e);
