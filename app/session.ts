@@ -22,6 +22,26 @@ export async function createSession(userId: string) {
   return token;
 }
 
+// Cria a sessão e entrega o cookie. Serve para quem tem um `jar` com set(): cookies() nas actions, res.cookies nas rotas.
+export async function startSession(
+  userId: string,
+  jar: {
+    set(
+      name: string,
+      value: string,
+      options: { httpOnly: boolean; sameSite: "lax"; secure: boolean; maxAge: number; path: string },
+    ): unknown;
+  },
+) {
+  jar.set(SESSION_COOKIE, await createSession(userId), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60 * 24 * SESSION_DAYS,
+    path: "/",
+  });
+}
+
 // Checagem segura: o cookie só vale se o hash dele estiver no banco e a sessão não tiver expirado.
 // cache(): layout e página na mesma requisição fazem uma consulta só.
 export const getUser = cache(async (): Promise<User | null> => {
