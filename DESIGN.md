@@ -318,6 +318,7 @@ Calm, solid pills; colour does the work, not shadow.
 - 760px max pill on `surface`, 6px inner padding, ambient shadow plus hairline ring. Grid `1.4fr 1fr auto`: role/skill field, location field (divided by a hairline), primary button.
 - Each field is 52px tall with an `ink-2` 1em outline icon (search, pin) and a borderless 17px input.
 - `:focus-within` swaps the hairline for a 2px inset accent ring. Stacks at ≤860px (see Layout).
+- **Single-field variant** (`.search.one`, jobs page and landing): grid `1fr auto`, one free-text field ("Describe the job") and the primary button. Used once location became a filter instead of a field.
 
 ### Inputs / Fields
 - **Style:** 44px tall, 12px radius, 1px `line` border, `surface` fill, 14px padding, 17px text. Label sits above in 13px `ink-2` with a 6px gap; max width 320px.
@@ -329,6 +330,11 @@ Calm, solid pills; colour does the work, not shadow.
 - Same look as filter chips (34px pill, 1px `line`, 14px), but built on native `<input type="radio">` / `<input type="checkbox">` inside a `<label class="chip pick">`, so arrows, space and form semantics come free. Selected (`:checked`) inverts to `ink` fill with `bg` text, exactly like `aria-pressed` chips.
 - Focus ring goes on the label via `:has(input:focus-visible)`. Disabled is 38% opacity.
 - Items the user typed in (stack) render as selected chips with a 22px circular remove button (x icon) and enter with a short scale-in.
+
+### Filter Panel
+- A native `<details>` under the search bar. The summary is a quiet 34px pill ("Filters · 2 active", chevron rotating from down to up), with an 8% ink wash on hover; it starts open when any filter is active.
+- Open, it shows a `surface` panel, 18px radius, 1px inset `line` ring (no shadow; the search bar above keeps the only ambient shadow), 24px padding, 20px between groups: choice chips in fieldsets with 13px `ink-2` legends, then a two-column row of Fields with native `<select>`, then a small primary "Apply filters" and a quiet "Clear filters".
+- Works without JavaScript: it lives inside the search `<form>`, which submits with GET.
 
 ### Choice Cards
 - Single-choice options that need a subtitle (search status). `surface` fill, 18px radius, 18px / 20px padding, 1px inset `line` ring; hover darkens the ring to `ink-2`; selected is a 2px inset `ink` ring. Title 17px / 600, subtitle 14px `ink-2`.
@@ -361,6 +367,9 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 - **Saved:** bookmark filled with `accent` (`aria-pressed="true"`). Unsaved is an `ink-2` outline that darkens with a 7% circular wash on hover.
 - **Missing data:** shown as missing. Salary renders an em dash with "Salary not listed"; never estimate or hide the slot.
 - **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame.
+- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines. A single-location row links its title straight to the ATS in a new tab. The jobs page has no save button until saving exists.
+- **Group salary:** shown once if every location pays the same; otherwise "Varies / by location".
+- **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
 
 ### Provenance Line
 13px `ink-2` text preceded by an 8px `true`-colored pulsing dot: "Sources checked <time> · Lever · Greenhouse". Place it near any list of jobs; it is the system's promise made visible.
