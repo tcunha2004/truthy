@@ -29,15 +29,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <header className="nav">
           <div className="wrap">
             <Link className="mark" href="/">truthy<i aria-hidden="true" /></Link>
-            <NavLinks
-              label={t.nav.main}
-              items={[
-                // deslogado vai direto pro login: sem passar pela rota /jobs, sem flash do erro antes do redirect
-                { href: user ? "/jobs" : "/login", match: "/jobs", text: t.nav.jobs },
-                { href: "/companies", match: "/companies", text: t.nav.companies },
-                ...(user ? [{ href: "/saved", match: "/saved", text: t.nav.saved }] : []),
-              ]}
-            />
+            {/* deslogado não vê as seções: só marca, idioma, tema e Entrar */}
+            {user ? (
+              <NavLinks
+                label={t.nav.main}
+                items={[
+                  { href: "/jobs", match: "/jobs", text: t.nav.jobs },
+                  { href: "/companies", match: "/companies", text: t.nav.companies },
+                  { href: "/saved", match: "/saved", text: t.nav.saved },
+                ]}
+              />
+            ) : (
+              <span className="nav-gap" />
+            )}
             <LangToggle lang={lang} label={t.nav.language} />
             <ThemeToggle toDark={t.nav.toDark} toLight={t.nav.toLight} />
             {user ? (

@@ -394,7 +394,7 @@ Pill link on `surface` with a hairline ring, 30px circular logo initial, company
 
 ### Navigation
 - Sticky 48px glass bar (see The Glass Nav Rule). Content 13px, 28px gap between groups.
-- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600.
+- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600. Signed out, the section links are hidden: the bar is only the wordmark, EN/PT, the theme toggle and Sign in.
 - Right: EN / PT segmented toggle (12px, 6px radius; active is 600 weight on an 8% ink wash, `aria-pressed`), a 32px circular sun/moon theme button (`aria-label` names the target theme; choice stored in `localStorage` under `theme`, default light), and a small primary Sign in button.
 - Mobile: see Responsive; nothing wraps and the bar never scrolls sideways.
 

@@ -84,6 +84,7 @@ code.false { color: var(--false); }
 .mark:hover { text-decoration: none; }
 .mark i { width: 7px; height: 7px; border-radius: 50%; background: var(--true); margin-top: 4px; }
 .nav .links { display: flex; gap: 24px; margin-right: auto; }
+.nav-gap { margin-right: auto; } /* sem links (deslogado), empurra os controles para a direita */
 .nav .links a, .lang button { color: var(--ink); opacity: .82; }
 .nav .links a:hover { opacity: 1; text-decoration: none; }
 .nav .links a[aria-current="page"] { opacity: 1; font-weight: 600; }
@@ -480,7 +481,7 @@ img.logo { object-fit: cover; }
 @media (max-width: 860px) {
   /* two rows: wordmark + controls on top, the sections as equal tabs below. First name and "Sign out"
      leave the bar (sign out lives on the profile page). */
-  :root { --nav-h: 88px; }
+  :root:has(.nav .links) { --nav-h: 88px; } /* the tab row exists only when signed in */
   .who span, .who .btn { display: none; }
   .nav .wrap { gap: 8px; flex-wrap: wrap; align-content: flex-start; }
   .mark { height: 48px; }
