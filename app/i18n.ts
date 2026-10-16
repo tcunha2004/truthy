@@ -166,7 +166,14 @@ const en = {
     passwordHint: "Use at least 8 characters.",
     or: "or",
     google: "Continue with Google",
-    googleError: "Couldn’t sign in with Google. Please try again.",
+    errors: {
+      credentials: "Incorrect email or password.",
+      exists: "That email is already registered.",
+      rate: "Too many attempts. Try again in a few minutes.",
+      invalid: "Something went wrong. Check your details and try again.",
+      google_password: "This email was registered with a password. Sign in with email and password.",
+      google: "Couldn’t sign in with Google. Please try again.",
+    },
   },
   ob: {
     title: "Set up your profile",
@@ -421,7 +428,14 @@ const pt: Dict = {
     passwordHint: "Use pelo menos 8 caracteres.",
     or: "ou",
     google: "Continuar com o Google",
-    googleError: "Não foi possível entrar com o Google. Tente de novo.",
+    errors: {
+      credentials: "E-mail ou senha incorretos.",
+      exists: "Esse e-mail já está cadastrado.",
+      rate: "Muitas tentativas. Tente de novo em alguns minutos.",
+      invalid: "Algo deu errado. Confira os dados e tente de novo.",
+      google_password: "Esse e-mail foi cadastrado com senha. Entre com e-mail e senha.",
+      google: "Não foi possível entrar com o Google. Tente de novo.",
+    },
   },
   ob: {
     title: "Monte seu perfil",
