@@ -38,21 +38,23 @@ export function ThemeToggle({ toDark, toLight }: { toDark: string; toLight: stri
   );
 }
 
-const chips = ["remote", "br", "intl", "salary"] as const;
+// Chips rápidos da landing → o parâmetro da /jobs que cada um liga.
+const chips = { remote: ["remote", "1"], br: ["country", "BR"], intl: ["kind", "internacional"] } as const;
+type Chip = keyof typeof chips;
+const chipKeys = Object.keys(chips) as Chip[];
 
 export function SearchForm({ t }: { t: Dict["hero"] }) {
-  const [on, setOn] = useState<Record<string, boolean>>({ remote: true });
+  const [on, setOn] = useState<Record<Chip, boolean>>({ remote: true, br: false, intl: false });
   return (
     <>
-      <form className="search" role="search" action="/jobs">
+      <form className="search one" role="search" action="/jobs">
         <label><Icon name="search" /><input type="search" name="q" aria-label={t.q} placeholder={t.q} /></label>
-        <label><Icon name="pin" /><input type="text" name="loc" aria-label={t.locLabel} placeholder={t.loc} /></label>
-        {chips.map((c) => on[c] && <input key={c} type="hidden" name={c} value="1" />)}
+        {chipKeys.map((c) => on[c] && <input key={c} type="hidden" name={chips[c][0]} value={chips[c][1]} />)}
         <button className="btn" type="submit">{t.cta}</button>
       </form>
       <div className="filters" role="group" aria-label={t.filters}>
-        {chips.map((c) => (
-          <button key={c} type="button" className="chip" aria-pressed={!!on[c]} onClick={() => setOn({ ...on, [c]: !on[c] })}>
+        {chipKeys.map((c) => (
+          <button key={c} type="button" className="chip" aria-pressed={on[c]} onClick={() => setOn({ ...on, [c]: !on[c] })}>
             {t[c]}
           </button>
         ))}
