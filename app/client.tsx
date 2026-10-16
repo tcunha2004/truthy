@@ -67,7 +67,7 @@ export function SearchForm({ t }: { t: Dict["hero"] }) {
 export function SaveButton({ saved = false, disabled = false, t }: { saved?: boolean; disabled?: boolean; t: Dict["job"] }) {
   const [on, setOn] = useState(saved);
   return (
-    <button type="button" className="save" aria-pressed={on} aria-label={on ? t.saved : t.save} disabled={disabled} onClick={() => setOn(!on)}>
+    <button type="button" className="save" aria-pressed={on} aria-label={t.save} disabled={disabled} onClick={() => setOn(!on)}>
       <Icon name="save" />
     </button>
   );
@@ -83,7 +83,7 @@ export function SaveJob({ jobId, saved, closed = false, t }: { jobId: string; sa
     <form action={action} className="save-form">
       <input type="hidden" name="jobId" value={jobId} />
       <input type="hidden" name="saved" value={shown ? "0" : "1"} />
-      <button className="save" aria-pressed={shown} aria-label={shown ? t.saved : t.save} disabled={closed && !shown}>
+      <button className="save" aria-pressed={shown} aria-label={t.save} disabled={closed && !shown}>
         <Icon name="save" />
       </button>
     </form>

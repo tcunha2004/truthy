@@ -110,7 +110,7 @@ code.false { color: var(--false); }
 }
 .btn:hover { background: var(--accent-hover); text-decoration: none; }
 .btn:active { transform: scale(.98); }
-.btn.sm { height: 30px; padding: 0 14px; font-size: 13px; }
+.btn.sm { height: 30px; padding: 0 14px; font-size: 13px; white-space: nowrap; }
 .btn[disabled] { opacity: .38; cursor: not-allowed; }
 .more { display: inline-flex; align-items: center; gap: 2px; }
 .more svg { width: .7em; height: .7em; stroke-width: 2.4; }
@@ -147,7 +147,9 @@ code.false { color: var(--false); }
 }
 .chip:hover { border-color: var(--ink-2); }
 .chip[aria-pressed="true"], .chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.prov { margin-top: 22px; font-size: 13px; color: var(--ink-2); display: inline-flex; align-items: center; gap: 8px; }
+/* block + inline dot: when the line wraps, the dot stays glued to the first word instead of floating at the edge */
+.prov { margin-top: 22px; font-size: 13px; color: var(--ink-2); text-wrap: balance; }
+.prov .pulse { display: inline-block; margin-right: 8px; vertical-align: 1px; }
 .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--true); box-shadow: 0 0 0 0 color-mix(in srgb, var(--true) 50%, transparent); animation: pulse 2.4s var(--ease) infinite; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 8px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 
@@ -207,8 +209,8 @@ section.band { padding: 120px 0; }
 .flow .step b { font-weight: 600; }
 .flow .step span { color: var(--ink-2); margin-left: auto; font-size: 13px; }
 .flow .arrow { justify-self: center; color: var(--ink-2); font-size: 18px; }
-.mini { margin-top: auto; background: var(--bg-alt); border-radius: var(--r-lg); overflow: hidden; }
-.mini .job { background: var(--surface); grid-template-columns: 1fr auto; }
+.mini { margin-top: auto; display: grid; gap: 6px; padding: 6px; background: var(--bg-alt); border-radius: var(--r-lg); }
+.mini .job { background: var(--surface); grid-template-columns: 1fr auto; border: 0; border-radius: var(--r-md); }
 
 .companies { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 44px; }
 .company { display: inline-flex; align-items: center; gap: 10px; padding: 8px 18px 8px 8px; border-radius: var(--r-pill); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); font-size: 15px; font-weight: 500; transition: box-shadow .2s var(--ease); }
@@ -217,6 +219,9 @@ section.band { padding: 120px 0; }
 .company small { color: var(--ink-2); font-weight: 400; font-size: 13px; }
 
 footer { background: var(--bg-alt); color: var(--ink-2); font-size: 12px; padding: 24px 0 40px; }
+.co-all { margin-top: 36px; }
+.pf-out { margin-top: 40px; text-align: center; }
+
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; }
 
 /* ---------- fields ---------- */
@@ -248,8 +253,10 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 
 .btn.quiet { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
 .btn.quiet:hover { background: color-mix(in srgb, var(--ink) 12%, transparent); }
-.empty { border-radius: var(--r-lg); background: var(--bg-alt); padding: 40px; text-align: center; max-width: 520px; margin-inline: auto; }
-.empty b { display: block; font-size: 21px; letter-spacing: -0.02em; color: var(--ink); }
+.empty { border-radius: var(--r-lg); background: var(--bg-alt); padding: 40px; text-align: center; width: min(520px, 100% - 32px); margin-inline: auto; }
+.co-stage .empty { background: var(--surface); }
+.empty .btn + .btn { margin-left: 8px; }
+.empty b { display: block; font-size: 21px; letter-spacing: -0.02em; color: var(--ink); text-wrap: balance; }
 .empty p { color: var(--ink-2); margin: 6px 0 18px; }
 
 /* ---------- companies ---------- */
@@ -265,6 +272,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .co-search:focus-within { box-shadow: var(--shadow), inset 0 0 0 2px var(--accent); }
 .co-search input { border: 0; outline: 0; background: none; width: 100%; font-size: 17px; color: var(--ink); }
 .co-search input::placeholder { color: var(--ink-2); }
+.co-sample { margin-top: 6px; font-size: 12px; color: var(--ink-2); text-wrap: balance; }
 .chip .num { color: inherit; opacity: .6; }
 .co-stage { margin-top: 56px; background: var(--bg-alt); padding: 56px 0 120px; flex: 1; }
 .co-page { display: flex; flex-direction: column; flex: 1; }
@@ -305,7 +313,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 @keyframes pop { from { transform: scale(.85); opacity: 0; } }
 
 /* big single-choice cards (search status) */
-.cards .picks-row { display: grid; gap: 10px; text-align: left; }
+.cards .picks-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; width: min(440px, 100%); margin-inline: auto; text-align: left; }
+.pf-sec .cards .picks-row { margin-inline: 0; }
 .pick-card { position: relative; display: grid; gap: 2px; padding: 18px 20px; border-radius: var(--r-lg); background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; transition: box-shadow .2s var(--ease); }
 .pick-card:hover { box-shadow: inset 0 0 0 1px var(--ink-2); }
 .pick-card:has(input:checked) { box-shadow: inset 0 0 0 2px var(--ink); }
@@ -359,7 +368,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 /* ---------- onboarding wizard ---------- */
 .ob { flex: 1; padding: 0 16px 120px; }
 .ob-bar { position: sticky; top: var(--nav-h); z-index: 5; height: 3px; margin: 0 -16px; background: var(--bg-alt); }
-.ob-bar i { display: block; height: 100%; background: var(--accent); border-radius: 0 var(--r-pill) var(--r-pill) 0; transition: width .5s var(--ease); }
+.ob-bar i { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform .5s var(--ease); }
 .ob-step { width: min(640px, 100%); margin: 72px auto 0; text-align: center; view-transition-name: ob-step; }
 .ob-n { font-size: 13px; color: var(--ink-2); }
 .ob h1 { margin-top: 8px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.08; font-weight: 650; letter-spacing: -0.035em; text-wrap: balance; }
@@ -371,6 +380,9 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .ob-hint.bad { color: var(--false); }
 .ob-done .btn { margin-top: 32px; }
 .ob-done .ob-hint { margin-top: 20px; text-align: center; }
+/* the wizard is a focused flow: no footer, no "finish profile" shortcut pointing at itself */
+body:has(.ob) > footer, body:has(.ob) .nav a[href="/onboarding"] { display: none; }
+.ob .q-salary .hint { display: none; } /* the step lead already says it */
 .ob-done code.true { animation: fade .8s var(--ease) .3s both; }
 @keyframes fade { from { opacity: 0; } }
 .ob-sum { list-style: none; padding: 0; margin: 40px 0 0; text-align: left; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
@@ -443,43 +455,50 @@ img.logo { object-fit: cover; }
 .job-group > summary { list-style: none; cursor: pointer; }
 .job-group > summary::-webkit-details-marker { display: none; }
 .jobs-list .job-group > summary.job { grid-template-columns: 44px 1fr auto auto; }
-.caret { color: var(--ink-2); display: grid; place-items: center; }
+.caret { width: 36px; height: 36px; color: var(--ink-2); display: grid; place-items: center; } /* same box as .save, so the columns line up */
 .caret .i { transform: rotate(90deg); transition: transform .2s var(--ease); }
 .job-group[open] .caret .i { transform: rotate(-90deg); }
 .versions { list-style: none; padding: 0 20px 12px 80px; margin: 0; }
 .versions li { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); font-size: 14px; }
 .versions .where { display: inline-flex; align-items: center; gap: 5px; color: var(--ink-2); }
 .versions .pay { font-size: 14px; }
+.versions .pay.missing { font-weight: 400; color: var(--ink-2); }
 
 /* saved page: open and closed sections, each a job list under a small heading */
-.saved-sec { width: min(860px, 100%); margin-inline: auto; }
+.saved-sec, .co-stage > .jobs { width: min(860px, 100% - 32px); margin-inline: auto; }
 .saved-sec + .saved-sec { margin-top: 40px; }
 .saved-sec h2 { font-size: 21px; font-weight: 650; letter-spacing: -0.02em; margin: 0 4px 12px; }
 .saved-sec h2 .num { color: var(--ink-2); font-weight: 450; }
 
-.pager { width: min(860px, 100%); margin: 20px auto 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-2); }
+.pager { width: min(860px, 100% - 32px); margin: 20px auto 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-2); }
 .pager a { display: inline-flex; align-items: center; gap: 4px; }
 .pager a:last-child { justify-self: end; }
 .pager .back .i { transform: rotate(180deg); }
 
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
-  .nav .links, .who span { display: none; }
-  .nav .wrap { justify-content: space-between; }
+  /* links, first name and "Sign out" leave the bar (sign out lives on the profile page); the controls group on the right */
+  .nav .links, .who span, .who .btn { display: none; }
+  .nav .wrap { gap: 8px; }
+  .lang { margin-left: auto; }
   .hero { padding-top: 56px; }
-  .search { grid-template-columns: 1fr; border-radius: var(--r-lg); gap: 0; }
+  .search, .search.one { grid-template-columns: 1fr; border-radius: var(--r-lg); gap: 0; }
   .jobs-form .search.one { grid-template-columns: 1fr; }
   .jobs-form .search .chip { justify-self: start; margin: 10px 0 0 10px; }
   .search label + label { border-left: 0; border-top: 1px solid var(--line); }
   .search .btn { margin-top: 6px; width: 100%; border-radius: var(--r-md); }
-  .job { grid-template-columns: 40px 1fr auto; padding: 16px; gap: 12px; }
-  .job .pay { grid-column: 2; text-align: left; }
+  .job { grid-template-columns: 40px 1fr auto; align-items: start; padding: 16px; gap: 6px 12px; }
+  .job .pay { grid-column: 2; text-align: left; display: flex; align-items: baseline; gap: 6px; }
+  .job .pay small { display: inline; }
   .job .save { grid-row: 1; grid-column: 3; }
   .logo { width: 40px; height: 40px; }
   .mini .job { grid-template-columns: 1fr; }
   .ledger { grid-template-columns: 1fr; }
   .tiles { grid-template-columns: 1fr; }
-  .tile { padding: 32px 24px; min-height: 0; gap: 32px; }
+  .tile { padding: 32px 24px; min-height: 0; }
+  .tile .flow, .tile .mini { margin-top: 32px; }
+  .flow .step { padding: 14px 16px; gap: 10px; font-size: 14px; }
+  .flow .step span { white-space: nowrap; }
   section.band { padding: 80px 0; }
   .auth { padding-top: 56px; padding-bottom: 72px; }
   .auth-card { padding: 24px; }

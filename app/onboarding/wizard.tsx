@@ -134,7 +134,7 @@ export function Wizard({ initial, start, t, locale, countries, saveStep, finish 
   return (
     <main className="ob">
       <div className="ob-bar" aria-hidden="true">
-        <i style={{ width: `${(i / total) * 100}%` }} />
+        <i style={{ transform: `scaleX(${i / total})` }} />
       </div>
       <p className="sr" aria-live="polite">{screen === "done" ? t.done.h : stepOf}</p>
 

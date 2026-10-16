@@ -33,7 +33,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
     meta: c.ats,
     open: num.format(c.open),
     openLabel: c.open === 1 ? t.openOne : t.openMany,
-    read: c.lastFetchedAt ? `${t.boardRead} ${ago(c.lastFetchedAt, lang)}` : t.notRead,
+    read: c.lastFetchedAt ? `${t.cardChecked} ${ago(c.lastFetchedAt, lang)}` : t.notChecked,
   }));
 
   const lastRead = companies.reduce<Date | null>((max, c) => (c.lastFetchedAt && (!max || c.lastFetchedAt > max) ? c.lastFetchedAt : max), null);
@@ -47,10 +47,11 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
           <p className="lead">{t.lead}</p>
           <p className="prov">
             <span className="pulse" aria-hidden="true" />
-            <span>{[lastRead && `${t.boardsRead} ${ago(lastRead, lang)}`, `${num.format(companies.length)} ${t.count}`, `${num.format(totalOpen)} ${t.openMany}`]
+            <span>{[lastRead && `${t.checked} ${ago(lastRead, lang)}`, `${num.format(companies.length)} ${t.count}`, `${num.format(totalOpen)} ${t.openMany}`]
               .filter(Boolean)
-              .join(" · ")}</span>
+              .join("\u00a0· ")}</span>
           </p>
+          {!user && <p className="co-sample">{t.sample}</p>}
         </div>
       </section>
       <CompanyBrowser companies={cards} initialQuery={(await searchParams).q ?? ""} t={t} />

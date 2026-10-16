@@ -7,13 +7,14 @@ import type { SaveResult } from "../profile";
 import { QUESTIONS } from "../profile-fields";
 import { STEPS, parseProfile, type Profile, type ProfileError, type Step } from "../profile-options";
 
-export function ProfileForm({ initial, t, tp, locale, countries, save }: {
+export function ProfileForm({ initial, t, tp, locale, countries, save, children }: {
   initial: Profile;
   t: Dict["ob"];
   tp: Dict["profile"];
   locale: string;
   countries: [string, string][];
   save: (input: unknown) => Promise<SaveResult>;
+  children?: React.ReactNode;
 }) {
   const router = useRouter();
   const [p, setP] = useState(initial);
@@ -94,6 +95,7 @@ export function ProfileForm({ initial, t, tp, locale, countries, save }: {
           </div>
         </div>
       </form>
+      {children}
     </main>
   );
 }

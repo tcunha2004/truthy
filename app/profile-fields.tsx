@@ -47,6 +47,8 @@ function Picks<T extends string>({ name, label, hideLabel = false, options, text
                 onChange(multi ? (e.target.checked ? [...value, o] : value.filter((v) => v !== o)) : [o]);
                 if (!multi && pointer.current) pick?.();
               }}
+              // Clicar de novo na resposta que já estava marcada (voltando a um passo) também avança; não há onChange nesse caso.
+              onClick={() => !multi && pointer.current && value.includes(o) && pick?.()}
             />
             {text(o)}
           </label>
@@ -102,6 +104,11 @@ function StackQ({ p, set, t }: QProps) {
   const full = p.stack.length >= MAX_STACK;
   const matches = open && q.trim() ? STACK_CATALOG.filter((s) => !has(s) && fold(s).includes(fold(q.trim()))).slice(0, 6) : [];
 
+  // Enter sem destaque: "kub" vira "Kubernetes" (item do catálogo que tem esse nome ou começa assim); senão vale o texto digitado.
+  const best = (text: string) => {
+    const f = fold(text.trim());
+    return matches.find((s) => fold(s) === f) ?? matches.find((s) => fold(s).startsWith(f)) ?? text;
+  };
   const add = (items: string[]) => {
     set({ stack: addStack(p.stack, items) });
     setQ("");
@@ -119,7 +126,7 @@ function StackQ({ p, set, t }: QProps) {
     } else if ((e.key === "Enter" || e.key === ",") && q.trim()) {
       // Com texto, Enter adiciona. Vazio, o Enter segue e o formulário do wizard avança.
       e.preventDefault();
-      add([hi >= 0 ? matches[hi] : q]);
+      add([hi >= 0 ? matches[hi] : best(q)]);
     } else if (e.key === "Escape" && matches.length) {
       e.preventDefault();
       setOpen(false);

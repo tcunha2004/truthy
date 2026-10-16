@@ -120,9 +120,9 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           <p className="prov">
             <span className="pulse" aria-hidden="true" />
             <span>
-              {[groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever · Greenhouse"]
+              {[groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"]
                 .filter(Boolean)
-                .join(" · ")}
+                .join("\u00a0· ")}
             </span>
           </p>
         </div>
@@ -175,7 +175,7 @@ function forYouMeta(p: Profile, locale: string, t: Dict["jobs"], where: Dict["ob
   const { shown, more } = forYouStack(p.stack);
   const country = countryOptions(locale).find(([code]) => code === p.country)?.[1] ?? p.country;
   const stack = shown.join(", ") + (more > 0 ? ` ${t.moreStack.replace("{n}", String(more))}` : "");
-  return [FIELD_LABELS[p.field!], t.levels[p.seniority!], ...p.workModels.map((m) => where[m]), country, stack].join(" · ");
+  return [FIELD_LABELS[p.field!], t.levels[p.seniority!], ...p.workModels.map((m) => where[m]), country, stack].join("\u00a0· ");
 }
 
 function GroupRow({ g, co, savedIds, locale, t, tj }: {
@@ -220,7 +220,7 @@ function GroupRow({ g, co, savedIds, locale, t, tj }: {
         {g.versions.map((v) => (
           <li key={v.id}>
             <span className="where"><Icon name={v.isRemote ? "globe" : "pin"} />{where(v, t)}</span>
-            <span className="pay num">{payText(v, locale) ?? tj.noPay}</span>
+            {payText(v, locale) ? <span className="pay num">{payText(v, locale)}</span> : <span className="pay missing">{tj.noPay}</span>}
             <a href={v.url} target="_blank" rel="noopener noreferrer">
               {t.applyVia.replace("{ats}", ats)}<span className="sr"> {t.newTab}</span>
             </a>
