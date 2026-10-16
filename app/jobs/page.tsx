@@ -24,7 +24,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const f = parseJobParams(await searchParams, companies.map((c) => c.slug));
 
   const vector = f.q ? await embedQuery(f.q) : null;
-  const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector), getJobCountries()]);
+  const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector, null), getJobCountries()]);
 
   const savedIds = await getSavedIds(user.id, groups.flatMap((g) => g.versions.map((v) => v.id)));
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
