@@ -220,7 +220,7 @@ function GroupRow({ g, co, savedIds, locale, t, tj }: {
         {g.versions.map((v) => (
           <li key={v.id}>
             <span className="where"><Icon name={v.isRemote ? "globe" : "pin"} />{where(v, t)}</span>
-            <span className="pay num">{payText(v, locale) ?? tj.noPay}</span>
+            {payText(v, locale) ? <span className="pay num">{payText(v, locale)}</span> : <span className="pay missing">{tj.noPay}</span>}
             <a href={v.url} target="_blank" rel="noopener noreferrer">
               {t.applyVia.replace("{ats}", ats)}<span className="sr"> {t.newTab}</span>
             </a>

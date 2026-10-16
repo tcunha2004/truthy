@@ -1,7 +1,7 @@
 import { dicts, getLang, locales } from "../i18n";
 import { getProfile, saveProfile } from "../profile";
 import { countryOptions } from "../profile-options";
-import { requireUser } from "../session";
+import { logout, requireUser } from "../session";
 import { ProfileForm } from "./form";
 
 export async function generateMetadata() {
@@ -20,6 +20,11 @@ export default async function ProfilePage() {
       locale={locale}
       countries={countryOptions(locale)}
       save={saveProfile}
-    />
+    >
+      {/* no celular o "Sair" sai do nav; aqui ele fica ao alcance em qualquer tela */}
+      <form action={logout} className="pf-out">
+        <button className="btn sm quiet">{dicts[lang].nav.signout}</button>
+      </form>
+    </ProfileForm>
   );
 }

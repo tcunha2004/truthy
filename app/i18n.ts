@@ -85,6 +85,7 @@ const en = {
     emptyH: "No company matches that.",
     emptyP: "Try another name, or clear the search to see all of them.",
     clear: "Clear search",
+    sample: "Sample counts and times. Sign in to see the real numbers.",
   },
   jobs: {
     title: "Jobs",
@@ -347,6 +348,7 @@ const pt: Dict = {
     emptyH: "Nenhuma empresa com esse nome.",
     emptyP: "Tente outro nome ou limpe a busca para ver todas.",
     clear: "Limpar busca",
+    sample: "Contagens e horários de exemplo. Entre para ver os números reais.",
   },
   jobs: {
     title: "Vagas",

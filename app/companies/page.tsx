@@ -51,6 +51,7 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
               .filter(Boolean)
               .join(" · ")}</span>
           </p>
+          {!user && <p className="co-sample">{t.sample}</p>}
         </div>
       </section>
       <CompanyBrowser companies={cards} initialQuery={(await searchParams).q ?? ""} t={t} />

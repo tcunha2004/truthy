@@ -110,7 +110,7 @@ export default async function Home() {
               </Link>
             ))}
           </div>
-          <p style={{ marginTop: 36 }}>
+          <p className="co-all">
             <Link className="more" href="/companies">{t.co.all}<Icon name="chev" /></Link>
           </p>
         </div>

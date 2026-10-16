@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const t = dicts[lang];
   const user = await getUser();
   return (
-    <html lang={locales[lang]} data-theme="light" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang={locales[lang]} data-theme="light" data-scroll-behavior="smooth" className={`${inter.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

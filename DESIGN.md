@@ -271,9 +271,9 @@ The page is a vertical stack of full-width bands. Content sits in a centered col
 - **Recurring spacing:** 6, 8, 12, 16, 18, 20, 24, 28, 40, 48, 56, 72, 88, 120px. Small gaps (6-10px) inside controls; 12-18px between siblings; 40-64px between a lead and its component.
 
 ### Responsive (single breakpoint, 860px)
-- Nav hides Jobs / Companies / Saved links; wordmark, EN/PT, theme toggle and Sign in remain, spread with `space-between`.
+- Nav hides Jobs / Companies / Saved links, the first name and Sign out; the wordmark stays left and EN/PT, theme toggle, Sign in (or Finish profile and the avatar) group on the right with 8px gaps. Sign out lives at the bottom of the profile page.
 - Search bar stacks into one column, radius drops from pill to 18px, fields are divided by top hairlines, and the button goes full width with a 12px radius.
-- Job row becomes `40px 1fr auto`: salary moves under the title (left aligned), save stays top-right; logo shrinks to 40px; padding 16px, gap 12px.
+- Job row becomes `40px 1fr auto`, top-aligned: salary moves under the title on one line with its sub-label ("R$ 9.000–12.000 per month"), save stays top-right; logo shrinks to 40px; padding 16px, gap 6px / 12px. Lists on a stage keep a 16px gutter.
 - Tiles, ledger and mini lists collapse to one column; tiles lose min-height and pad 32px / 24px.
 
 ### Motion
@@ -349,7 +349,7 @@ Calm, solid pills; colour does the work, not shadow.
 - A field with a listbox below: `surface`, 12px radius, ambient shadow plus hairline ring, 6px padding; options 15px with 8px radius, hover/active on `bg-alt`. Arrow keys move, Enter picks, Esc closes.
 
 ### Progress Bar
-- 3px bar pinned under the nav on `bg-alt`; the filled part is `accent` and animates its width. Only used in onboarding.
+- 3px bar pinned under the nav on `bg-alt`; the filled part is `accent` and grows with `transform: scaleX` from the left. Only used in onboarding, which hides the footer and the nav's Finish profile shortcut so the flow stays focused.
 
 ### Save Bar
 - Fixed to the bottom, same translucent blur as the nav, hairline on top. Slides up only when there are unsaved changes, shows the state in 13px `ink-2` and a small primary button. Also the mobile home of the onboarding "Continue" button.
@@ -366,7 +366,7 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 - **Status, closed:** title struck through (1.5px) in `ink-2`, logo at 45% opacity, status in `false` with an x icon, "Closed · removed from <ATS> <time ago>", save disabled.
 - **Saved:** bookmark filled with `accent` (`aria-pressed="true"`). Unsaved is an `ink-2` outline that darkens with a 7% circular wash on hover. A save is one specific location (one ATS posting), never a whole group. The button flips as soon as it is pressed and flips back if the server refuses. A closed job can't be saved, but a closed job that is already saved keeps an enabled bookmark so it can be removed.
 - **Missing data:** shown as missing. Salary renders an em dash with "Salary not listed"; never estimate or hide the slot.
-- **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame.
+- **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame with 6px padding; rows are 12px-radius `surface` panels 6px apart (like the flow steps).
 - **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines; each location has its own save button at the end. The group summary has no save button. A single-location row links its title straight to the ATS in a new tab and has the save button in its fourth column.
 - **Group salary:** shown once if every location pays the same; otherwise "Varies / by location".
 - **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
@@ -390,13 +390,13 @@ Inside the inverse band: a 3-column grid of facts on 18px-radius 1px-gap divider
 Pill link on `surface` with a hairline ring, 30px circular logo initial, company name at 15px / 500 and the ATS name at 13px `ink-2`. Hover darkens the ring; no underline. Wrap in a centered flex row with 10px gaps.
 
 ### Empty State
-18px-radius `bg-alt` panel, 40px padding, centered, max 520px: 21px ink title, `ink-2` explanation that names the likely cause, and one small quiet button to undo it.
+18px-radius `bg-alt` panel (`surface` when it sits on a `bg-alt` stage), 40px padding, centered, max 520px with a 16px gutter: 21px ink title, `ink-2` explanation that names the likely cause, and one small quiet button to undo it (a second one sits 8px to its right).
 
 ### Navigation
 - Sticky 48px glass bar (see The Glass Nav Rule). Content 13px, 28px gap between groups.
 - Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline.
 - Right: EN / PT segmented toggle (12px, 6px radius; active is 600 weight on an 8% ink wash, `aria-pressed`), a 32px circular sun/moon theme button (`aria-label` names the target theme; choice stored in `localStorage` under `theme`, default light), and a small primary Sign in button.
-- Mobile: links hidden; everything else stays.
+- Mobile: see Responsive; nothing wraps and the bar never scrolls sideways.
 
 ### Footer
 `bg-alt`, 12px `ink-2`, a hairline above, tagline left and "truthy · year" right.
