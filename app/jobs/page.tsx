@@ -4,8 +4,10 @@ import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
 import { ago, dicts, getLang, locales, type Dict } from "../i18n";
 import { embedQuery, getJobCountries, searchJobs, type JobGroup } from "../job-data";
+import { forYouFilters, forYouQuery, forYouScope, forYouStack } from "../for-you";
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type RawParams } from "../job-query";
-import { countryOptions } from "../profile-options";
+import { FIELD_LABELS, countryOptions, type Profile } from "../profile-options";
+import { getProfile } from "../profile";
 import { JobRow, Logo, where } from "../job-row";
 import { getSavedIds } from "../saved";
 import { requireUser } from "../session";
@@ -23,8 +25,11 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const companies = await getCompanies();
   const f = parseJobParams(await searchParams, companies.map((c) => c.slug));
 
-  const vector = f.q ? await embedQuery(f.q) : null;
-  const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector, null), getJobCountries()]);
+  // Para você: o perfil vira a frase do embedding e os filtros duros. Busca normal: só o que foi digitado.
+  const profile = f.mode === "forYou" ? await getProfile(user.id, user.name) : null;
+  const fy = profile && forYouFilters(profile);
+  const vector = profile ? await embedQuery(forYouQuery(profile)) : f.q ? await embedQuery(f.q) : null;
+  const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector, fy), getJobCountries()]);
 
   const savedIds = await getSavedIds(user.id, groups.flatMap((g) => g.versions.map((v) => v.id)));
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
@@ -35,65 +40,83 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const active = activeFilters(f);
   const pages = pageCount(total);
   const clearHref = jobsHref({ ...NO_FILTERS, q: f.q });
+  const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
 
   return (
     <main className="co-page">
       <section className="co-hero">
         <div className="wrap">
-          <h1>{t.h}</h1>
-          <p className="lead">{t.lead}</p>
-
-          {/* key: "Limpar filtros" e a paginação navegam no cliente; remontar o form realinha os campos com a URL */}
-          <form key={jobsHref(f)} className="jobs-form" role="search" action="/jobs">
-            <div className="search one">
-              <label>
-                <Icon name="search" />
-                <input type="search" name="q" defaultValue={f.q} maxLength={MAX_QUERY} aria-label={t.q} placeholder={t.qPh} />
-              </label>
-              <button className="btn" type="submit">{t.cta}</button>
-            </div>
-
-            <details className="jf" open={active > 0}>
-              <summary>
-                {t.filters}
-                {active > 0 && <span className="num">· {(active === 1 ? t.activeOne : t.activeMany).replace("{n}", num.format(active))}</span>}
-                <Icon name="chev" />
-              </summary>
-              <div className="jf-body">
-                <fieldset className="picks">
-                  <legend>{t.workModel}</legend>
-                  <div className="picks-row">
-                    <label className="chip pick">
-                      <input type="checkbox" name="remote" value="1" defaultChecked={f.remote} />
-                      {t.remote}
-                    </label>
-                  </div>
-                </fieldset>
-                <div className="jf-row">
-                  <label className="field">
-                    {t.country}
-                    <select name="country" defaultValue={f.country ?? ""}>
-                      <option value="">{t.anyCountry}</option>
-                      {countries.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
-                    </select>
-                  </label>
-                  <label className="field">
-                    {t.company}
-                    <select name="company" defaultValue={f.company ?? ""}>
-                      <option value="">{t.anyCompany}</option>
-                      {companies.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
-                    </select>
-                  </label>
-                </div>
-                <div className="jf-actions">
-                  <button className="btn sm" type="submit">{t.apply}</button>
-                  {active > 0 && <Link className="btn sm quiet" href={clearHref}>{t.clear}</Link>}
-                </div>
+          {fy && meta ? (
+            <>
+              <h1>{t.forYouH}</h1>
+              <p className="lead">{t.forYouLead[forYouScope(fy)]}</p>
+              <div className="filters">
+                <Link className="chip on" href="/jobs?search=1" aria-label={t.forYouOff}>
+                  <Icon name="spark" />{t.forYou}<Icon name="x" />
+                </Link>
               </div>
-            </details>
-          </form>
+              <p className="fy-meta">{meta}<Link href="/profile">{t.editProfile}</Link></p>
+            </>
+          ) : (
+            <>
+              <h1>{t.h}</h1>
+              <p className="lead">{t.lead}</p>
 
-          {f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
+              {/* key: "Limpar filtros" e a paginação navegam no cliente; remontar o form realinha os campos com a URL */}
+              <form key={jobsHref(f)} className="jobs-form" role="search" action="/jobs">
+                <input type="hidden" name="search" value="1" />
+                <div className="search one">
+                  <Link className="chip" href="/jobs"><Icon name="spark" />{t.forYou}</Link>
+                  <label>
+                    <Icon name="search" />
+                    <input type="search" name="q" defaultValue={f.q} maxLength={MAX_QUERY} aria-label={t.q} placeholder={t.qPh} />
+                  </label>
+                  <button className="btn" type="submit">{t.cta}</button>
+                </div>
+
+                <details className="jf" open={active > 0}>
+                  <summary>
+                    {t.filters}
+                    {active > 0 && <span className="num">· {(active === 1 ? t.activeOne : t.activeMany).replace("{n}", num.format(active))}</span>}
+                    <Icon name="chev" />
+                  </summary>
+                  <div className="jf-body">
+                    <fieldset className="picks">
+                      <legend>{t.workModel}</legend>
+                      <div className="picks-row">
+                        <label className="chip pick">
+                          <input type="checkbox" name="remote" value="1" defaultChecked={f.remote} />
+                          {t.remote}
+                        </label>
+                      </div>
+                    </fieldset>
+                    <div className="jf-row">
+                      <label className="field">
+                        {t.country}
+                        <select name="country" defaultValue={f.country ?? ""}>
+                          <option value="">{t.anyCountry}</option>
+                          {countries.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+                        </select>
+                      </label>
+                      <label className="field">
+                        {t.company}
+                        <select name="company" defaultValue={f.company ?? ""}>
+                          <option value="">{t.anyCompany}</option>
+                          {companies.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                        </select>
+                      </label>
+                    </div>
+                    <div className="jf-actions">
+                      <button className="btn sm" type="submit">{t.apply}</button>
+                      {active > 0 && <Link className="btn sm quiet" href={clearHref}>{t.clear}</Link>}
+                    </div>
+                  </div>
+                </details>
+              </form>
+            </>
+          )}
+
+          {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
           <p className="prov">
             <span className="pulse" aria-hidden="true" />
             <span>
@@ -127,6 +150,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             <p>{t.beyondP}</p>
             <Link className="btn quiet sm" href={jobsHref({ ...f, page: 1 })}>{t.first}</Link>
           </div>
+        ) : fy ? (
+          <div className="empty">
+            <b>{t.forYouEmptyH}</b>
+            <p>{t.forYouEmptyP}</p>
+            <Link className="btn quiet sm" href="/profile">{t.editProfile}</Link>
+            <Link className="btn quiet sm" href="/jobs?search=1">{t.searchOwn}</Link>
+          </div>
         ) : (
           <div className="empty">
             <b>{t.emptyH}</b>
@@ -137,6 +167,15 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       </div>
     </main>
   );
+}
+
+// Linha de resumo do perfil no Para você: área · nível · modelos · país · stack. O país vem da lista completa:
+// a da página só tem países que aparecem em vagas, e o do usuário pode não estar nela.
+function forYouMeta(p: Profile, locale: string, t: Dict["jobs"], where: Dict["ob"]["where"]) {
+  const { shown, more } = forYouStack(p.stack);
+  const country = countryOptions(locale).find(([code]) => code === p.country)?.[1] ?? p.country;
+  const stack = shown.join(", ") + (more > 0 ? ` ${t.moreStack.replace("{n}", String(more))}` : "");
+  return [FIELD_LABELS[p.field!], t.levels[p.seniority!], ...p.workModels.map((m) => where[m]), country, stack].join(" · ");
 }
 
 function GroupRow({ g, co, savedIds, locale, t, tj }: {
