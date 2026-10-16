@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { LangToggle, ThemeToggle } from "./client";
+import { LangToggle, NavLinks, ThemeToggle } from "./client";
 import { dicts, getLang, locales } from "./i18n";
 import { getUser, logout } from "./session";
 import "./globals.css";
@@ -29,12 +29,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <header className="nav">
           <div className="wrap">
             <Link className="mark" href="/">truthy<i aria-hidden="true" /></Link>
-            <nav className="links" aria-label={t.nav.main}>
-              {/* deslogado vai direto pro login: sem passar pela rota /jobs, sem flash do erro antes do redirect */}
-              <Link href={user ? "/jobs" : "/login"}>{t.nav.jobs}</Link>
-              <Link href="/companies">{t.nav.companies}</Link>
-              {user && <Link href="/saved">{t.nav.saved}</Link>}
-            </nav>
+            <NavLinks
+              label={t.nav.main}
+              items={[
+                // deslogado vai direto pro login: sem passar pela rota /jobs, sem flash do erro antes do redirect
+                { href: user ? "/jobs" : "/login", match: "/jobs", text: t.nav.jobs },
+                { href: "/companies", match: "/companies", text: t.nav.companies },
+                ...(user ? [{ href: "/saved", match: "/saved", text: t.nav.saved }] : []),
+              ]}
+            />
             <LangToggle lang={lang} label={t.nav.language} />
             <ThemeToggle toDark={t.nav.toDark} toLight={t.nav.toLight} />
             {user ? (

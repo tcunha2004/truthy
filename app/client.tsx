@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
 import { fold } from "./profile-options";
@@ -19,6 +19,19 @@ export function LangToggle({ lang, label }: { lang: Lang; label: string }) {
       <button type="button" aria-pressed={lang === "en"} lang="en" onClick={() => pick("en")}>EN</button>
       <button type="button" aria-pressed={lang === "pt"} lang="pt-BR" onClick={() => pick("pt")}>PT</button>
     </div>
+  );
+}
+
+// Links principais com aria-current na seção aberta. "match" é separado do href: deslogado, Vagas aponta
+// para /login, e a tela de login não deve aparecer como "Vagas".
+export function NavLinks({ label, items }: { label: string; items: { href: string; match: string; text: string }[] }) {
+  const path = usePathname();
+  return (
+    <nav className="links" aria-label={label}>
+      {items.map((i) => (
+        <Link key={i.match} href={i.href} aria-current={path.startsWith(i.match) ? "page" : undefined}>{i.text}</Link>
+      ))}
+    </nav>
   );
 }
 

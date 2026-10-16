@@ -271,7 +271,7 @@ The page is a vertical stack of full-width bands. Content sits in a centered col
 - **Recurring spacing:** 6, 8, 12, 16, 18, 20, 24, 28, 40, 48, 56, 72, 88, 120px. Small gaps (6-10px) inside controls; 12-18px between siblings; 40-64px between a lead and its component.
 
 ### Responsive (single breakpoint, 860px)
-- Nav hides Jobs / Companies / Saved links, the first name and Sign out; the wordmark stays left and EN/PT, theme toggle, Sign in (or Finish profile and the avatar) group on the right with 8px gaps. Sign out lives at the bottom of the profile page.
+- Nav becomes two rows (88px): the wordmark left and EN/PT, theme toggle, Sign in (or Finish profile and the avatar) on the right with 8px gaps; below, Jobs / Companies / Saved as equal-width 32px pill tabs at 14px, the current one on an 8% ink wash. The first name and Sign out leave the bar; Sign out lives at the bottom of the profile page.
 - Search bar stacks into one column, radius drops from pill to 18px, fields are divided by top hairlines, and the button goes full width with a 12px radius.
 - Job row becomes `40px 1fr auto`, top-aligned: salary moves under the title on one line with its sub-label ("R$ 9.000–12.000 per month"), save stays top-right; logo shrinks to 40px; padding 16px, gap 6px / 12px. Lists on a stage keep a 16px gutter.
 - Tiles, ledger and mini lists collapse to one column; tiles lose min-height and pad 32px / 24px.
@@ -394,7 +394,7 @@ Pill link on `surface` with a hairline ring, 30px circular logo initial, company
 
 ### Navigation
 - Sticky 48px glass bar (see The Glass Nav Rule). Content 13px, 28px gap between groups.
-- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline.
+- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600.
 - Right: EN / PT segmented toggle (12px, 6px radius; active is 600 weight on an 8% ink wash, `aria-pressed`), a 32px circular sun/moon theme button (`aria-label` names the target theme; choice stored in `localStorage` under `theme`, default light), and a small primary Sign in button.
 - Mobile: see Responsive; nothing wraps and the bar never scrolls sideways.
 
