@@ -256,7 +256,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .empty { border-radius: var(--r-lg); background: var(--bg-alt); padding: 40px; text-align: center; width: min(520px, 100% - 32px); margin-inline: auto; }
 .co-stage .empty { background: var(--surface); }
 .empty .btn + .btn { margin-left: 8px; }
-.empty b { display: block; font-size: 21px; letter-spacing: -0.02em; color: var(--ink); }
+.empty b { display: block; font-size: 21px; letter-spacing: -0.02em; color: var(--ink); text-wrap: balance; }
 .empty p { color: var(--ink-2); margin: 6px 0 18px; }
 
 /* ---------- companies ---------- */
