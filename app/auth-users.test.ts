@@ -113,20 +113,55 @@ test("cadastro: 10 tentativas por IP e a 11ª dá rate", async () => {
   assert.deepEqual(await signup(email(), { ip: i }), { ok: false, error: "rate" });
 });
 
-test("upsertGoogleUser: conta nova, conta Google existente e conta de senha", async () => {
+test("login: 30 tentativas simultâneas no mesmo e-mail: só 5 chegam a autenticar", async () => {
+  const e = email();
+  await signup(e);
+  const results = await Promise.all(Array.from({ length: 30 }, () => login(e, "errada")));
+  const kinds = results.map((x) => (x.ok ? "ok" : x.error));
+  assert.equal(kinds.filter((k) => k === "credentials").length, 5);
+  assert.equal(kinds.filter((k) => k === "rate").length, 25);
+});
+
+test("cadastro: 25 tentativas simultâneas do mesmo IP: só 10 passam do limite", async () => {
+  const i = ip();
+  const results = await Promise.all(Array.from({ length: 25 }, () => signup(email(), { ip: i })));
+  assert.equal(results.filter((x) => !x.ok && x.error === "rate").length, 15);
+});
+
+test("cadastro com dados inválidos também consome o limite do IP", async () => {
+  const i = ip();
+  for (let n = 0; n < 10; n++) assert.deepEqual(await signup("sem-arroba", { ip: i }), { ok: false, error: "invalid" });
+  assert.deepEqual(await signup(email(), { ip: i }), { ok: false, error: "rate" });
+});
+
+test("login com sucesso não gasta o limite do IP", async () => {
+  const e = email();
+  await signup(e);
+  const i = ip();
+  for (let n = 0; n < 22; n++) assert.equal((await login(e, PW, i)).ok, true);
+});
+
+test("upsertGoogleUser: conta nova e conta Google existente", async () => {
   const e = email();
   const sub = `sub-${rnd()}`;
   const first = await upsertGoogleUser(db, { sub, email: e, name: "Gabi" });
-  assert.ok(first);
-  assert.equal(first.onboarded, false);
+  assert.equal(first.ok, true);
+  assert.equal(first.ok && first.onboarded, false);
   const again = await upsertGoogleUser(db, { sub, email: e });
-  assert.equal(again?.userId, first.userId);
+  assert.equal(again.ok && again.userId, first.ok && first.userId);
+});
 
+test("upsertGoogleUser: e-mail de conta de senha dá google_password e não cria nada", async () => {
   const p = email();
   await signup(p);
-  assert.equal(await upsertGoogleUser(db, { sub: `sub-${rnd()}`, email: p }), null);
-  const u = await row(p);
-  assert.equal(u.google_sub, null);
+  assert.deepEqual(await upsertGoogleUser(db, { sub: `sub-${rnd()}`, email: p }), { ok: false, error: "google_password" });
+  assert.equal((await row(p)).google_sub, null);
+});
+
+test("upsertGoogleUser: e-mail de outra conta Google dá google (não diz que é conta de senha)", async () => {
+  const e = email();
+  await upsertGoogleUser(db, { sub: `sub-${rnd()}`, email: e });
+  assert.deepEqual(await upsertGoogleUser(db, { sub: `sub-${rnd()}`, email: e }), { ok: false, error: "google" });
 });
 
 test("upsertGoogleUser: nome editado não é sobrescrito", async () => {

@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
   // 4. Cria ou entra na conta Google. Contas Google e de senha não são vinculadas (decisão da spec;
   // vínculo só depois que houver verificação de e-mail): se o e-mail já é de uma conta de senha, não loga.
   const user = await upsertGoogleUser(db, google);
-  if (!user) return done("/login?error=google_password");
+  if (!user.ok) return done(`/login?error=${user.error}`);
 
   // 5. Cria a sessão e entrega o cookie. A partir daqui, o login é nosso, não do Google.
   // Quem ainda não concluiu o perfil vai para o onboarding.

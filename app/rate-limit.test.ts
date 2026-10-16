@@ -2,7 +2,7 @@ import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { createClient } from "redis";
-import { blocked, clear, clientIp, hit, limits } from "./rate-limit.ts";
+import { clear, clientIp, limits, refund, take } from "./rate-limit.ts";
 
 // Precisa do Redis do docker compose no ar.
 const r = createClient({ url: process.env.REDIS_URL ?? "redis://localhost:5113" });
@@ -12,36 +12,46 @@ after(() => r.quit());
 const key = () => `rl:test:${randomBytes(4).toString("hex")}`;
 const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-test("bloqueia ao chegar no máximo", async () => {
+test("libera até o máximo e nega a partir daí", async () => {
   const limit = { key: key(), max: 3, windowSec: 60 };
-  await hit(r, limit);
-  await hit(r, limit);
-  assert.equal(await blocked(r, limit), false);
-  await hit(r, limit);
-  assert.equal(await blocked(r, limit), true);
+  assert.deepEqual([await take(r, limit), await take(r, limit), await take(r, limit)], [true, true, true]);
+  assert.equal(await take(r, limit), false);
+});
+
+test("requisições em paralelo não passam do máximo", async () => {
+  const limit = { key: key(), max: 5, windowSec: 60 };
+  const results = await Promise.all(Array.from({ length: 20 }, () => take(r, limit)));
+  assert.equal(results.filter(Boolean).length, 5);
 });
 
 test("clear zera a contagem", async () => {
   const limit = { key: key(), max: 1, windowSec: 60 };
-  await hit(r, limit);
-  assert.equal(await blocked(r, limit), true);
+  assert.equal(await take(r, limit), true);
+  assert.equal(await take(r, limit), false);
   await clear(r, limit.key);
-  assert.equal(await blocked(r, limit), false);
+  assert.equal(await take(r, limit), true);
+});
+
+test("refund devolve a tentativa", async () => {
+  const limit = { key: key(), max: 1, windowSec: 60 };
+  assert.equal(await take(r, limit), true);
+  await refund(r, limit.key);
+  assert.equal(await take(r, limit), true);
 });
 
 test("a chave expira com a janela", async () => {
   const limit = { key: key(), max: 1, windowSec: 1 };
-  await hit(r, limit);
-  assert.equal(await blocked(r, limit), true);
+  await take(r, limit);
+  assert.equal(await take(r, limit), false);
   await sleep(1100);
-  assert.equal(await blocked(r, limit), false);
+  assert.equal(await take(r, limit), true);
 });
 
-test("a janela não renova a cada hit", async () => {
+test("a janela não renova a cada tentativa", async () => {
   const limit = { key: key(), max: 99, windowSec: 5 };
-  await hit(r, limit);
+  await take(r, limit);
   await sleep(1100);
-  await hit(r, limit);
+  await take(r, limit);
   assert.ok((await r.ttl(limit.key)) <= 4);
 });
 

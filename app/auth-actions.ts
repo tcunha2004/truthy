@@ -15,6 +15,10 @@ const text = (form: FormData, name: string) => {
   return typeof v === "string" ? v : "";
 };
 
+// Não loga o objeto do erro: um DatabaseError do pg traz a linha inteira (inclusive password_hash) em `detail`.
+const describe = (err: unknown) =>
+  err instanceof Error ? `${err.name}${(err as { code?: string }).code ? ` ${(err as { code?: string }).code}` : ""}: ${err.message}` : String(err);
+
 // Os redirect() ficam fora do try: eles funcionam lançando uma exceção.
 // Qualquer falha de infraestrutura (Redis fora do ar, banco) vira "invalid": falha fechado, ninguém é autenticado.
 export async function loginAction(form: FormData): Promise<void> {
@@ -32,7 +36,7 @@ export async function loginAction(form: FormData): Promise<void> {
       failure = result.error;
     }
   } catch (err) {
-    console.error("loginAction:", err);
+    console.error("loginAction:", describe(err));
     failure = "invalid";
   }
   redirect(failure ? `/login?error=${failure}` : to);
@@ -53,7 +57,7 @@ export async function signupAction(form: FormData): Promise<void> {
     if (result.ok) await startSession(result.userId, await cookies());
     else failure = result.error;
   } catch (err) {
-    console.error("signupAction:", err);
+    console.error("signupAction:", describe(err));
     failure = "invalid";
   }
   redirect(failure ? `/signup?error=${failure}` : "/onboarding");

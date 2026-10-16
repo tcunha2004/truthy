@@ -1,6 +1,6 @@
 import type { RedisClientType } from "redis";
 
-export type RateStore = Pick<RedisClientType, "get" | "del" | "multi">;
+export type RateStore = Pick<RedisClientType, "del" | "decr" | "multi">;
 export type Limit = { key: string; max: number; windowSec: number };
 
 export const limits = {
@@ -9,20 +9,25 @@ export const limits = {
   signupIp: (ip: string): Limit => ({ key: `rl:signup:ip:${ip}`, max: 10, windowSec: 60 * 60 }),
 };
 
-export async function blocked(r: RateStore, limit: Limit): Promise<boolean> {
-  return Number(await r.get(limit.key)) >= limit.max;
+// Reserva uma tentativa ANTES de autenticar: o INCR é atômico, então requisições em paralelo não passam do máximo
+// (checar primeiro e contar depois deixaria todas passarem). A janela começa na primeira tentativa e não renova (EXPIRE ... NX).
+export async function take(r: RateStore, limit: Limit): Promise<boolean> {
+  const [count] = await r.multi().incr(limit.key).expire(limit.key, limit.windowSec, "NX").exec();
+  return Number(count) <= limit.max;
 }
 
-// A janela começa no primeiro hit e não renova (EXPIRE ... NX).
-export async function hit(r: RateStore, limit: Limit): Promise<void> {
-  await r.multi().incr(limit.key).expire(limit.key, limit.windowSec, "NX").exec();
+// Devolve uma tentativa reservada (login com sucesso não gasta o limite do IP).
+export async function refund(r: RateStore, key: string): Promise<void> {
+  await r.decr(key);
 }
 
 export async function clear(r: RateStore, key: string): Promise<void> {
   await r.del(key);
 }
 
-// ponytail: x-forwarded-for só é confiável atrás de um proxy que o defina; sem ele, todos caem no balde "unknown"
+// ponytail: o Next só preenche x-forwarded-for com o IP do socket quando o cliente não manda o cabeçalho; sem um proxy
+// que o sobrescreva, quem manda um valor próprio escolhe o próprio balde e escapa dos limites por IP.
+// Atrás de proxy que acrescenta o IP ao fim da lista, o confiável é o último valor, não o primeiro: rever no deploy.
 export function clientIp(h: Pick<Headers, "get">): string {
   return h.get("x-forwarded-for")?.split(",")[0].trim() || "unknown";
 }
