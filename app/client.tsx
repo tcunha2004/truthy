@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
 import { fold } from "./profile-options";
+import { setSaved } from "./saved-action";
 
 export function LangToggle({ lang, label }: { lang: Lang; label: string }) {
   const router = useRouter();
@@ -69,6 +70,23 @@ export function SaveButton({ saved = false, disabled = false, t }: { saved?: boo
     <button type="button" className="save" aria-pressed={on} aria-label={on ? t.saved : t.save} disabled={disabled} onClick={() => setOn(!on)}>
       <Icon name="save" />
     </button>
+  );
+}
+
+// Marcador de verdade: grava no banco pela server action. Funciona sem JavaScript (o form posta para ela).
+// Enquanto o servidor responde, já mostra o estado novo; se falhar, o estado devolvido é o anterior.
+// Desativado só em vaga fechada que não está salva: a salva precisa poder sair dos salvos.
+export function SaveJob({ jobId, saved, closed = false, t }: { jobId: string; saved: boolean; closed?: boolean; t: Dict["job"] }) {
+  const [state, action, pending] = useActionState(setSaved, saved);
+  const shown = pending ? !state : state;
+  return (
+    <form action={action} className="save-form">
+      <input type="hidden" name="jobId" value={jobId} />
+      <input type="hidden" name="saved" value={shown ? "0" : "1"} />
+      <button className="save" aria-pressed={shown} aria-label={shown ? t.saved : t.save} disabled={closed && !shown}>
+        <Icon name="save" />
+      </button>
+    </form>
   );
 }
 

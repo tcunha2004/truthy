@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MAX_PAGE, MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters } from "./job-query.ts";
+import { MAX_PAGE, MAX_QUERY, NO_FILTERS, activeFilters, groupPay, isJobId, jobsHref, pageCount, parseJobParams, payText, type JobFilters } from "./job-query.ts";
 
 const slugs = ["airbnb", "ciandt", "Flex"];
 
@@ -90,4 +90,10 @@ test("groupPay: igual em todo local, ausente em todo local, ou varia", () => {
   assert.equal(groupPay([a, a], "en"), payText(a, "en"));
   assert.equal(groupPay([none, none], "en"), null);
   assert.equal(groupPay([a, none], "en"), "varies");
+});
+
+test("isJobId: só inteiro positivo em texto, que é como o pg devolve bigint", () => {
+  for (const ok of ["1", "3219", "9007199254740993"]) assert.ok(isJobId(ok), ok);
+  for (const bad of ["", "0", "-1", "1.5", "1e3", " 1", "abc", "1; DROP TABLE jobs", 1, null, undefined]) assert.equal(isJobId(bad), false, String(bad));
+  assert.equal(isJobId("9".repeat(20)), false); // passa do bigint
 });

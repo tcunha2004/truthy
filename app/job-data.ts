@@ -5,7 +5,7 @@ import { PAGE_SIZE, type JobFilters, type Pay } from "./job-query";
 // Tem que ser o mesmo modelo do worker (truthy-worker/internal/service/openai.go): vetores de modelos diferentes não se comparam.
 const EMBEDDING_MODEL = "text-embedding-3-small";
 
-export type JobVersion = Pay & { url: string; location: string | null; isRemote: boolean | null };
+export type JobVersion = Pay & { id: string; url: string; location: string | null; isRemote: boolean | null };
 export type JobGroup = { title: string; company: string; slug: string; versions: JobVersion[] };
 
 // Vetor da frase no formato texto do pgvector ("[0.1,…]"), ou null sem chave ou se a OpenAI falhar.
@@ -47,7 +47,7 @@ const RELEVANCE_CUTOFF = 0.18;
 // slug e title no fim desempatam, para a paginação não repetir nem pular grupos.
 const SEARCH_SQL = `
 WITH hits AS (
-  SELECT j.company_id, j.title, j.url, j.location, j.is_remote,
+  SELECT j.id, j.company_id, j.title, j.url, j.location, j.is_remote,
          j.salary_min, j.salary_max, j.salary_currency, j.published_at,
          CASE WHEN $1::vector IS NULL THEN NULL ELSE j.embedding <=> $1::vector END AS dist
   FROM jobs j
@@ -62,7 +62,7 @@ WITH hits AS (
 grouped AS (
   SELECT h.company_id, h.title, min(h.dist) AS dist, max(h.published_at) AS published_at,
          json_agg(json_build_object(
-           'url', h.url, 'location', h.location, 'isRemote', h.is_remote,
+           'id', h.id::text, 'url', h.url, 'location', h.location, 'isRemote', h.is_remote,
            'salaryMin', h.salary_min, 'salaryMax', h.salary_max, 'salaryCurrency', h.salary_currency
          ) ORDER BY h.dist NULLS LAST, h.published_at DESC NULLS LAST) AS versions
   FROM hits h
