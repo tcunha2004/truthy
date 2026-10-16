@@ -1,6 +1,8 @@
 import { CompanyBrowser, type CompanyCard } from "../client";
 import { getCompanies } from "../db";
 import { ago, dicts, getLang, locales } from "../i18n";
+import { NO_FILTERS, jobsHref } from "../job-query";
+import { getUser } from "../session";
 
 export async function generateMetadata() {
   return { title: `${dicts[await getLang()].companies.title} · truthy` };
@@ -9,11 +11,13 @@ export async function generateMetadata() {
 export default async function CompaniesPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const lang = await getLang();
   const t = dicts[lang].companies;
-  const companies = await getCompanies();
+  const [companies, user] = await Promise.all([getCompanies(), getUser()]);
   const num = new Intl.NumberFormat(locales[lang]);
 
   const cards: CompanyCard[] = companies.map((c) => ({
     slug: c.slug,
+    // Vagas da empresa com o filtro já aplicado. Deslogado vai direto ao login, como o link "Vagas" da nav.
+    href: user ? jobsHref({ ...NO_FILTERS, company: c.slug }) : "/login",
     name: c.name,
     kind: c.kind,
     logo: c.logo,

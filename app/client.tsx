@@ -74,6 +74,7 @@ export function SaveButton({ saved = false, disabled = false, t }: { saved?: boo
 
 export type CompanyCard = {
   slug: string;
+  href: string;
   name: string;
   kind: "nacional" | "internacional" | null;
   logo: string | null;
@@ -110,7 +111,7 @@ export function CompanyBrowser({ companies, initialQuery, t }: { companies: Comp
           <ul className="co-grid">
             {shown.map((c) => (
               <li key={c.slug}>
-                <Link className="co-tile" href={`/companies/${c.slug}`}>
+                <Link className="co-tile" href={c.href}>
                   <div className="co-art" aria-hidden="true">
                     {c.logo ? (
                       <>
