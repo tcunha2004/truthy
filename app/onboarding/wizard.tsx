@@ -44,6 +44,8 @@ export function Wizard({ initial, start, t, locale, countries, saveStep, finish 
 
   // Troca de tela: desliza para a esquerda ao avançar e para a direita ao voltar.
   const show = (to: Screen, push = true) => {
+    clearTimeout(timer.current); // um avanço automático pendente não pode atropelar a troca de tela
+    setError(null);
     if (push) history.pushState(null, "", `?step=${to}`);
     document.documentElement.dataset.dir = ORDER.indexOf(to) >= ORDER.indexOf(current.current) ? "fwd" : "back";
     const swap = () => flushSync(() => setScreen(to));
@@ -79,9 +81,9 @@ export function Wizard({ initial, start, t, locale, countries, saveStep, finish 
       try {
         const r = await finish(p);
         if (!r.ok) {
-          setError(r.error);
           setFromSummary(true);
           show(r.step);
+          setError(r.error); // depois do show(): trocar de tela limpa o erro
           return;
         }
         // ponytail: "Ver vagas" vai para / até /jobs existir; troque para /jobs quando a listagem existir
