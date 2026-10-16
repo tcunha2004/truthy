@@ -1,5 +1,5 @@
 import { CompanyBrowser, type CompanyCard } from "../client";
-import { getCompanies } from "../db";
+import { getCompanies, type Company } from "../db";
 import { ago, dicts, getLang, locales } from "../i18n";
 import { NO_FILTERS, jobsHref } from "../job-query";
 import { getUser } from "../session";
@@ -8,10 +8,20 @@ export async function generateMetadata() {
   return { title: `${dicts[await getLang()].companies.title} · truthy` };
 }
 
+// Deslogado vê as empresas reais (como a landing) com contagens e horários de exemplo.
+const SAMPLE_OPEN = [27, 18, 34, 22, 39, 16, 31, 25, 15, 36];
+const sample = (companies: Company[]): Company[] => {
+  const read = new Date(Date.now() - 12 * 60_000);
+  return [...companies]
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((c, i) => ({ ...c, open: SAMPLE_OPEN[i % SAMPLE_OPEN.length], lastFetchedAt: read }));
+};
+
 export default async function CompaniesPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const lang = await getLang();
   const t = dicts[lang].companies;
-  const [companies, user] = await Promise.all([getCompanies(), getUser()]);
+  const [real, user] = await Promise.all([getCompanies(), getUser()]);
+  const companies = user ? real : sample(real);
   const num = new Intl.NumberFormat(locales[lang]);
 
   const cards: CompanyCard[] = companies.map((c) => ({

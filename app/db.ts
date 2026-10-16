@@ -21,10 +21,12 @@ const logoFor = (slug: string) => {
   return existsSync(join(process.cwd(), "public", file)) ? file : null;
 };
 
+// open conta cargos (título distinto), a mesma unidade da lista de /jobs, que agrupa os locais de um cargo numa linha.
+// Contar anúncios inflaria: a Bluelight publica o mesmo cargo em ~100 países.
 export async function getCompanies(): Promise<Company[]> {
   const { rows } = await db.query(`
     SELECT c.slug, c.name, s.name AS ats, c.last_fetched_at,
-           count(j.id) FILTER (WHERE j.is_active AND j.deleted_at IS NULL)::int AS open
+           count(DISTINCT j.title) FILTER (WHERE j.is_active AND j.deleted_at IS NULL)::int AS open
     FROM companies c
     JOIN sources s ON s.id = c.source_id
     LEFT JOIN jobs j ON j.company_id = c.id
