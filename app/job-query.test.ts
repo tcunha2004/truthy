@@ -5,8 +5,19 @@ import { MAX_PAGE, MAX_QUERY, NO_FILTERS, activeFilters, groupPay, isJobId, jobs
 const slugs = ["airbnb", "ciandt", "Flex"];
 
 test("parâmetros válidos passam como estão", () => {
-  const f = parseJobParams({ q: " react node ", remote: "1", country: "BR", company: "ciandt", page: "3" }, slugs);
-  assert.deepEqual(f, { q: "react node", remote: true, country: "BR", company: "ciandt", page: 3, mode: "search" });
+  const f = parseJobParams({ q: " react node ", remote: "1", country: "BR", company: "ciandt", seniority: "junior", page: "3" }, slugs);
+  assert.deepEqual(f, { q: "react node", remote: true, country: "BR", company: "ciandt", seniority: "junior", page: 3, mode: "search" });
+});
+
+test("senioridade fora da lista é descartada, e sozinha já é busca normal", () => {
+  for (const seniority of ["Junior", "jr", "", "lead"]) assert.equal(parseJobParams({ seniority }, slugs).seniority, null, seniority);
+  assert.equal(parseJobParams({ seniority: "senior" }, slugs).mode, "search");
+});
+
+test("jobsHref e activeFilters contam a senioridade", () => {
+  const f: JobFilters = { ...NO_FILTERS, q: "go", seniority: "junior" };
+  assert.equal(jobsHref(f), "/jobs?q=go&seniority=junior");
+  assert.equal(activeFilters(f), 1);
 });
 
 test("sem parâmetros vira NO_FILTERS", () => {
@@ -50,7 +61,7 @@ test("jobsHref sem filtros na busca é /jobs?search=1", () => {
 });
 
 test("jobsHref preserva busca e filtros ao trocar de página", () => {
-  const f: JobFilters = { q: "go", remote: true, country: "BR", company: "airbnb", page: 1, mode: "search" };
+  const f: JobFilters = { q: "go", remote: true, country: "BR", company: "airbnb", seniority: null, page: 1, mode: "search" };
   assert.equal(jobsHref({ ...f, page: 2 }), "/jobs?q=go&remote=1&country=BR&company=airbnb&page=2");
 });
 

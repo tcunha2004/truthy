@@ -46,7 +46,8 @@ const RELEVANCE_CUTOFF = 0.18;
 // ordena pela versão mais próxima do grupo; sem vetor, dist é NULL em todos, nada é cortado e vale a
 // publicação mais recente. O corte é por grupo, para não sumir com locais de um grupo que entrou.
 // slug e title no fim desempatam, para a paginação não repetir nem pular grupos.
-// $8–$11 são os filtros do "Para você" (for-you.ts); nulos na busca normal.
+// $8 é a senioridade (do perfil no "Para você", do filtro na busca); vaga sem nível detectado sempre passa.
+// $9–$11 são os filtros do "Para você" (for-you.ts); nulos na busca normal.
 const SEARCH_SQL = `
 WITH hits AS (
   SELECT j.id, j.company_id, j.title, j.url, j.location, j.is_remote,
@@ -82,7 +83,7 @@ LIMIT $5 OFFSET $6`;
 
 export async function searchJobs(f: JobFilters, vector: string | null, fy: ForYouFilters | null): Promise<{ total: number; groups: JobGroup[] }> {
   const { rows } = await db.query(SEARCH_SQL, [vector, f.remote, f.country, f.company, PAGE_SIZE, (f.page - 1) * PAGE_SIZE, RELEVANCE_CUTOFF,
-    fy?.seniority ?? null, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false]);
+    fy?.seniority ?? f.seniority, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false]);
   return {
     total: rows[0]?.total ?? 0,
     groups: rows.map((r) => ({ title: r.title, company: r.company, slug: r.slug, versions: r.versions })),

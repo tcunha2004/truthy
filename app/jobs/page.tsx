@@ -6,7 +6,7 @@ import { ago, dicts, getLang, locales, type Dict } from "../i18n";
 import { embedQuery, getJobCountries, searchJobs, type JobGroup } from "../job-data";
 import { forYouFilters, forYouQuery, forYouScope, forYouStack } from "../for-you";
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type RawParams } from "../job-query";
-import { FIELD_LABELS, countryOptions, type Profile } from "../profile-options";
+import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
 import { JobRow, Logo, where } from "../job-row";
 import { getSavedIds } from "../saved";
@@ -91,6 +91,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
                       </div>
                     </fieldset>
                     <div className="jf-row">
+                      <label className="field">
+                        {t.seniority}
+                        <select name="seniority" defaultValue={f.seniority ?? ""}>
+                          <option value="">{t.anySeniority}</option>
+                          {SENIORITIES.map((s) => <option key={s} value={s}>{t.levels[s]}</option>)}
+                        </select>
+                      </label>
                       <label className="field">
                         {t.country}
                         <select name="country" defaultValue={f.country ?? ""}>
