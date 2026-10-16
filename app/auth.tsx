@@ -13,7 +13,7 @@ export async function authMetadata(mode: Mode) {
 }
 
 export async function AuthPage({ mode, error }: { mode: Mode; error?: AuthError }) {
-  if (await getUser()) redirect("/");
+  if (await getUser()) redirect("/jobs"); // já logado: /login e /signup levam direto para Vagas
   const t = dicts[await getLang()].auth;
   const signup = mode === "signup";
 

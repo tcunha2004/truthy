@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
 
   // 5. Cria a sessão e entrega o cookie. A partir daqui, o login é nosso, não do Google.
   // Quem ainda não concluiu o perfil vai para o onboarding.
-  const res = done(user.onboarded ? "/" : "/onboarding");
+  const res = done(user.onboarded ? "/jobs" : "/onboarding");
   await startSession(user.userId, res.cookies);
   return res;
 }

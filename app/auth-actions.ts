@@ -31,7 +31,7 @@ export async function loginAction(form: FormData): Promise<void> {
     );
     if (result.ok) {
       await startSession(result.userId, await cookies());
-      to = result.onboarded ? "/" : "/onboarding";
+      to = result.onboarded ? "/jobs" : "/onboarding";
     } else {
       failure = result.error;
     }
