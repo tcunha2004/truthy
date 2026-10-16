@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
+import { fold } from "./profile-options";
 
 export function LangToggle({ lang, label }: { lang: Lang; label: string }) {
   const router = useRouter();
@@ -79,8 +80,6 @@ export type CompanyCard = {
   openLabel: string;
   read: string;
 };
-
-const fold = (s: string) => s.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
 
 export function CompanyBrowser({ companies, initialQuery, t }: { companies: CompanyCard[]; initialQuery: string; t: Dict["companies"] }) {
   const [q, setQ] = useState(initialQuery);
