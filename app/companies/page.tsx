@@ -19,9 +19,8 @@ export default async function CompaniesPage({ searchParams }: { searchParams: Pr
     // Vagas da empresa com o filtro já aplicado. Deslogado vai direto ao login, como o link "Vagas" da nav.
     href: user ? jobsHref({ ...NO_FILTERS, company: c.slug }) : "/login",
     name: c.name,
-    kind: c.kind,
     logo: c.logo,
-    meta: [c.kind && t.where[c.kind], c.ats].filter(Boolean).join(" · "),
+    meta: c.ats,
     open: num.format(c.open),
     openLabel: c.open === 1 ? t.openOne : t.openMany,
     read: c.lastFetchedAt ? `${t.boardRead} ${ago(c.lastFetchedAt, lang)}` : t.notRead,

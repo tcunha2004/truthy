@@ -86,8 +86,7 @@ export function Wizard({ initial, start, t, locale, countries, saveStep, finish 
           setError(r.error); // depois do show(): trocar de tela limpa o erro
           return;
         }
-        // ponytail: "Ver vagas" vai para / até /jobs existir; troque para /jobs quando a listagem existir
-        location.assign("/"); // navegação completa: o nav recarrega sem o "Concluir perfil"
+        location.assign("/jobs"); // navegação completa: o nav recarrega sem o "Concluir perfil"
       } catch {
         setFailed(true);
       }

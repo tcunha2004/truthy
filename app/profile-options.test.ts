@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { EMPTY_PROFILE, MAX_STACK, addStack, exclusiveAny, initialStep, parseProfile, parseStep, type Profile } from "./profile-options.ts";
+import { EMPTY_PROFILE, MAX_STACK, addStack, initialStep, parseProfile, parseStep, type Profile } from "./profile-options.ts";
 
 const full: Profile = {
   name: "  Thiago Cunha  ",
@@ -9,11 +9,8 @@ const full: Profile = {
   stack: ["React", "node"],
   status: "active",
   workModels: ["remote"],
-  regions: ["br", "intl"],
   country: "BR",
-  city: "São Paulo",
   contracts: ["clt"],
-  companyTypes: ["startup"],
   currency: "BRL",
   salaryMin: 8000,
   salaryMax: 15000,
@@ -24,7 +21,7 @@ test("perfil completo passa e sai normalizado", () => {
   assert.ok(r.ok);
   assert.equal(r.value.name, "Thiago Cunha");
   assert.deepEqual(r.value.stack, ["React", "Node.js"]);
-  assert.equal(r.value.city, null); // só remoto: cidade descartada
+  assert.ok(!("city" in r.value) && !("regions" in r.value) && !("companyTypes" in r.value));
 });
 
 test("input que não é objeto falha no primeiro passo", () => {
@@ -43,14 +40,11 @@ test("escolha única: valor fora da lista é inválido, ausente é obrigatório"
 
 test("múltipla vazia é obrigatória, com valor estranho é inválida", () => {
   assert.deepEqual(parseStep("where", { ...full, workModels: [] }), { ok: false, step: "where", error: "required" });
-  assert.deepEqual(parseStep("where", { ...full, regions: ["mars"] }), { ok: false, step: "where", error: "invalid" });
+  assert.deepEqual(parseStep("where", { ...full, workModels: ["mars"] }), { ok: false, step: "where", error: "invalid" });
 });
 
-test("cidade é obrigatória com híbrido ou presencial", () => {
-  assert.deepEqual(parseStep("where", { ...full, workModels: ["hybrid"], city: " " }), { ok: false, step: "where", error: "required" });
-  const r = parseStep("where", { ...full, workModels: ["onsite"], city: " Recife " });
-  assert.ok(r.ok);
-  assert.equal(r.value.city, "Recife");
+test("híbrido ou presencial não pedem cidade", () => {
+  assert.ok(parseStep("where", { workModels: ["hybrid", "onsite"], country: "BR" }).ok);
 });
 
 test("país: aceita minúsculas, rejeita código inexistente", () => {
@@ -60,9 +54,9 @@ test("país: aceita minúsculas, rejeita código inexistente", () => {
   assert.deepEqual(parseStep("where", { ...full, country: "XX" }), { ok: false, step: "where", error: "invalid" });
 });
 
-test("'Sem preferência' junto com outro tipo de empresa é inválido", () => {
-  assert.deepEqual(parseStep("kind", { contracts: ["pj"], companyTypes: ["any", "startup"] }), { ok: false, step: "kind", error: "invalid" });
-  assert.ok(parseStep("kind", { contracts: ["pj"], companyTypes: ["any"] }).ok);
+test("kind: só contrato", () => {
+  assert.ok(parseStep("kind", { contracts: ["pj"] }).ok);
+  assert.deepEqual(parseStep("kind", { contracts: [] }), { ok: false, step: "kind", error: "required" });
 });
 
 test("stack: tira duplicata ignorando maiúsculas e usa o nome canônico", () => {
@@ -111,13 +105,6 @@ test("addStack: colar lista, canônico, sem repetir, respeita o limite", () => {
   assert.deepEqual(addStack(["React"], ["react", " go ", "", "SQL"]), ["React", "Go", "SQL"]);
   const thirty = Array.from({ length: MAX_STACK }, (_, i) => `tech${i}`);
   assert.equal(addStack(thirty, ["Rust"]).length, MAX_STACK);
-});
-
-test("exclusiveAny: marcar 'any' limpa os outros e vice-versa", () => {
-  assert.deepEqual(exclusiveAny(["startup"], ["startup", "any"]), ["any"]);
-  assert.deepEqual(exclusiveAny(["any"], ["any", "startup"]), ["startup"]);
-  assert.deepEqual(exclusiveAny([], ["startup"]), ["startup"]);
-  assert.deepEqual(exclusiveAny(["any"], []), []);
 });
 
 test("stack: lista gigante é recusada sem travar o servidor", () => {

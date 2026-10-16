@@ -5,9 +5,7 @@ export const FIELDS = ["software_engineering", "data_science", "data_engineering
 export const SENIORITIES = ["intern", "junior", "mid", "senior", "staff", "manager"] as const;
 export const STATUSES = ["active", "open", "exploring"] as const;
 export const WORK_MODELS = ["remote", "hybrid", "onsite"] as const;
-export const REGIONS = ["br", "intl"] as const;
 export const CONTRACTS = ["clt", "pj", "contractor"] as const;
-export const COMPANY_TYPES = ["big_tech", "startup", "established", "consultancy", "any"] as const;
 export const CURRENCIES = ["BRL", "USD", "EUR"] as const;
 export const STEPS = ["name", "field", "seniority", "stack", "status", "where", "kind", "salary"] as const;
 
@@ -15,9 +13,7 @@ export type Field = (typeof FIELDS)[number];
 export type Seniority = (typeof SENIORITIES)[number];
 export type SearchStatus = (typeof STATUSES)[number];
 export type WorkModel = (typeof WORK_MODELS)[number];
-export type Region = (typeof REGIONS)[number];
 export type Contract = (typeof CONTRACTS)[number];
-export type CompanyType = (typeof COMPANY_TYPES)[number];
 export type Currency = (typeof CURRENCIES)[number];
 export type Step = (typeof STEPS)[number];
 export type ProfileError = "required" | "invalid" | "tooLong" | "tooMany" | "range";
@@ -29,11 +25,8 @@ export type Profile = {
   stack: string[];
   status: SearchStatus | null;
   workModels: WorkModel[];
-  regions: Region[];
   country: string | null;
-  city: string | null;
   contracts: Contract[];
-  companyTypes: CompanyType[];
   currency: Currency | null;
   salaryMin: number | null;
   salaryMax: number | null;
@@ -46,11 +39,8 @@ export const EMPTY_PROFILE: Profile = {
   stack: [],
   status: null,
   workModels: [],
-  regions: [],
   country: "BR",
-  city: null,
   contracts: [],
-  companyTypes: [],
   currency: null,
   salaryMin: null,
   salaryMax: null,
@@ -130,10 +120,6 @@ export function normalizeStack(items: string[]): string[] {
 // Usado pela UI: junta itens novos, corta cada um em 40 caracteres e para em MAX_STACK.
 export const addStack = (current: string[], items: string[]) => normalizeStack([...current, ...items.map((s) => s.slice(0, 40))]).slice(0, MAX_STACK);
 
-// "Sem preferência" é exclusivo: marcá-lo limpa os outros; marcar outro limpa ele.
-export const exclusiveAny = (prev: CompanyType[], next: CompanyType[]): CompanyType[] =>
-  next.includes("any") && !prev.includes("any") ? ["any"] : next.filter((t) => t !== "any");
-
 // ISO 3166-1 alfa-2 (códigos atuais).
 export const COUNTRIES = (
   "AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ " +
@@ -205,23 +191,14 @@ const PARSERS: Record<Step, (o: Input) => Partial<Profile> | Fail> = {
   where: (o) => {
     const workModels = many(WORK_MODELS, o.workModels);
     if (failed(workModels)) return workModels;
-    const regions = many(REGIONS, o.regions);
-    if (failed(regions)) return regions;
     const country = one(COUNTRIES, typeof o.country === "string" ? o.country.toUpperCase() : o.country);
     if (failed(country)) return country;
-    const needsCity = workModels.some((m) => m !== "remote");
-    const city = text(o.city);
-    if (needsCity && !city) return fail("required");
-    if (city.length > 80) return fail("tooLong");
-    return { workModels, regions, country, city: needsCity ? city : null };
+    return { workModels, country };
   },
   kind: (o) => {
     const contracts = many(CONTRACTS, o.contracts);
     if (failed(contracts)) return contracts;
-    const companyTypes = many(COMPANY_TYPES, o.companyTypes);
-    if (failed(companyTypes)) return companyTypes;
-    if (companyTypes.includes("any") && companyTypes.length > 1) return fail("invalid");
-    return { contracts, companyTypes };
+    return { contracts };
   },
   salary: (o) => {
     const currency = one(CURRENCIES, o.currency);
