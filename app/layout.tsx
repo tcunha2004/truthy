@@ -38,16 +38,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <LangToggle lang={lang} label={t.nav.language} />
             <ThemeToggle toDark={t.nav.toDark} toLight={t.nav.toLight} />
             {user ? (
-              <form action={logout} className="who">
-                {user.avatar_url ? (
-                  // <img> e não next/image: evita configurar o domínio do Google; no-referrer porque o Google às vezes bloqueia avatar com referer
-                  <img className="avatar" src={user.avatar_url} alt="" referrerPolicy="no-referrer" />
-                ) : (
-                  <i className="avatar" aria-hidden="true">{(user.name ?? user.email)[0].toUpperCase()}</i>
-                )}
-                <span>{user.name?.split(" ")[0] ?? user.email}</span>
-                <button className="btn sm quiet">{t.nav.signout}</button>
-              </form>
+              <>
+                {!user.onboarded && <Link className="btn sm" href="/onboarding">{t.nav.finish}</Link>}
+                <form action={logout} className="who">
+                  <Link className="me" href="/profile" aria-label={t.nav.profile}>
+                    {user.avatar_url ? (
+                      // <img> e não next/image: evita configurar o domínio do Google; no-referrer porque o Google às vezes bloqueia avatar com referer
+                      <img className="avatar" src={user.avatar_url} alt="" referrerPolicy="no-referrer" />
+                    ) : (
+                      <i className="avatar" aria-hidden="true">{(user.name ?? user.email)[0].toUpperCase()}</i>
+                    )}
+                    <span>{user.name?.split(" ")[0] ?? user.email}</span>
+                  </Link>
+                  <button className="btn sm quiet">{t.nav.signout}</button>
+                </form>
+              </>
             ) : (
               <Link className="btn sm" href="/login">{t.nav.signin}</Link>
             )}
