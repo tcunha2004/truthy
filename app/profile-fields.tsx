@@ -276,10 +276,10 @@ function SalaryQ({ p, set, t, locale }: QProps) {
       <div className="range" style={{ "--a": `${pct(min)}%`, "--b": `${pct(max)}%` } as CSSProperties}>
         {/* Dois ranges sobrepostos. O de mínimo sobe para cima quando está na metade direita, para os pontos nunca travarem um no outro. */}
         <input type="range" min={cfg.min} max={cfg.max} step={cfg.step} value={clamp(min)} aria-label={t.salary.min}
-          aria-valuetext={`${cfg.symbol} ${fmt.format(min)}`} style={{ zIndex: pct(min) > 50 ? 2 : 1 }}
+          aria-valuetext={`${cfg.symbol} ${fmt.format(min)}`} style={{ zIndex: pct(min) > 50 ? 2 : 0 }}
           onChange={(e) => set({ salaryMin: Math.min(Number(e.target.value), max) })} />
         <input type="range" min={cfg.min} max={cfg.max} step={cfg.step} value={clamp(max)} aria-label={t.salary.max}
-          aria-valuetext={`${cfg.symbol} ${fmt.format(max)}`}
+          aria-valuetext={`${cfg.symbol} ${fmt.format(max)}`} style={{ zIndex: 1 }}
           onChange={(e) => set({ salaryMax: Math.max(Number(e.target.value), min) })} />
       </div>
 

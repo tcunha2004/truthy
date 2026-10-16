@@ -353,6 +353,40 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .money i { font-style: normal; font-size: 15px; color: var(--ink-2); }
 .money input { width: 100%; border: 0; outline: 0; background: none; font-size: 17px; font-variant-numeric: tabular-nums; }
 
+/* ---------- onboarding wizard ---------- */
+.ob { flex: 1; padding: 0 16px 120px; }
+.ob-bar { position: sticky; top: var(--nav-h); z-index: 5; height: 3px; margin: 0 -16px; background: var(--bg-alt); }
+.ob-bar i { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; transition: width .5s var(--ease); }
+.ob-step { width: min(640px, 100%); margin: 72px auto 0; text-align: center; view-transition-name: ob-step; }
+.ob-n { font-size: 13px; color: var(--ink-2); }
+.ob h1 { margin-top: 8px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.08; font-weight: 650; letter-spacing: -0.035em; text-wrap: balance; }
+.ob .lead { margin-top: 12px; font-size: 19px; line-height: 1.4; color: var(--ink-2); letter-spacing: -0.02em; text-wrap: balance; }
+.ob-body { margin-top: 40px; }
+.ob-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 48px; }
+.ob-go { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+.ob-hint { font-size: 13px; color: var(--ink-2); text-align: right; }
+.ob-hint.bad { color: var(--false); }
+.ob-done .btn { margin-top: 32px; }
+.ob-done .ob-hint { margin-top: 20px; text-align: center; }
+.ob-done code.true { animation: fade .8s var(--ease) .3s both; }
+@keyframes fade { from { opacity: 0; } }
+.ob-sum { list-style: none; padding: 0; margin: 40px 0 0; text-align: left; background: var(--surface); border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; }
+.ob-sum li + li { border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
+.ob-row { width: 100%; display: grid; grid-template-columns: 120px 1fr auto; gap: 16px; align-items: center; padding: 16px 20px; border: 0; background: none; font: inherit; color: var(--ink); text-align: left; cursor: pointer; }
+.ob-row:hover { background: color-mix(in srgb, var(--ink) 3%, transparent); }
+.ob-row span { font-size: 13px; color: var(--ink-2); }
+.ob-row b { font-size: 15px; font-weight: 500; }
+.ob-row svg { color: var(--ink-2); }
+
+/* step transition (View Transitions API); direction set on <html data-dir> */
+:root { --dir: 1; }
+:root[data-dir="back"] { --dir: -1; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-old(ob-step) { animation: ob-out .28s var(--ease) both; }
+::view-transition-new(ob-step) { animation: ob-in .42s var(--ease) both; }
+@keyframes ob-out { to { opacity: 0; transform: translateX(calc(var(--dir) * -48px)); } }
+@keyframes ob-in { from { opacity: 0; transform: translateX(calc(var(--dir) * 48px)); } }
+
 /* ---------- responsive ---------- */
 @media (max-width: 860px) {
   .nav .links, .who span { display: none; }
@@ -375,6 +409,13 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   .co-hero { padding-top: 56px; }
   .co-stage { padding: 32px 0 80px; margin-top: 40px; }
   .q-row { grid-template-columns: 1fr; }
+  .ob-step { margin-top: 40px; }
+  .ob-foot { position: fixed; z-index: 6; left: 0; right: 0; bottom: 0; margin: 0; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent); }
+  .ob-go { flex: 1; flex-direction: column; align-items: stretch; gap: 6px; }
+  .ob-go .btn { width: 100%; }
+  .ob-hint { text-align: center; }
+  .ob-row { grid-template-columns: 1fr auto; gap: 4px 12px; }
+  .ob-row span { grid-column: 1 / -1; }
 }
 @media (max-width: 560px) {
   /* phones: tiles turn into rows, art on the left */
@@ -390,4 +431,5 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
