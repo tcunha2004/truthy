@@ -71,3 +71,7 @@ export function groupPay(versions: Pay[], locale: string): string | null | "vari
   const texts = new Set(versions.map((v) => payText(v, locale)));
   return texts.size === 1 ? [...texts][0] : "varies";
 }
+
+// id de vaga vindo do cliente (o pg devolve bigint como texto): só dígitos, sem zero à esquerda, e cabe no bigint.
+export const isJobId = (v: unknown): v is string =>
+  typeof v === "string" && /^[1-9]\d{0,18}$/.test(v) && BigInt(v) <= 9223372036854775807n;

@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { SaveJob } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
 import { ago, dicts, getLang, locales, type Dict } from "../i18n";
-import { embedQuery, getJobCountries, searchJobs, type JobGroup, type JobVersion } from "../job-data";
+import { embedQuery, getJobCountries, searchJobs, type JobGroup } from "../job-data";
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type RawParams } from "../job-query";
 import { countryOptions } from "../profile-options";
+import { JobRow, Logo, where } from "../job-row";
+import { getSavedIds } from "../saved";
 import { requireUser } from "../session";
 
 export async function generateMetadata() {
@@ -12,7 +15,7 @@ export async function generateMetadata() {
 }
 
 export default async function JobsPage({ searchParams }: { searchParams: Promise<RawParams> }) {
-  await requireUser();
+  const user = await requireUser();
   const lang = await getLang();
   const locale = locales[lang];
   const t = dicts[lang].jobs;
@@ -23,6 +26,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const vector = f.q ? await embedQuery(f.q) : null;
   const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector), getJobCountries()]);
 
+  const savedIds = await getSavedIds(user.id, groups.flatMap((g) => g.versions.map((v) => v.id)));
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
   // Só países que aparecem em alguma vaga; códigos fora do ISO somem aqui em vez de virar opção quebrada.
   const countries = countryOptions(locale).filter(([code]) => present.includes(code));
@@ -117,7 +121,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           <>
             <div className="jobs jobs-list">
               {groups.map((g) => (
-                <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} locale={locale} t={t} tj={tj} />
+                <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj} />
               ))}
             </div>
             {pages > 1 && (
@@ -146,19 +150,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   );
 }
 
-// "Remoto · Brasil". Não repete "Remoto" quando o local já diz isso ("Remote, Brasil").
-function where(v: JobVersion, t: Dict["jobs"]) {
-  const place = v.location ?? t.noLocation;
-  return v.isRemote && !/remot/i.test(place) ? `${t.remoteAt} · ${place}` : place;
-}
+function GroupRow({ g, co, savedIds, locale, t, tj }: {
+  g: JobGroup; co: Company | undefined; savedIds: Set<string>; locale: string; t: Dict["jobs"]; tj: Dict["job"];
+}) {
+  if (g.versions.length === 1) {
+    const v = g.versions[0];
+    return <JobRow v={v} title={g.title} company={g.company} co={co} saved={savedIds.has(v.id)} locale={locale} t={t} tj={tj} />;
+  }
 
-function Logo({ co, name }: { co: Company | undefined; name: string }) {
-  return co?.logo
-    ? <img className="logo" src={co.logo} alt="" width={44} height={44} />
-    : <div className="logo" aria-hidden="true">{name[0]}</div>;
-}
-
-function GroupRow({ g, co, locale, t, tj }: { g: JobGroup; co: Company | undefined; locale: string; t: Dict["jobs"]; tj: Dict["job"] }) {
   const ats = co?.ats ?? "";
   const pay = groupPay(g.versions, locale);
   const status = (
@@ -173,28 +172,6 @@ function GroupRow({ g, co, locale, t, tj }: { g: JobGroup; co: Company | undefin
       <small>{pay === "varies" ? t.byLocation : pay ? tj.perMonth : tj.noPay}</small>
     </div>
   );
-
-  if (g.versions.length === 1) {
-    const v = g.versions[0];
-    return (
-      <article className="job">
-        <Logo co={co} name={g.company} />
-        <div>
-          <h3>
-            <a href={v.url} target="_blank" rel="noopener noreferrer">
-              {g.title}<span className="sr"> {t.newTab}</span>
-            </a>
-          </h3>
-          <div className="meta">
-            <span>{g.company}</span>
-            <span><Icon name={v.isRemote ? "globe" : "pin"} />{where(v, t)}</span>
-            {status}
-          </div>
-        </div>
-        {payCell}
-      </article>
-    );
-  }
 
   return (
     <details className="job-group">
@@ -212,13 +189,14 @@ function GroupRow({ g, co, locale, t, tj }: { g: JobGroup; co: Company | undefin
         <span className="caret" aria-hidden="true"><Icon name="chev" /></span>
       </summary>
       <ul className="versions">
-        {g.versions.map((v, i) => (
-          <li key={`${v.url}#${i}`}>
+        {g.versions.map((v) => (
+          <li key={v.id}>
             <span className="where"><Icon name={v.isRemote ? "globe" : "pin"} />{where(v, t)}</span>
             <span className="pay num">{payText(v, locale) ?? tj.noPay}</span>
             <a href={v.url} target="_blank" rel="noopener noreferrer">
               {t.applyVia.replace("{ats}", ats)}<span className="sr"> {t.newTab}</span>
             </a>
+            <SaveJob jobId={v.id} saved={savedIds.has(v.id)} t={tj} />
           </li>
         ))}
       </ul>

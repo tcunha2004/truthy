@@ -428,8 +428,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .jf-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .jf-notice { margin-top: 14px; font-size: 13px; color: var(--ink-2); }
 
-/* result rows: no save button on this page */
-.jobs-list .job { grid-template-columns: 44px 1fr auto; }
+/* the save button's form is invisible to layout: the button itself is the row's grid item */
+.save-form { display: contents; }
 img.logo { object-fit: cover; }
 .job h3 a { color: inherit; }
 .job-group { border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); }
@@ -441,9 +441,15 @@ img.logo { object-fit: cover; }
 .caret .i { transform: rotate(90deg); transition: transform .2s var(--ease); }
 .job-group[open] .caret .i { transform: rotate(-90deg); }
 .versions { list-style: none; padding: 0 20px 12px 80px; margin: 0; }
-.versions li { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); font-size: 14px; }
+.versions li { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 16px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--line) 70%, transparent); font-size: 14px; }
 .versions .where { display: inline-flex; align-items: center; gap: 5px; color: var(--ink-2); }
 .versions .pay { font-size: 14px; }
+
+/* saved page: open and closed sections, each a job list under a small heading */
+.saved-sec { width: min(860px, 100%); margin-inline: auto; }
+.saved-sec + .saved-sec { margin-top: 40px; }
+.saved-sec h2 { font-size: 21px; font-weight: 650; letter-spacing: -0.02em; margin: 0 4px 12px; }
+.saved-sec h2 .num { color: var(--ink-2); font-weight: 450; }
 
 .pager { width: min(860px, 100%); margin: 20px auto 0; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; font-size: 14px; color: var(--ink-2); }
 .pager a { display: inline-flex; align-items: center; gap: 4px; }
@@ -482,12 +488,13 @@ img.logo { object-fit: cover; }
   .pf { padding-top: 56px; }
   .pf-sec { padding: 22px 18px; }
   .jf-row { grid-template-columns: minmax(0, 1fr); }
-  /* .jobs-list .job (fora da media) é mais específico que o .job do mobile: repetir a grade de 40px aqui */
-  .jobs-list .job, .jobs-list .job-group > summary.job { grid-template-columns: 40px 1fr auto; }
+  /* o resumo do grupo tem regra própria fora da media, mais específica que o .job do mobile */
+  .jobs-list .job-group > summary.job { grid-template-columns: 40px 1fr auto; }
   .job .caret { grid-row: 1; grid-column: 3; }
   .versions { padding: 0 16px 12px; }
-  .versions li { grid-template-columns: 1fr auto; }
+  .versions li { grid-template-columns: 1fr auto auto; }
   .versions li a { grid-column: 1 / -1; }
+  .versions .save { grid-row: 1; grid-column: 3; }
 }
 @media (max-width: 560px) {
   /* phones: tiles turn into rows, art on the left */

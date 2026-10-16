@@ -364,12 +364,18 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 - **Status, open:** 12px / 500 in `true`, check icon, text "Open · via <ATS>".
 - **Status, checking:** `ink-2` text "Checking source…", check icon undrawn; on resolve the check strokes in and color turns `true`.
 - **Status, closed:** title struck through (1.5px) in `ink-2`, logo at 45% opacity, status in `false` with an x icon, "Closed · removed from <ATS> <time ago>", save disabled.
-- **Saved:** bookmark filled with `accent` (`aria-pressed="true"`). Unsaved is an `ink-2` outline that darkens with a 7% circular wash on hover.
+- **Saved:** bookmark filled with `accent` (`aria-pressed="true"`). Unsaved is an `ink-2` outline that darkens with a 7% circular wash on hover. A save is one specific location (one ATS posting), never a whole group. The button flips as soon as it is pressed and flips back if the server refuses. A closed job can't be saved, but a closed job that is already saved keeps an enabled bookmark so it can be removed.
 - **Missing data:** shown as missing. Salary renders an em dash with "Salary not listed"; never estimate or hide the slot.
 - **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame.
-- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines. A single-location row links its title straight to the ATS in a new tab. The jobs page has no save button until saving exists.
+- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines; each location has its own save button at the end. The group summary has no save button. A single-location row links its title straight to the ATS in a new tab and has the save button in its fourth column.
 - **Group salary:** shown once if every location pays the same; otherwise "Varies / by location".
 - **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
+
+### Saved Page
+- Same frame as the jobs page (hero with headline and lead, then the `bg-alt` stage). Two job lists, "Still open" first and "Closed" below, each under a 21px / 650 heading with its count in `ink-2`, 40px apart; each list goes from most recently saved to oldest. A section with no jobs is not shown.
+- Closed rows use the Job Row closed state with the real time: "Closed · removed from <ATS> <time ago>", no link on the title.
+- Removing a save keeps the row (outline bookmark) until the user leaves the page, so a misclick can be undone in place.
+- Empty: the Empty State with "No saved jobs yet." and a quiet "Browse jobs" button.
 
 ### Provenance Line
 13px `ink-2` text preceded by an 8px `true`-colored pulsing dot: "Sources checked <time> · Lever · Greenhouse". Place it near any list of jobs; it is the system's promise made visible.
