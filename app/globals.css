@@ -411,6 +411,9 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 /* ---------- jobs page ---------- */
 /* search bar with a single field (jobs page and landing) */
 .search.one { grid-template-columns: 1fr auto; }
+/* jobs page: the "Para você" chip sits left of the field, on the same line */
+.jobs-form .search.one { grid-template-columns: auto 1fr auto; }
+.jobs-form .search .chip { margin-left: 10px; }
 .jobs-form { width: min(760px, 100%); margin: 40px auto 0; }
 .jobs-form .search { margin-top: 0; }
 
@@ -465,6 +468,8 @@ img.logo { object-fit: cover; }
   .nav .wrap { justify-content: space-between; }
   .hero { padding-top: 56px; }
   .search { grid-template-columns: 1fr; border-radius: var(--r-lg); gap: 0; }
+  .jobs-form .search.one { grid-template-columns: 1fr; }
+  .jobs-form .search .chip { justify-self: start; margin: 10px 0 0 10px; }
   .search label + label { border-left: 0; border-top: 1px solid var(--line); }
   .search .btn { margin-top: 6px; width: 100%; border-radius: var(--r-md); }
   .job { grid-template-columns: 40px 1fr auto; padding: 16px; gap: 12px; }
