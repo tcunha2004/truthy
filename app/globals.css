@@ -341,7 +341,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .seg-pick label { position: relative; height: 34px; padding: 0 18px; display: grid; place-items: center; border-radius: var(--r-pill); font-size: 14px; color: var(--ink); cursor: pointer; transition: background-color .2s var(--ease), color .2s var(--ease); }
 .seg-pick label:has(input:checked) { background: var(--ink); color: var(--bg); font-weight: 500; }
 .range { --a: 0%; --b: 100%; position: relative; height: 28px; margin: 36px 0 24px; }
-.range::before { content: ""; position: absolute; left: 14px; right: 14px; top: 12px; height: 4px; border-radius: 4px; background: linear-gradient(to right, var(--line) var(--a), var(--accent) var(--a), var(--accent) var(--b), var(--line) var(--b)); }
+.range::before { content: ""; position: absolute; left: 14px; right: 14px; top: 12px; height: 4px; border-radius: var(--r-pill); background: linear-gradient(to right, var(--line) var(--a), var(--accent) var(--a), var(--accent) var(--b), var(--line) var(--b)); }
 .range input { position: absolute; inset: 0; width: 100%; height: 28px; margin: 0; -webkit-appearance: none; appearance: none; background: none; pointer-events: none; outline: 0; }
 .range input::-webkit-slider-runnable-track { height: 28px; background: none; }
 .range input::-moz-range-track { background: none; }
@@ -359,7 +359,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 /* ---------- onboarding wizard ---------- */
 .ob { flex: 1; padding: 0 16px 120px; }
 .ob-bar { position: sticky; top: var(--nav-h); z-index: 5; height: 3px; margin: 0 -16px; background: var(--bg-alt); }
-.ob-bar i { display: block; height: 100%; background: var(--accent); border-radius: 0 3px 3px 0; transition: width .5s var(--ease); }
+.ob-bar i { display: block; height: 100%; background: var(--accent); border-radius: 0 var(--r-pill) var(--r-pill) 0; transition: width .5s var(--ease); }
 .ob-step { width: min(640px, 100%); margin: 72px auto 0; text-align: center; view-transition-name: ob-step; }
 .ob-n { font-size: 13px; color: var(--ink-2); }
 .ob h1 { margin-top: 8px; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.08; font-weight: 650; letter-spacing: -0.035em; text-wrap: balance; }

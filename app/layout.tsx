@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <>
                 {!user.onboarded && <Link className="btn sm" href="/onboarding">{t.nav.finish}</Link>}
                 <form action={logout} className="who">
-                  <Link className="me" href="/profile" aria-label={t.nav.profile}>
+                  <Link className="me" href="/profile" aria-label={`${user.name?.split(" ")[0] ?? user.email}, ${t.nav.profile}`}>
                     {user.avatar_url ? (
                       // <img> e não next/image: evita configurar o domínio do Google; no-referrer porque o Google às vezes bloqueia avatar com referer
                       <img className="avatar" src={user.avatar_url} alt="" referrerPolicy="no-referrer" />

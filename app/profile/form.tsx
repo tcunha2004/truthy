@@ -51,7 +51,7 @@ export function ProfileForm({ initial, t, tp, locale, countries, save }: {
         const r = await save(p);
         if (!r.ok) {
           setServerError({ step: r.step, error: r.error });
-          document.getElementById(`pf-${r.step}`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+          document.getElementById(`pf-${r.step}`)?.scrollIntoView({ block: "center", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
           return;
         }
         setBase(p);
@@ -89,7 +89,7 @@ export function ProfileForm({ initial, t, tp, locale, countries, save }: {
         })}
         <div className="savebar" data-show={dirty || status !== "idle"} inert={!(dirty || status !== "idle")}>
           <div className="wrap">
-            <span role="status">{status === "saved" ? tp.saved : status === "failed" ? tp.failed : tp.unsaved}</span>
+            <span role="status">{status === "saved" ? tp.saved : status === "failed" || serverError ? tp.failed : tp.unsaved}</span>
             <button type="submit" className="btn sm" disabled={!dirty || !check.ok || pending}>{tp.save}</button>
           </div>
         </div>
