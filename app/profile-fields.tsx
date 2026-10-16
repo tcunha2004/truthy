@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, ty
 import { Icon } from "./icons";
 import type { Dict } from "./i18n";
 import {
-  COMPANY_TYPES, CONTRACTS, CURRENCIES, FIELDS, FIELD_LABELS, MAX_STACK, REGIONS, SALARY, SENIORITIES, STACK_CATALOG,
-  STACK_SUGGESTIONS, STATUSES, WORK_MODELS, addStack, exclusiveAny, fold, type Profile, type Step,
+  CONTRACTS, CURRENCIES, FIELDS, FIELD_LABELS, MAX_STACK, SALARY, SENIORITIES, STACK_CATALOG,
+  STACK_SUGGESTIONS, STATUSES, WORK_MODELS, addStack, fold, type Profile, type Step,
 } from "./profile-options";
 
 export type QProps = {
@@ -201,31 +201,16 @@ function StackQ({ p, set, t }: QProps) {
 }
 
 function WhereQ({ p, set, t, countries }: QProps) {
-  const needsCity = p.workModels.some((m) => m !== "remote");
   return (
     <div className="q-group">
       <Picks multi name="workModels" label={t.where.model} options={WORK_MODELS} text={(m) => t.where[m]} value={p.workModels}
-        onChange={(workModels) => set({ workModels, ...(workModels.some((m) => m !== "remote") ? {} : { city: null }) })} />
-      <Picks multi name="regions" label={t.where.regions} options={REGIONS} text={(r) => t.where[r]} value={p.regions}
-        onChange={(regions) => set({ regions })} />
-      <div className="q-row">
-        <label className="field">
-          {t.where.country}
-          <select value={p.country ?? "BR"} onChange={(e) => set({ country: e.target.value })}>
-            {countries.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
-          </select>
-        </label>
-        {/* Cidade só existe para híbrido/presencial; inert tira do teclado e do leitor de tela quando fechada */}
-        <div className="reveal" data-open={needsCity} inert={!needsCity}>
-          <div>
-            <label className="field">
-              {t.where.city}
-              <input type="text" value={p.city ?? ""} maxLength={80} autoComplete="address-level2" placeholder={t.where.cityPh}
-                onChange={(e) => set({ city: e.target.value })} />
-            </label>
-          </div>
-        </div>
-      </div>
+        onChange={(workModels) => set({ workModels })} />
+      <label className="field">
+        {t.where.country}
+        <select value={p.country ?? "BR"} onChange={(e) => set({ country: e.target.value })}>
+          {countries.map(([code, label]) => <option key={code} value={code}>{label}</option>)}
+        </select>
+      </label>
     </div>
   );
 }
@@ -235,8 +220,6 @@ function KindQ({ p, set, t }: QProps) {
     <div className="q-group">
       <Picks multi name="contracts" label={t.kind.contract} options={CONTRACTS} text={(c) => t.kind[c]} value={p.contracts}
         onChange={(contracts) => set({ contracts })} />
-      <Picks multi name="companyTypes" label={t.kind.companies} options={COMPANY_TYPES} text={(c) => t.kind[c]} value={p.companyTypes}
-        onChange={(next) => set({ companyTypes: exclusiveAny(p.companyTypes, next) })} />
     </div>
   );
 }
@@ -330,9 +313,9 @@ export function summary(step: Step, p: Profile, t: Dict["ob"], locale: string, c
     case "status":
       return p.status ? t.status[p.status] : "";
     case "where":
-      return [...p.workModels.map((m) => t.where[m]), ...p.regions.map((r) => t.where[r]), [p.city, country].filter(Boolean).join(", ")].join(" · ");
+      return [...p.workModels.map((m) => t.where[m]), country].join(" · ");
     case "kind":
-      return [...p.contracts, ...p.companyTypes].map((k) => t.kind[k]).join(" · ");
+      return p.contracts.map((k) => t.kind[k]).join(" · ");
     case "salary":
       return p.currency && p.salaryMin != null && p.salaryMax != null
         ? `${SALARY[p.currency].symbol} ${fmt.format(p.salaryMin)} – ${fmt.format(p.salaryMax)} ${t.salary.perMonth}`
