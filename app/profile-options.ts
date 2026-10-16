@@ -116,9 +116,13 @@ export const canonicalStack = (s: string) => CANON.get(stackKey(s.trim())) ?? s.
 // Aparar, trocar pelo nome canônico, tirar vazios e repetidos (ignorando maiúsculas). Sem limite de tamanho.
 export function normalizeStack(items: string[]): string[] {
   const out: string[] = [];
+  const seen = new Set<string>();
   for (const raw of items) {
     const s = canonicalStack(raw);
-    if (s && !out.some((x) => x.toLowerCase() === s.toLowerCase())) out.push(s);
+    if (s && !seen.has(s.toLowerCase())) {
+      seen.add(s.toLowerCase());
+      out.push(s);
+    }
   }
   return out;
 }
@@ -187,6 +191,7 @@ const PARSERS: Record<Step, (o: Input) => Partial<Profile> | Fail> = {
   },
   stack: (o) => {
     if (!Array.isArray(o.stack) || !o.stack.every((s) => typeof s === "string")) return fail("required");
+    if (o.stack.length > MAX_STACK * 4) return fail("tooMany"); // o input vem do cliente: não normalizar listas absurdas
     const stack = normalizeStack(o.stack);
     if (!stack.length) return fail("required");
     if (stack.some((s) => s.length > 40)) return fail("tooLong");

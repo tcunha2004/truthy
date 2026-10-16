@@ -119,3 +119,10 @@ test("exclusiveAny: marcar 'any' limpa os outros e vice-versa", () => {
   assert.deepEqual(exclusiveAny([], ["startup"]), ["startup"]);
   assert.deepEqual(exclusiveAny(["any"], []), []);
 });
+
+test("stack: lista gigante é recusada sem travar o servidor", () => {
+  const huge = Array.from({ length: 50_000 }, (_, i) => `tech${i}`);
+  const t0 = performance.now();
+  assert.deepEqual(parseStep("stack", { stack: huge }), { ok: false, step: "stack", error: "tooMany" });
+  assert.ok(performance.now() - t0 < 200, "validação deve rejeitar antes de normalizar");
+});
