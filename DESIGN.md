@@ -325,6 +325,32 @@ Calm, solid pills; colour does the work, not shadow.
 - **Error:** border `false`, message below in 12px `false`, upright (not italic).
 - Caret color is the accent everywhere.
 
+### Choice Chips (forms)
+- Same look as filter chips (34px pill, 1px `line`, 14px), but built on native `<input type="radio">` / `<input type="checkbox">` inside a `<label class="chip pick">`, so arrows, space and form semantics come free. Selected (`:checked`) inverts to `ink` fill with `bg` text, exactly like `aria-pressed` chips.
+- Focus ring goes on the label via `:has(input:focus-visible)`. Disabled is 38% opacity.
+- Items the user typed in (stack) render as selected chips with a 22px circular remove button (x icon) and enter with a short scale-in.
+
+### Choice Cards
+- Single-choice options that need a subtitle (search status). `surface` fill, 18px radius, 18px / 20px padding, 1px inset `line` ring; hover darkens the ring to `ink-2`; selected is a 2px inset `ink` ring. Title 17px / 600, subtitle 14px `ink-2`.
+
+### Segmented Choice
+- The `.seg` pill (4px padding, inset hairline) with native radios inside; the checked segment fills with `ink`. Used for currency.
+
+### Range Slider (dual)
+- Two native range inputs stacked on one 4px track. Track is `line`, the selected span is `accent`. Thumbs are 28px `surface` circles with the ambient shadow and a hairline ring; focus adds the 4px `--focus` halo. Thumbs never cross; editable amount fields (field style, currency symbol in `ink-2`, tabular numbers) sit below and stay in sync.
+
+### Combobox
+- A field with a listbox below: `surface`, 12px radius, ambient shadow plus hairline ring, 6px padding; options 15px with 8px radius, hover/active on `bg-alt`. Arrow keys move, Enter picks, Esc closes.
+
+### Progress Bar
+- 3px bar pinned under the nav on `bg-alt`; the filled part is `accent` and animates its width. Only used in onboarding.
+
+### Save Bar
+- Fixed to the bottom, same translucent blur as the nav, hairline on top. Slides up only when there are unsaved changes, shows the state in 13px `ink-2` and a small primary button. Also the mobile home of the onboarding "Continue" button.
+
+### Step Transition
+- Onboarding steps slide 48px and fade: out to the left and in from the right when going forward, mirrored when going back (View Transitions API). Single-choice steps advance 300ms after a pointer pick; keyboard selection never advances on its own. All of it is off under `prefers-reduced-motion`.
+
 ### Job List and Job Row (signature)
 The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows divided by hairlines at 70%.
 - **Row:** logo placeholder (44px, 12px radius, `bg-alt`, initial at 17px / 650), then the item title and a meta line (company, location with globe/pin icon, status), then salary (15px / 500, right aligned, tabular, with a 12px `ink-2` sub-label such as "per month"), then a 36px circular save button.
