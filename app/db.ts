@@ -25,11 +25,11 @@ const logoFor = (slug: string) => {
 // Contar anúncios inflaria: a Bluelight publica o mesmo cargo em ~100 países.
 export async function getCompanies(): Promise<Company[]> {
   const { rows } = await db.query(`
-    SELECT c.slug, c.name, s.name AS ats, c.last_fetched_at,
-           count(DISTINCT j.title) FILTER (WHERE j.is_active AND j.deleted_at IS NULL)::int AS open
+    SELECT c.slug, c.name, s.name AS ats, c.last_fetched_at, count(DISTINCT j.title)::int AS open
     FROM companies c
     JOIN sources s ON s.id = c.source_id
-    LEFT JOIN jobs j ON j.company_id = c.id
+    -- filtro no JOIN e não no count: assim só as abertas são lidas, direto do jobs_open_idx (011_jobs_open_idx.sql)
+    LEFT JOIN jobs j ON j.company_id = c.id AND j.is_active AND j.deleted_at IS NULL
     WHERE c.deleted_at IS NULL
     GROUP BY c.id, s.name
     ORDER BY open DESC, c.name`);
