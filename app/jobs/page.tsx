@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import { SaveJob } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
@@ -9,7 +8,7 @@ import { forYouFilters, forYouQuery, forYouScope, forYouStack, type ForYouFilter
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters, type RawParams } from "../job-query";
 import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
-import { Checking, JobRow, Logo, where } from "../job-row";
+import { Checking, JobRow, Logo, Stream, where } from "../job-row";
 import { getSavedIds } from "../saved";
 import { requireUser } from "../session";
 
@@ -37,7 +36,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const active = activeFilters(f);
   const clearHref = jobsHref({ ...NO_FILTERS, q: f.q });
   const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
-  // A parte lenta (embedding na OpenAI + busca) não segura a página: o topo sai na hora e o resto chega por streaming.
+  // A parte lenta (embedding na OpenAI + busca) não segura a página: se passar do orçamento do Stream, o topo sai antes e o resto chega por streaming.
   // Criada por último, para nenhum throw acima deixar a promise sem ninguém esperando.
   const prov = (count: string | false) => (
     <p className="prov">
@@ -129,20 +128,20 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           )}
 
           {/* Enquanto a busca roda, a linha sai sem a contagem: o carregamento fica só na lista */}
-          <Suspense fallback={prov(false)}>
-            {results.then(({ vector, total, groups }) => (
+          <Stream data={results} fallback={prov(false)}>
+            {({ vector, total, groups }) => (
               <>
                 {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
                 {prov(groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`)}
               </>
-            ))}
-          </Suspense>
+            )}
+          </Stream>
         </div>
       </section>
 
       <div className="co-stage">
-        <Suspense fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
-          {results.then(({ total, groups, savedIds }) => {
+        <Stream data={results} fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
+          {({ total, groups, savedIds }) => {
             const pages = pageCount(total);
             return groups.length > 0 ? (
               <>
@@ -179,8 +178,8 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
                 {active > 0 && <Link className="btn quiet sm" href={clearHref}>{t.clear}</Link>}
               </div>
             );
-          })}
-        </Suspense>
+          }}
+        </Stream>
       </div>
     </main>
   );
