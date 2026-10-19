@@ -15,10 +15,16 @@ const sampleJobs: { logo: string; title: string; company: string; remote: boolea
   { logo: "S", title: "Mobile Engineer (iOS)", company: "Swile", remote: false, where: ["São Paulo · On-site", "São Paulo · Presencial"], ats: "Lever", pay: null, closed: true },
 ];
 
+// Home shows only the best-known names; the full list lives on /companies.
+const featured = new Set([
+  "spacex", "anthropic", "stripe", "airbnb", "spotify", "databricks", "cloudflare", "roblox", "palantir", "xai",
+  "coinbase", "reddit", "discord", "figma", "pinterest", "lyft", "doordashusa", "epicgames", "duolingo", "twitch",
+]);
+
 export default async function Home() {
   const lang = await getLang();
   const t = dicts[lang];
-  const companies = await getCompanies();
+  const companies = (await getCompanies()).filter((c) => featured.has(c.slug));
   const money = (p: NonNullable<Pay>) =>
     new Intl.NumberFormat(locales[lang], { style: "currency", currency: p.cur, maximumFractionDigits: 0 }).formatRange(p.min, p.max);
   let openOrder = 0;
