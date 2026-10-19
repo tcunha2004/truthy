@@ -13,7 +13,7 @@ export function where(v: JobVersion, t: Dict["jobs"]) {
   return v.isRemote && !/remot/i.test(place) ? `${t.remoteAt} · ${place}` : place;
 }
 
-// Linha de proveniência enquanto as vagas carregam (loading da /jobs e Suspense da lista).
+// Status enquanto a lista carrega (Suspense da /jobs, /companies e /saved).
 export function Checking({ text }: { text: string }) {
   return (
     <p className="prov" role="status">

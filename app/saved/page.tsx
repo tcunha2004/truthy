@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { getCompanies } from "../db";
+import { Suspense } from "react";
+import { getCompanies, type Company } from "../db";
 import { ago, dicts, getLang, locales } from "../i18n";
-import { JobRow } from "../job-row";
+import { Checking, JobRow } from "../job-row";
 import { getSavedJobs, type SavedJob } from "../saved";
 import { requireUser } from "../session";
 
@@ -16,13 +17,11 @@ export default async function SavedPage() {
   const lang = await getLang();
   const locale = locales[lang];
   const t = dicts[lang];
-  const [jobs, companies] = await Promise.all([getSavedJobs(user.id), getCompanies()]);
-  const bySlug = new Map(companies.map((c) => [c.slug, c]));
   const num = new Intl.NumberFormat(locale);
-  const open = jobs.filter((j) => j.open);
-  const closed = jobs.filter((j) => !j.open);
+  // A lista chega por streaming: o título sai na hora e o carregamento fica só aqui embaixo.
+  const data = Promise.all([getSavedJobs(user.id), getCompanies()]);
 
-  const section = (id: string, heading: string, items: SavedJob[]) => items.length > 0 && (
+  const section = (id: string, heading: string, items: SavedJob[], bySlug: Map<string, Company>) => items.length > 0 && (
     <section className="saved-sec" aria-labelledby={id}>
       <h2 id={id}>{heading} <span className="num">{num.format(items.length)}</span></h2>
       <div className="jobs jobs-list">
@@ -46,18 +45,23 @@ export default async function SavedPage() {
         </div>
       </section>
       <div className="co-stage">
-        {jobs.length > 0 ? (
-          <>
-            {section("saved-open", t.saved.openH, open)}
-            {section("saved-closed", t.saved.closedH, closed)}
-          </>
-        ) : (
-          <div className="empty">
-            <b>{t.saved.emptyH}</b>
-            <p>{t.saved.emptyP}</p>
-            <Link className="btn quiet sm" href="/jobs">{t.saved.browse}</Link>
-          </div>
-        )}
+        <Suspense fallback={<div className="empty"><Checking text={t.saved.loading} /></div>}>
+          {data.then(([jobs, companies]) => {
+            const bySlug = new Map(companies.map((c) => [c.slug, c]));
+            return jobs.length > 0 ? (
+              <>
+                {section("saved-open", t.saved.openH, jobs.filter((j) => j.open), bySlug)}
+                {section("saved-closed", t.saved.closedH, jobs.filter((j) => !j.open), bySlug)}
+              </>
+            ) : (
+              <div className="empty">
+                <b>{t.saved.emptyH}</b>
+                <p>{t.saved.emptyP}</p>
+                <Link className="btn quiet sm" href="/jobs">{t.saved.browse}</Link>
+              </div>
+            );
+          })}
+        </Suspense>
       </div>
     </main>
   );
