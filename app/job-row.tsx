@@ -13,6 +13,16 @@ export function where(v: JobVersion, t: Dict["jobs"]) {
   return v.isRemote && !/remot/i.test(place) ? `${t.remoteAt} · ${place}` : place;
 }
 
+// Linha de proveniência enquanto as vagas carregam (loading da /jobs e Suspense da lista).
+export function Checking({ text }: { text: string }) {
+  return (
+    <p className="prov" role="status">
+      <span className="pulse" aria-hidden="true" />
+      <span>{text}</span>
+    </p>
+  );
+}
+
 export function Logo({ co, name }: { co: Company | undefined; name: string }) {
   return co?.logo
     ? <img className="logo" src={co.logo} alt="" width={44} height={44} />
