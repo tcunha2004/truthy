@@ -39,6 +39,12 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
   // A parte lenta (embedding na OpenAI + busca) não segura a página: o topo sai na hora e o resto chega por streaming.
   // Criada por último, para nenhum throw acima deixar a promise sem ninguém esperando.
+  const prov = (count: string | false) => (
+    <p className="prov">
+      <span className="pulse" aria-hidden="true" />
+      <span>{[count, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"].filter(Boolean).join("\u00a0· ")}</span>
+    </p>
+  );
   const results = loadResults(user.id, f, profile ? forYouQuery(profile) : f.q || null, fy);
 
   return (
@@ -122,18 +128,12 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             </>
           )}
 
-          <Suspense fallback={<Checking text={fy ? t.loadingForYou : t.loading} />}>
+          {/* Enquanto a busca roda, a linha sai sem a contagem: o carregamento fica só na lista */}
+          <Suspense fallback={prov(false)}>
             {results.then(({ vector, total, groups }) => (
               <>
                 {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
-                <p className="prov">
-                  <span className="pulse" aria-hidden="true" />
-                  <span>
-                    {[groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"]
-                      .filter(Boolean)
-                      .join("\u00a0· ")}
-                  </span>
-                </p>
+                {prov(groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`)}
               </>
             ))}
           </Suspense>
@@ -141,7 +141,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       </section>
 
       <div className="co-stage">
-        <Suspense>
+        <Suspense fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
           {results.then(({ total, groups, savedIds }) => {
             const pages = pageCount(total);
             return groups.length > 0 ? (
