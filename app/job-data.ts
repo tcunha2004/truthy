@@ -1,4 +1,4 @@
-import { cached } from "./cache";
+import { cached, stored } from "./cache";
 import { db } from "./db";
 import type { ForYouFilters } from "./for-you";
 import { PAGE_SIZE, type JobFilters, type Pay } from "./job-query";
@@ -12,8 +12,9 @@ export type JobGroup = { title: string; company: string; slug: string; versions:
 // Vetor da frase no formato texto do pgvector ("[0.1,…]"), ou null sem chave ou se a OpenAI falhar.
 // Com null a página continua de pé: lista por data e avisa que a busca por texto está indisponível.
 // Em cache por frase: trocar de página ou de filtro com a mesma busca não chama a OpenAI de novo.
-// 200 vetores ≈ 6 MB de memória.
-export const embedQuery = cached(fetchEmbedding, 200);
+// Memória primeiro (200 vetores ≈ 6 MB), depois Redis por 30 dias (sobrevive a restart; ~30 KB por frase).
+// O modelo vai na chave: trocou o modelo, os vetores antigos não são reaproveitados.
+export const embedQuery = cached(stored(`emb:${EMBEDDING_MODEL}:`, 30 * 86400, fetchEmbedding), 200);
 
 async function fetchEmbedding(q: string): Promise<string | null> {
   const key = process.env.OPENAI_API_KEY;
