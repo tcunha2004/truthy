@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { Suspense } from "react";
 import { getCompanies, type Company } from "../db";
 import { ago, dicts, getLang, locales } from "../i18n";
-import { Checking, JobRow } from "../job-row";
+import { Checking, JobRow, Stream } from "../job-row";
 import { getSavedJobs, type SavedJob } from "../saved";
 import { requireUser } from "../session";
 
@@ -18,7 +17,7 @@ export default async function SavedPage() {
   const locale = locales[lang];
   const t = dicts[lang];
   const num = new Intl.NumberFormat(locale);
-  // A lista chega por streaming: o título sai na hora e o carregamento fica só aqui embaixo.
+  // A lista vem pelo Stream: se demorar, o título sai antes e o carregamento fica só aqui embaixo.
   const data = Promise.all([getSavedJobs(user.id), getCompanies()]);
 
   const section = (id: string, heading: string, items: SavedJob[], bySlug: Map<string, Company>) => items.length > 0 && (
@@ -45,8 +44,8 @@ export default async function SavedPage() {
         </div>
       </section>
       <div className="co-stage">
-        <Suspense fallback={<div className="empty"><Checking text={t.saved.loading} /></div>}>
-          {data.then(([jobs, companies]) => {
+        <Stream data={data} fallback={<div className="empty"><Checking text={t.saved.loading} /></div>}>
+          {([jobs, companies]) => {
             const bySlug = new Map(companies.map((c) => [c.slug, c]));
             return jobs.length > 0 ? (
               <>
@@ -60,8 +59,8 @@ export default async function SavedPage() {
                 <Link className="btn quiet sm" href="/jobs">{t.saved.browse}</Link>
               </div>
             );
-          })}
-        </Suspense>
+          }}
+        </Stream>
       </div>
     </main>
   );
