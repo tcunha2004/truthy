@@ -263,6 +263,20 @@ const en = {
     saved: "Saved.",
     failed: "We couldn’t save. Try again.",
   },
+  privacy: {
+    title: "Privacy",
+    h: "Privacy policy.",
+    updated: "Last updated October 19, 2026.",
+    sections: [
+      { h: "What we collect", p: "Your name and email. If you sign in with Google, also your Google account ID and profile photo. If you sign up with email, a hash of your password, never the password itself. The answers in your profile (field, seniority, stack, country, work models, contract types, salary range and search status) and the jobs you save." },
+      { h: "How we use it", p: "Only to run truthy: signing you in, showing jobs that fit your profile and keeping your saved list. No ads, no selling or renting your data, no emails you didn’t ask for." },
+      { h: "Who processes it", p: "truthy runs on Vercel (hosting), Neon (database) and Upstash (temporary counters). To match jobs by meaning, the text you search for and a short summary of your profile (field, seniority and stack) are sent to OpenAI. Your name and email are never sent." },
+      { h: "Cookies", p: "One cookie keeps you signed in and another remembers your language. Your theme is saved in your browser. No tracking or advertising cookies." },
+      { h: "Abuse protection", p: "To block password guessing, we count sign-in and sign-up attempts by email and IP address. The counts are erased automatically within an hour." },
+      { h: "Your choices", p: "You can change your profile at any time. To delete your account and all its data, email us and we’ll delete it." },
+    ],
+    contact: "Questions or deletion requests:",
+  },
 };
 
 export type Dict = typeof en;
@@ -526,6 +540,20 @@ const pt: Dict = {
     unsaved: "Você tem alterações não salvas.",
     saved: "Salvo.",
     failed: "Não conseguimos salvar. Tente de novo.",
+  },
+  privacy: {
+    title: "Privacidade",
+    h: "Política de privacidade.",
+    updated: "Atualizada em 19 de outubro de 2026.",
+    sections: [
+      { h: "O que coletamos", p: "Seu nome e e-mail. Se você entra com o Google, também o ID da sua conta Google e a foto de perfil. Se você se cadastra com e-mail, um hash da sua senha, nunca a senha em si. As respostas do seu perfil (área, senioridade, stack, país, modelos de trabalho, tipos de contrato, faixa salarial e momento da busca) e as vagas que você salva." },
+      { h: "Como usamos", p: "Só para o truthy funcionar: fazer seu login, mostrar vagas que combinam com seu perfil e guardar suas vagas salvas. Sem anúncios, sem vender ou alugar seus dados, sem e-mails que você não pediu." },
+      { h: "Quem processa", p: "O truthy roda na Vercel (hospedagem), no Neon (banco de dados) e no Upstash (contadores temporários). Para buscar vagas pelo significado, o texto que você pesquisa e um resumo curto do seu perfil (área, senioridade e stack) são enviados à OpenAI. Seu nome e e-mail nunca são enviados." },
+      { h: "Cookies", p: "Um cookie mantém você logado e outro lembra seu idioma. Seu tema fica salvo no seu navegador. Nenhum cookie de rastreamento ou de anúncio." },
+      { h: "Proteção contra abuso", p: "Para barrar quem tenta adivinhar senhas, contamos as tentativas de login e cadastro por e-mail e endereço IP. As contagens são apagadas sozinhas em até uma hora." },
+      { h: "Suas escolhas", p: "Você pode mudar seu perfil quando quiser. Para apagar sua conta e todos os dados dela, mande um e-mail e nós apagamos." },
+    ],
+    contact: "Dúvidas ou pedidos de exclusão:",
   },
 };
 

@@ -224,6 +224,12 @@ footer { background: var(--bg-alt); color: var(--ink-2); font-size: 12px; paddin
 .co-all { margin-top: 36px; }
 .pf-out { margin-top: 40px; text-align: center; }
 
+/* ---------- legal (privacidade): texto corrido, mesma escala dos headlines das bands ---------- */
+.legal { max-width: 68ch; padding: 80px 0 96px; }
+.legal h1 { font-size: clamp(36px, 5.6vw, 56px); line-height: 1.06; font-weight: 650; letter-spacing: -0.035em; }
+.legal h2 { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin-top: 40px; }
+.legal p { color: var(--ink-2); line-height: 1.6; margin-top: 10px; }
+
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 16px; }
 
 /* ---------- fields ---------- */

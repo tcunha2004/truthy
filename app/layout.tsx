@@ -69,7 +69,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer>
           <div className="wrap">
             <span>{t.foot}</span>
-            <span>truthy · {new Date().getFullYear()}</span>
+            <span><Link href="/privacy">{t.privacy.title}</Link> · truthy · {new Date().getFullYear()}</span>
           </div>
         </footer>
       </body>
