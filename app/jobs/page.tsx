@@ -1,14 +1,15 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { SaveJob } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
 import { ago, dicts, getLang, locales, type Dict } from "../i18n";
 import { embedQuery, getJobCountries, searchJobs, type JobGroup } from "../job-data";
-import { forYouFilters, forYouQuery, forYouScope, forYouStack } from "../for-you";
-import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type RawParams } from "../job-query";
+import { forYouFilters, forYouQuery, forYouScope, forYouStack, type ForYouFilters } from "../for-you";
+import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters, type RawParams } from "../job-query";
 import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
-import { JobRow, Logo, where } from "../job-row";
+import { Checking, JobRow, Logo, where } from "../job-row";
 import { getSavedIds } from "../saved";
 import { requireUser } from "../session";
 
@@ -22,25 +23,23 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const locale = locales[lang];
   const t = dicts[lang].jobs;
   const tj = dicts[lang].job;
-  const companies = await getCompanies();
+  const [companies, present] = await Promise.all([getCompanies(), getJobCountries()]);
   const f = parseJobParams(await searchParams, companies.map((c) => c.slug));
 
   // Para você: o perfil vira a frase do embedding e os filtros duros. Busca normal: só o que foi digitado.
   const profile = f.mode === "forYou" ? await getProfile(user.id, user.name) : null;
   const fy = profile && forYouFilters(profile);
-  const vector = profile ? await embedQuery(forYouQuery(profile)) : f.q ? await embedQuery(f.q) : null;
-  const [{ total, groups }, present] = await Promise.all([searchJobs(f, vector, fy), getJobCountries()]);
-
-  const savedIds = await getSavedIds(user.id, groups.flatMap((g) => g.versions.map((v) => v.id)));
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
   // Só países que aparecem em alguma vaga; códigos fora do ISO somem aqui em vez de virar opção quebrada.
   const countries = countryOptions(locale).filter(([code]) => present.includes(code));
   const lastRead = companies.reduce<Date | null>((max, c) => (c.lastFetchedAt && (!max || c.lastFetchedAt > max) ? c.lastFetchedAt : max), null);
   const num = new Intl.NumberFormat(locale);
   const active = activeFilters(f);
-  const pages = pageCount(total);
   const clearHref = jobsHref({ ...NO_FILTERS, q: f.q });
   const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
+  // A parte lenta (embedding na OpenAI + busca) não segura a página: o topo sai na hora e o resto chega por streaming.
+  // Criada por último, para nenhum throw acima deixar a promise sem ninguém esperando.
+  const results = loadResults(user.id, f, profile ? forYouQuery(profile) : f.q || null, fy);
 
   return (
     <main className="co-page">
@@ -123,57 +122,75 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             </>
           )}
 
-          {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
-          <p className="prov">
-            <span className="pulse" aria-hidden="true" />
-            <span>
-              {[groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"]
-                .filter(Boolean)
-                .join("\u00a0· ")}
-            </span>
-          </p>
+          <Suspense fallback={<Checking text={tj.checking} />}>
+            {results.then(({ vector, total, groups }) => (
+              <>
+                {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
+                <p className="prov">
+                  <span className="pulse" aria-hidden="true" />
+                  <span>
+                    {[groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"]
+                      .filter(Boolean)
+                      .join("\u00a0· ")}
+                  </span>
+                </p>
+              </>
+            ))}
+          </Suspense>
         </div>
       </section>
 
       <div className="co-stage">
-        {groups.length > 0 ? (
-          <>
-            <div className="jobs jobs-list">
-              {groups.map((g) => (
-                <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj} />
-              ))}
-            </div>
-            {pages > 1 && (
-              <nav className="pager" aria-label={t.pages}>
-                {f.page > 1 ? <Link className="back" href={jobsHref({ ...f, page: f.page - 1 })}><Icon name="chev" />{t.prev}</Link> : <span />}
-                <span className="num">{t.pageOf.replace("{n}", num.format(f.page)).replace("{total}", num.format(pages))}</span>
-                {f.page < pages ? <Link href={jobsHref({ ...f, page: f.page + 1 })}>{t.next}<Icon name="chev" /></Link> : <span />}
-              </nav>
-            )}
-          </>
-        ) : f.page > 1 ? (
-          <div className="empty">
-            <b>{t.beyondH}</b>
-            <p>{t.beyondP}</p>
-            <Link className="btn quiet sm" href={jobsHref({ ...f, page: 1 })}>{t.first}</Link>
-          </div>
-        ) : fy ? (
-          <div className="empty">
-            <b>{t.forYouEmptyH}</b>
-            <p>{t.forYouEmptyP}</p>
-            <Link className="btn quiet sm" href="/profile">{t.editProfile}</Link>
-            <Link className="btn quiet sm" href="/jobs?search=1">{t.searchOwn}</Link>
-          </div>
-        ) : (
-          <div className="empty">
-            <b>{t.emptyH}</b>
-            <p>{active > 0 ? t.emptyFiltersP : t.emptyP}</p>
-            {active > 0 && <Link className="btn quiet sm" href={clearHref}>{t.clear}</Link>}
-          </div>
-        )}
+        <Suspense>
+          {results.then(({ total, groups, savedIds }) => {
+            const pages = pageCount(total);
+            return groups.length > 0 ? (
+              <>
+                <div className="jobs jobs-list">
+                  {groups.map((g) => (
+                    <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj} />
+                  ))}
+                </div>
+                {pages > 1 && (
+                  <nav className="pager" aria-label={t.pages}>
+                    {f.page > 1 ? <Link className="back" href={jobsHref({ ...f, page: f.page - 1 })}><Icon name="chev" />{t.prev}</Link> : <span />}
+                    <span className="num">{t.pageOf.replace("{n}", num.format(f.page)).replace("{total}", num.format(pages))}</span>
+                    {f.page < pages ? <Link href={jobsHref({ ...f, page: f.page + 1 })}>{t.next}<Icon name="chev" /></Link> : <span />}
+                  </nav>
+                )}
+              </>
+            ) : f.page > 1 ? (
+              <div className="empty">
+                <b>{t.beyondH}</b>
+                <p>{t.beyondP}</p>
+                <Link className="btn quiet sm" href={jobsHref({ ...f, page: 1 })}>{t.first}</Link>
+              </div>
+            ) : fy ? (
+              <div className="empty">
+                <b>{t.forYouEmptyH}</b>
+                <p>{t.forYouEmptyP}</p>
+                <Link className="btn quiet sm" href="/profile">{t.editProfile}</Link>
+                <Link className="btn quiet sm" href="/jobs?search=1">{t.searchOwn}</Link>
+              </div>
+            ) : (
+              <div className="empty">
+                <b>{t.emptyH}</b>
+                <p>{active > 0 ? t.emptyFiltersP : t.emptyP}</p>
+                {active > 0 && <Link className="btn quiet sm" href={clearHref}>{t.clear}</Link>}
+              </div>
+            );
+          })}
+        </Suspense>
       </div>
     </main>
   );
+}
+
+async function loadResults(userId: string, f: JobFilters, phrase: string | null, fy: ForYouFilters | null) {
+  const vector = phrase ? await embedQuery(phrase) : null;
+  const { total, groups } = await searchJobs(f, vector, fy);
+  const savedIds = await getSavedIds(userId, groups.flatMap((g) => g.versions.map((v) => v.id)));
+  return { vector, total, groups, savedIds };
 }
 
 // Linha de resumo do perfil no Para você: área · nível · modelos · país · stack. O país vem da lista completa:
