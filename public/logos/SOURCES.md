@@ -21,6 +21,7 @@ A company without a file here falls back to its initial.
 | bluelightconsulting | jobs.lever.co/bluelightconsulting (Lever board logo) |
 | braze | github.com/braze-inc avatar |
 | brex | github.com/brexhq avatar |
+| btgpactual | github.com/btgpactual avatar |
 | bybit | github.com/bybit-exchange avatar |
 | c6bank | c6bank.com.br (via Google favicon service) |
 | capco | capco.com favicon.png |
@@ -29,6 +30,7 @@ A company without a file here falls back to its initial.
 | checkr | checkr.com apple-touch-icon |
 | chime | chime.com (via Google favicon service) |
 | ciandt | jobs.lever.co/ciandt (Lever board logo), wordmark on white |
+| clara | clara.com apple-touch-icon |
 | cloudflare | github.com/cloudflare avatar |
 | cockroachlabs | cockroachlabs.com icon |
 | coinbase | coinbase.com /apple-touch-icon.png |
@@ -51,6 +53,7 @@ A company without a file here falls back to its initial.
 | fireblocks | fireblocks.com icon |
 | firstup | firstup.io apple-touch-icon |
 | fivetran | fivetran.com icon |
+| flashapp | github.com/flash-tecnologia avatar |
 | flex | job-boards.greenhouse.io/flex (Greenhouse board logo) |
 | flexport | flexport.com (via Google favicon service) |
 | gemini | gemini.com (via Google favicon service) |
@@ -78,6 +81,7 @@ A company without a file here falls back to its initial.
 | mixpanel | mixpanel.com (via Google favicon service) |
 | mongodb | github.com/mongodb avatar |
 | motional | github.com/motional avatar |
+| neon | Neon app icon (App Store) |
 | netskope | github.com/netskope avatar |
 | newrelic | newrelic.com apple-touch-icon |
 | nuro | nuro.ai apple-touch-icon |
@@ -93,6 +97,7 @@ A company without a file here falls back to its initial.
 | pinterest | pinterest.com (via Google favicon service) |
 | planetscale | github.com/planetscale avatar |
 | quintoandar | quintoandar.com.br apple-touch-icon |
+| rdstation | rdstation.com favicon |
 | reddit | reddit.com (via Google favicon service) |
 | relativity | github.com/relativityspace avatar |
 | riotgames | riotgames.com shortcut icon |
@@ -134,6 +139,7 @@ A company without a file here falls back to its initial.
 | wildlifestudios | wildlifestudios.com icon |
 | wolt | wolt.com icon |
 | xai | x.ai (via Google favicon service) |
+| xpinc | XP Investimentos app icon (App Store) |
 | yugabyte | yugabyte.com icon |
 | zoox | zoox.com apple-touch-icon |
 | zscaler | zscaler.com apple-touch-icon |
