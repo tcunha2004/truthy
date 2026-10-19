@@ -122,7 +122,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
             </>
           )}
 
-          <Suspense fallback={<Checking text={tj.checking} />}>
+          <Suspense fallback={<Checking text={fy ? t.loadingForYou : t.loading} />}>
             {results.then(({ vector, total, groups }) => (
               <>
                 {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
