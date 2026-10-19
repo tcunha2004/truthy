@@ -46,7 +46,8 @@ const RELEVANCE_CUTOFF = 0.18;
 // ordena pela versão mais próxima do grupo; sem vetor, dist é NULL em todos, nada é cortado e vale a
 // publicação mais recente. O corte é por grupo, para não sumir com locais de um grupo que entrou.
 // slug e title no fim desempatam, para a paginação não repetir nem pular grupos.
-// $8 é a senioridade (do perfil no "Para você", do filtro na busca); vaga sem nível detectado sempre passa.
+// $8 é a senioridade (do perfil no "Para você", do filtro na busca). Na busca o filtro é estrito; no "Para você" ($12)
+// vaga sem nível detectado também passa, porque o nível do perfil é sempre preenchido e esconderia boa parte das vagas.
 // $9–$11 são os filtros do "Para você" (for-you.ts); nulos na busca normal.
 const SEARCH_SQL = `
 WITH hits AS (
@@ -60,7 +61,7 @@ WITH hits AS (
     AND (NOT $2::boolean OR j.is_remote)
     AND ($3::text IS NULL OR $3::text = ANY (j.countries))
     AND ($4::text IS NULL OR c.slug = $4::text)
-    AND ($8::text IS NULL OR j.seniority IS NULL OR j.seniority = $8::text)
+    AND ($8::text IS NULL OR j.seniority = $8::text OR ($12::boolean AND j.seniority IS NULL))
     AND ($9::text IS NULL
          OR ($10::boolean AND j.is_remote AND (j.countries IS NULL OR $9::text = ANY (j.countries)))
          OR ($11::boolean AND j.is_remote IS NOT TRUE AND $9::text = ANY (j.countries)))
@@ -83,7 +84,7 @@ LIMIT $5 OFFSET $6`;
 
 export async function searchJobs(f: JobFilters, vector: string | null, fy: ForYouFilters | null): Promise<{ total: number; groups: JobGroup[] }> {
   const { rows } = await db.query(SEARCH_SQL, [vector, f.remote, f.country, f.company, PAGE_SIZE, (f.page - 1) * PAGE_SIZE, RELEVANCE_CUTOFF,
-    fy?.seniority ?? f.seniority, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false]);
+    fy?.seniority ?? f.seniority, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false, fy !== null]);
   return {
     total: rows[0]?.total ?? 0,
     groups: rows.map((r) => ({ title: r.title, company: r.company, slug: r.slug, versions: r.versions })),
