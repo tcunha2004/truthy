@@ -57,7 +57,7 @@ WITH hits AS (
          CASE WHEN $1::vector IS NULL THEN NULL ELSE j.embedding <=> $1::vector END AS dist
   FROM jobs j
   JOIN companies c ON c.id = j.company_id
-  WHERE j.is_active AND j.deleted_at IS NULL AND c.deleted_at IS NULL
+  WHERE j.is_active AND j.is_tech AND j.deleted_at IS NULL AND c.deleted_at IS NULL
     AND ($1::vector IS NULL OR j.embedding IS NOT NULL)
     AND (NOT $2::boolean OR j.is_remote)
     AND ($3::text IS NULL OR $3::text = ANY (j.countries))
@@ -94,7 +94,7 @@ export async function searchJobs(f: JobFilters, vector: string | null, fy: ForYo
 
 export async function getJobCountries(): Promise<string[]> {
   const { rows } = await db.query(
-    `SELECT DISTINCT unnest(countries) AS code FROM jobs WHERE is_active AND deleted_at IS NULL ORDER BY 1`,
+    `SELECT DISTINCT unnest(countries) AS code FROM jobs WHERE is_active AND is_tech AND deleted_at IS NULL ORDER BY 1`,
   );
   return rows.map((r) => r.code);
 }

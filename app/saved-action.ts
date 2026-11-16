@@ -16,7 +16,7 @@ export async function setSaved(prev: boolean, form: FormData): Promise<boolean> 
       // Só vaga aberta pode ser salva. Uma fechada que já estava salva continua salva.
       await db.query(
         `INSERT INTO saved_jobs (user_id, job_id)
-         SELECT $1, id FROM jobs WHERE id = $2 AND is_active AND deleted_at IS NULL
+         SELECT $1, id FROM jobs WHERE id = $2 AND is_active AND is_tech AND deleted_at IS NULL
          ON CONFLICT DO NOTHING`,
         [user.id, jobId],
       );

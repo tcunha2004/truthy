@@ -29,7 +29,7 @@ export async function getCompanies(): Promise<Company[]> {
     FROM companies c
     JOIN sources s ON s.id = c.source_id
     -- filtro no JOIN e não no count: assim só as abertas são lidas, direto do jobs_open_idx (011_jobs_open_idx.sql)
-    LEFT JOIN jobs j ON j.company_id = c.id AND j.is_active AND j.deleted_at IS NULL
+    LEFT JOIN jobs j ON j.company_id = c.id AND j.is_active AND j.is_tech AND j.deleted_at IS NULL
     WHERE c.deleted_at IS NULL
     GROUP BY c.id, s.name
     ORDER BY open DESC, c.name`);
