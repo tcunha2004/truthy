@@ -1,10 +1,11 @@
 import { Suspense, type ReactNode } from "react";
-import { SaveJob } from "./client";
+import { MatchTip, SaveJob } from "./client";
 import type { Company } from "./db";
 import type { Dict } from "./i18n";
 import { Icon } from "./icons";
 import type { JobVersion } from "./job-data";
 import { payText } from "./job-query";
+import type { MatchState } from "./match";
 
 // Peças da Job Row usadas pela /jobs e pela /saved.
 
@@ -42,13 +43,13 @@ export function Logo({ co, name }: { co: Company | undefined; name: string }) {
 
 // Linha de um local só. closed = texto do estado fechada ("Closed · removed from Lever 2 days ago");
 // fechada não tem link (o ATS já tirou a vaga) e o título sai riscado, como manda o DESIGN.md.
-export function JobRow({ v, title, company, co, saved, closed, locale, t, tj }: {
+export function JobRow({ v, title, company, co, saved, closed, locale, t, tj, match, tm }: {
   v: JobVersion; title: string; company: string; co: Company | undefined; saved: boolean; closed?: string;
-  locale: string; t: Dict["jobs"]; tj: Dict["job"];
+  locale: string; t: Dict["jobs"]; tj: Dict["job"]; match?: Promise<MatchState>; tm?: Dict["match"];
 }) {
   const pay = payText(v, locale);
   return (
-    <article className={`job${closed ? " closed" : ""}`}>
+    <article className={`job${closed ? " closed" : ""}${match && tm ? " has-ai" : ""}`}>
       <Logo co={co} name={company} />
       <div>
         <h3>
@@ -66,6 +67,7 @@ export function JobRow({ v, title, company, co, saved, closed, locale, t, tj }: 
             : <span className="status"><Icon name="check" className="ck" /><b>{tj.openVia} {co?.ats ?? ""}</b></span>}
         </div>
       </div>
+      {match && tm && <MatchTip data={match} t={tm} />}
       <div className="pay num">
         {pay ?? "—"}
         <small>{pay ? tj.perMonth : tj.noPay}</small>

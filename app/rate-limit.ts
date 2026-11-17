@@ -7,6 +7,8 @@ export const limits = {
   loginEmail: (email: string): Limit => ({ key: `rl:login:email:${email.slice(0, 254)}`, max: 5, windowSec: 15 * 60 }),
   loginIp: (ip: string): Limit => ({ key: `rl:login:ip:${ip}`, max: 20, windowSec: 15 * 60 }),
   signupIp: (ip: string): Limit => ({ key: `rl:signup:ip:${ip}`, max: 10, windowSec: 60 * 60 }),
+  // Conta carregamentos de /jobs que pedem pelo menos uma análise nova ao Haiku, não vagas.
+  matchUser: (userId: string): Limit => ({ key: `rl:match:user:${userId}`, max: 20, windowSec: 60 * 60 }),
 };
 
 // Reserva uma tentativa ANTES de autenticar: o INCR é atômico, então requisições em paralelo não passam do máximo

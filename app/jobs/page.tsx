@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { SaveJob } from "../client";
+import { MatchTip, SaveJob } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
-import { ago, dicts, getLang, locales, type Dict } from "../i18n";
+import { ago, dicts, getLang, locales, type Dict, type Lang } from "../i18n";
 import { embedQuery, getJobCountries, searchJobs, type JobGroup } from "../job-data";
 import { forYouFilters, forYouQuery, forYouScope, forYouStack, type ForYouFilters } from "../for-you";
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters, type RawParams } from "../job-query";
 import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
 import { Checking, JobRow, Logo, Stream, where } from "../job-row";
+import { MATCH_TOP, type MatchState } from "../match";
+import { loadMatches, matchEnabled } from "../match-data";
 import { getSavedIds } from "../saved";
 import { requireUser } from "../session";
 
@@ -22,12 +24,12 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const locale = locales[lang];
   const t = dicts[lang].jobs;
   const tj = dicts[lang].job;
-  const [companies, present] = await Promise.all([getCompanies(), getJobCountries()]);
+  // O perfil também entra na busca manual: a análise por IA compara cada vaga com ele.
+  const [companies, present, profile] = await Promise.all([getCompanies(), getJobCountries(), getProfile(user.id, user.name)]);
   const f = parseJobParams(await searchParams, companies.map((c) => c.slug));
 
   // Para você: o perfil vira a frase do embedding e os filtros duros. Busca normal: só o que foi digitado.
-  const profile = f.mode === "forYou" ? await getProfile(user.id, user.name) : null;
-  const fy = profile && forYouFilters(profile);
+  const fy = f.mode === "forYou" ? forYouFilters(profile) : null;
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
   // Só países que aparecem em alguma vaga; códigos fora do ISO somem aqui em vez de virar opção quebrada.
   const countries = countryOptions(locale).filter(([code]) => present.includes(code));
@@ -35,7 +37,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const num = new Intl.NumberFormat(locale);
   const active = activeFilters(f);
   const clearHref = jobsHref({ ...NO_FILTERS, q: f.q });
-  const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
+  const meta = fy && forYouMeta(profile, locale, t, dicts[lang].ob.where);
   // A parte lenta (embedding na Voyage + busca) não segura a página: se passar do orçamento do Stream, o topo sai antes e o resto chega por streaming.
   // Criada por último, para nenhum throw acima deixar a promise sem ninguém esperando.
   const prov = (count: string | false) => (
@@ -46,7 +48,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   );
   // Busca manual sem texto nem filtro não é busca: nada é consultado e a lista pede uma.
   const idle = f.mode === "search" && !f.q && active === 0;
-  const results = idle ? null : loadResults(user.id, f, profile ? forYouQuery(profile) : f.q || null, fy);
+  const results = idle ? null : loadResults(user.id, f, fy ? forYouQuery(profile) : f.q || null, fy, lang, profile);
 
   return (
     <main className="co-page">
@@ -143,13 +145,14 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
 
       <div className="co-stage">
         {results ? <Stream data={results} fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
-          {({ total, groups, savedIds }) => {
+          {({ total, groups, savedIds, matches }) => {
             const pages = pageCount(total);
             return groups.length > 0 ? (
               <>
                 <div className="jobs jobs-list">
                   {groups.map((g) => (
-                    <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj} />
+                    <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj}
+                      match={matches?.get(g.versions[0].id)} tm={dicts[lang].match} />
                   ))}
                 </div>
                 {pages > 1 && (
@@ -192,11 +195,15 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   );
 }
 
-async function loadResults(userId: string, f: JobFilters, phrase: string | null, fy: ForYouFilters | null) {
+async function loadResults(userId: string, f: JobFilters, phrase: string | null, fy: ForYouFilters | null, lang: Lang, profile: Profile) {
   const vector = phrase ? await embedQuery(phrase) : null;
   const { total, groups } = await searchJobs(f, vector, fy);
+  // Sem await: a lista sai já, e cada ícone das 10 primeiras linhas espera só a sua análise.
+  const matches = matchEnabled && f.page === 1 && groups.length > 0
+    ? loadMatches(userId, lang, profile, groups.slice(0, MATCH_TOP).map((g) => g.versions[0].id))
+    : null;
   const savedIds = await getSavedIds(userId, groups.flatMap((g) => g.versions.map((v) => v.id)));
-  return { vector, total, groups, savedIds };
+  return { vector, total, groups, savedIds, matches };
 }
 
 // Linha de resumo do perfil no Para você: área · nível · modelos · país · stack. O país vem da lista completa:
@@ -208,12 +215,13 @@ function forYouMeta(p: Profile, locale: string, t: Dict["jobs"], where: Dict["ob
   return [FIELD_LABELS[p.field!], t.levels[p.seniority!], ...p.workModels.map((m) => where[m]), country, stack].join("\u00a0· ");
 }
 
-function GroupRow({ g, co, savedIds, locale, t, tj }: {
+function GroupRow({ g, co, savedIds, locale, t, tj, match, tm }: {
   g: JobGroup; co: Company | undefined; savedIds: Set<string>; locale: string; t: Dict["jobs"]; tj: Dict["job"];
+  match?: Promise<MatchState>; tm: Dict["match"];
 }) {
   if (g.versions.length === 1) {
     const v = g.versions[0];
-    return <JobRow v={v} title={g.title} company={g.company} co={co} saved={savedIds.has(v.id)} locale={locale} t={t} tj={tj} />;
+    return <JobRow v={v} title={g.title} company={g.company} co={co} saved={savedIds.has(v.id)} locale={locale} t={t} tj={tj} match={match} tm={tm} />;
   }
 
   const ats = co?.ats ?? "";
@@ -233,7 +241,7 @@ function GroupRow({ g, co, savedIds, locale, t, tj }: {
 
   return (
     <details className="job-group">
-      <summary className="job">
+      <summary className={`job${match ? " has-ai" : ""}`}>
         <Logo co={co} name={g.company} />
         <div>
           <h3>{g.title}</h3>
@@ -243,6 +251,7 @@ function GroupRow({ g, co, savedIds, locale, t, tj }: {
             {status}
           </div>
         </div>
+        {match && <MatchTip data={match} t={tm} />}
         {payCell}
         <span className="caret" aria-hidden="true"><Icon name="chev" /></span>
       </summary>

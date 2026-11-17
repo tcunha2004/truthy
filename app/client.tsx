@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
+import type { MatchState } from "./match";
 import { fold } from "./profile-options";
 import { setSaved } from "./saved-action";
 
@@ -176,6 +177,135 @@ export function OpenStatus({ ats, order, t }: { ats: string; order: number; t: D
     <span className={`status${checking ? " checking" : ""}`}>
       <Icon name="check" className="ck" />
       <b>{checking ? t.checking : `${t.openVia} ${ats}`}</b>
+    </span>
+  );
+}
+
+const CARD_W = 300;
+const RING_C = 2 * Math.PI * 19;
+
+// Ícone da análise por IA e o card de vidro. Abre no hover (mouse), no foco (teclado) e no toque; o card é fixed
+// para escapar do overflow: hidden da lista, e vira para cima perto do fim da tela.
+// Recebe a promise do servidor e fica montado o tempo todo: um fallback de Suspense ainda em streaming não é
+// hidratado (ícone sem handlers), e trocar de componente quando a análise chega fecharia o card aberto.
+export function MatchTip({ data, t }: { data: Promise<MatchState>; t: Dict["match"] }) {
+  const [state, setState] = useState<MatchState | null>(null); // null = analisando
+  useEffect(() => {
+    let live = true;
+    data.then((s) => live && setState(s));
+    return () => { live = false; };
+  }, [data]);
+  const [pos, setPos] = useState<CSSProperties | null>(null);
+  const [drawn, setDrawn] = useState(false);
+  const id = useId();
+  const box = useRef<HTMLSpanElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const pointer = useRef(""); // tipo do ponteiro do clique em curso; "" = teclado
+  const leave = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const open = pos !== null;
+
+  const show = () => {
+    const r = btn.current!.getBoundingClientRect();
+    setPos({ left: Math.min(Math.max(16, r.right - CARD_W), innerWidth - CARD_W - 16), top: r.bottom + 8 });
+  };
+  const hide = () => { clearTimeout(leave.current); setPos(null); };
+  // o card fica 8px longe do ícone: a espera deixa o mouse atravessar o vão e parar em cima dele (WCAG 1.4.13)
+  const hideSoon = () => { leave.current = setTimeout(hide, 150); };
+
+  // Abre embaixo; se a altura real do card (que muda quando a análise chega) não couber, vira para cima do ícone.
+  useLayoutEffect(() => {
+    if (!pos || pos.top === undefined) return;
+    const r = btn.current!.getBoundingClientRect();
+    if (r.bottom + 8 + card.current!.offsetHeight > innerHeight - 8 && r.top > innerHeight - r.bottom) {
+      setPos({ left: pos.left, bottom: innerHeight - r.top + 8 });
+    }
+  }, [pos, state]);
+
+  // O anel começa vazio e anima até a nota ao abrir, e de novo se a análise chega com o card aberto.
+  useLayoutEffect(() => {
+    setDrawn(false);
+    if (!open) return;
+    // dois frames: o anel precisa ser pintado vazio antes, senão a transição não roda
+    let f = requestAnimationFrame(() => (f = requestAnimationFrame(() => setDrawn(true))));
+    return () => cancelAnimationFrame(f);
+  }, [open, state]);
+
+  useEffect(() => {
+    if (!open) return;
+    // toque fora fecha (no iOS o botão não ganha foco, então o blur não basta)
+    const outside = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) hide(); };
+    // Escape fecha mesmo quando o card abriu por hover, com o foco em outro lugar
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (box.current?.contains(document.activeElement)) btn.current?.focus();
+      hide();
+    };
+    addEventListener("scroll", hide, true);
+    addEventListener("resize", hide);
+    addEventListener("pointerdown", outside);
+    addEventListener("keydown", esc);
+    return () => {
+      removeEventListener("scroll", hide, true);
+      removeEventListener("resize", hide);
+      removeEventListener("pointerdown", outside);
+      removeEventListener("keydown", esc);
+    };
+  }, [open]);
+
+  const dim = state?.kind === "limited" || state?.kind === "unavailable";
+  return (
+    <span
+      ref={box}
+      className="ai"
+      onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; clearTimeout(leave.current); if (!open) show(); }}
+      onPointerLeave={(e) => e.pointerType === "mouse" && hideSoon()}
+      onFocus={() => !pointer.current && !open && show()}
+      onBlur={(e) => { pointer.current = ""; if (!box.current?.contains(e.relatedTarget as Node)) hide(); }}
+      // dentro do <summary> de um grupo, nenhum clique aqui (botão ou card) pode abrir/fechar o <details>
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+    >
+      <button
+        ref={btn}
+        type="button"
+        className={"ai-btn" + (state === null ? " busy" : "") + (dim ? " dim" : "")}
+        aria-label={t.label}
+        aria-expanded={open}
+        aria-controls={id}
+        onPointerDown={(e) => { pointer.current = e.pointerType; }}
+        onPointerCancel={() => { pointer.current = ""; }}
+        // mouse: o hover já abriu, o clique só mantém. Toque e teclado: alterna.
+        onClick={() => { if (pointer.current === "mouse" || !open) show(); else hide(); pointer.current = ""; }}
+      >
+        <Icon name="anthropic" />
+      </button>
+      {open && (
+        <div ref={card} id={id} role="dialog" aria-label={t.label} className="ai-card" style={pos}>
+          {state === null ? <p>{t.pending}</p>
+            : state.kind === "unavailable" ? <p>{t.unavailable}</p>
+            : state.kind === "limited" ? <p>{t.limited.replace("{n}", String(state.minutes))}</p>
+            : (
+              <>
+                <div className="ai-head">
+                  <span className="ai-ring-box">
+                    <svg viewBox="0 0 44 44" className="ai-ring" aria-hidden="true">
+                      <circle className="track" cx="22" cy="22" r="19" />
+                      <circle className="bar" cx="22" cy="22" r="19"
+                        style={{ strokeDasharray: RING_C, strokeDashoffset: drawn ? RING_C * (1 - state.match.score / 10) : RING_C }} />
+                    </svg>
+                    <b className="num">{state.match.score.toFixed(1)}</b>
+                  </span>
+                  {t.score}
+                </div>
+                <h4>{t.have}</h4>
+                <p>{state.match.matching.join(" · ") || t.noneHave}</p>
+                <h4>{t.missing}</h4>
+                <p>{state.match.missing.join(" · ") || t.noneMissing}</p>
+              </>
+            )}
+          <p className="ai-foot">{t.footer}</p>
+        </div>
+      )}
     </span>
   );
 }
