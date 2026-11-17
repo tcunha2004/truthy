@@ -10,14 +10,14 @@ import { getRedis } from "./redis";
 const MODEL = "global.anthropic.claude-haiku-4-5-20251001-v1:0";
 const TTL = 7 * 86400;
 
-export const matchEnabled = !!process.env.AWS_REGION && !!process.env.AWS_BEARER_TOKEN_BEDROCK;
+export const matchEnabled = !!process.env.BEDROCK_AWS_REGION && !!process.env.AWS_BEARER_TOKEN_BEDROCK;
 
 // Criado no primeiro uso, não no import: um build sem as variáveis não quebra.
 let client: AnthropicBedrock | undefined;
 
 const analyze = (lang: Lang, profile: Profile) => async (job: MatchJob): Promise<Match> => {
   try {
-    client ??= new AnthropicBedrock();
+    client ??= new AnthropicBedrock({ awsRegion: process.env.BEDROCK_AWS_REGION });
     const res = await client.messages.create(
       {
         model: MODEL,
