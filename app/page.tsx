@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { OpenStatus, SaveButton, SearchForm } from "./client";
 import { Icon } from "./icons";
 import { getCompanies } from "./db";
 import { dicts, getLang, locales } from "./i18n";
+import { getUser } from "./session";
 
 type Pay = { cur: string; min: number; max: number } | null;
 
@@ -22,6 +24,7 @@ const featured = new Set([
 ]);
 
 export default async function Home() {
+  if (await getUser()) redirect("/jobs"); // já logado: a home de quem entrou é Vagas, não a apresentação do app
   const lang = await getLang();
   const t = dicts[lang];
   const companies = (await getCompanies()).filter((c) => featured.has(c.slug));
