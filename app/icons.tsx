@@ -10,6 +10,8 @@ const paths = {
   moon: <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />,
   down: <path d="M12 5v14m-6-6 6 6 6-6" />,
   spark: <path d="M12 3c.7 4.6 3.4 7.3 9 9-5.6 1.7-8.3 4.4-9 9-.7-4.6-3.4-7.3-9-9 5.6-1.7 8.3-4.4 9-9Z" />,
+  // Marca da Anthropic (Simple Icons): glifo cheio, a única exceção aos ícones de contorno.
+  anthropic: <path className="fill" d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z" />,
 };
 
 export function Icon({ name, className = "" }: { name: keyof typeof paths; className?: string }) {

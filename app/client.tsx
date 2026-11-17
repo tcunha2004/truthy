@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useId, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
+import type { MatchState } from "./match";
 import { fold } from "./profile-options";
 import { setSaved } from "./saved-action";
 
@@ -176,6 +177,101 @@ export function OpenStatus({ ats, order, t }: { ats: string; order: number; t: D
     <span className={`status${checking ? " checking" : ""}`}>
       <Icon name="check" className="ck" />
       <b>{checking ? t.checking : `${t.openVia} ${ats}`}</b>
+    </span>
+  );
+}
+
+const CARD_W = 300;
+const RING_C = 2 * Math.PI * 19;
+
+// Ícone da análise por IA e o card de vidro. state null = analisando. Abre no hover (mouse), no foco (teclado)
+// e no toque; o card é fixed para escapar do overflow: hidden da lista, e vira para cima perto do fim da tela.
+export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["match"] }) {
+  const [pos, setPos] = useState<CSSProperties | null>(null);
+  const [drawn, setDrawn] = useState(false);
+  const id = useId();
+  const box = useRef<HTMLSpanElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  const pointer = useRef(""); // tipo do ponteiro do clique em curso; "" = teclado
+  const open = pos !== null;
+
+  const show = () => {
+    const r = btn.current!.getBoundingClientRect();
+    const left = Math.min(Math.max(16, r.right - CARD_W), innerWidth - CARD_W - 16);
+    setPos(innerHeight - r.bottom < 260 ? { left, bottom: innerHeight - r.top + 8 } : { left, top: r.bottom + 8 });
+  };
+  const hide = () => setPos(null);
+
+  useEffect(() => {
+    if (!open) return setDrawn(false);
+    // dois frames: o anel precisa ser pintado vazio antes, senão a transição não roda
+    let f = requestAnimationFrame(() => (f = requestAnimationFrame(() => setDrawn(true))));
+    // toque fora fecha (no iOS o botão não ganha foco, então o blur não basta)
+    const outside = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) hide(); };
+    addEventListener("scroll", hide, true);
+    addEventListener("resize", hide);
+    addEventListener("pointerdown", outside);
+    return () => {
+      cancelAnimationFrame(f);
+      removeEventListener("scroll", hide, true);
+      removeEventListener("resize", hide);
+      removeEventListener("pointerdown", outside);
+    };
+  }, [open]);
+
+  const dim = state?.kind === "limited" || state?.kind === "unavailable";
+  return (
+    <span
+      ref={box}
+      className="ai"
+      onPointerEnter={(e) => e.pointerType === "mouse" && show()}
+      onPointerLeave={(e) => e.pointerType === "mouse" && hide()}
+      onFocus={() => !pointer.current && !open && show()}
+      onBlur={(e) => !box.current?.contains(e.relatedTarget as Node) && hide()}
+      onKeyDown={(e) => { if (e.key === "Escape" && open) { hide(); btn.current?.focus(); } }}
+      // dentro do <summary> de um grupo, nenhum clique aqui (botão ou card) pode abrir/fechar o <details>
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+    >
+      <button
+        ref={btn}
+        type="button"
+        className={"ai-btn" + (state === null ? " busy" : "") + (dim ? " dim" : "")}
+        aria-label={t.label}
+        aria-expanded={open}
+        aria-controls={id}
+        onPointerDown={(e) => { pointer.current = e.pointerType; }}
+        // mouse: o hover já abriu, o clique só mantém. Toque e teclado: alterna.
+        onClick={() => { if (pointer.current === "mouse" || !open) show(); else hide(); pointer.current = ""; }}
+      >
+        <Icon name="anthropic" />
+      </button>
+      {open && (
+        <div id={id} role="dialog" aria-label={t.label} className="ai-card" style={pos}>
+          {state === null ? <p>{t.pending}</p>
+            : state.kind === "unavailable" ? <p>{t.unavailable}</p>
+            : state.kind === "limited" ? <p>{t.limited.replace("{n}", String(state.minutes))}</p>
+            : (
+              <>
+                <div className="ai-head">
+                  <span className="ai-ring-box">
+                    <svg viewBox="0 0 44 44" className="ai-ring" aria-hidden="true">
+                      <circle className="track" cx="22" cy="22" r="19" />
+                      <circle className="bar" cx="22" cy="22" r="19"
+                        style={{ strokeDasharray: RING_C, strokeDashoffset: drawn ? RING_C * (1 - state.match.score / 10) : RING_C }} />
+                    </svg>
+                    <b className="num">{state.match.score.toFixed(1)}</b>
+                  </span>
+                  {t.score}
+                </div>
+                <h4>{t.have}</h4>
+                <p>{state.match.matching.join(" · ") || t.noneHave}</p>
+                <h4>{t.missing}</h4>
+                <p>{state.match.missing.join(" · ") || t.noneMissing}</p>
+              </>
+            )}
+          <p className="ai-foot">{t.footer}</p>
+        </div>
+      )}
     </span>
   );
 }
