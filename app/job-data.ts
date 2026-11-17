@@ -3,27 +3,30 @@ import { db } from "./db";
 import type { ForYouFilters } from "./for-you";
 import { PAGE_SIZE, type JobFilters, type Pay } from "./job-query";
 
-// Tem que ser o mesmo modelo do worker (truthy-worker/internal/service/openai.go): vetores de modelos diferentes não se comparam.
-const EMBEDDING_MODEL = "text-embedding-3-small";
+// Voyage AI (da MongoDB). Tem que ser o mesmo modelo e dimensão do worker (truthy-worker/internal/service/api.go):
+// vetores de modelos diferentes não se comparam.
+const EMBEDDING_MODEL = "voyage-4";
+const EMBEDDING_DIMS = 1024; // jobs.embedding é vector(1024)
 
 export type JobVersion = Pay & { id: string; url: string; location: string | null; isRemote: boolean | null };
 export type JobGroup = { title: string; company: string; slug: string; versions: JobVersion[] };
 
-// Vetor da frase no formato texto do pgvector ("[0.1,…]"), ou null sem chave ou se a OpenAI falhar.
+// Vetor da frase no formato texto do pgvector ("[0.1,…]"), ou null sem chave ou se a Voyage falhar.
 // Com null a página continua de pé: lista por data e avisa que a busca por texto está indisponível.
-// Em cache por frase: trocar de página ou de filtro com a mesma busca não chama a OpenAI de novo.
+// Em cache por frase: trocar de página ou de filtro com a mesma busca não chama a Voyage de novo.
 // Memória primeiro (200 vetores ≈ 6 MB), depois Redis por 30 dias (sobrevive a restart; ~30 KB por frase).
 // O modelo vai na chave: trocou o modelo, os vetores antigos não são reaproveitados.
 export const embedQuery = cached(stored(`emb:${EMBEDDING_MODEL}:`, 30 * 86400, fetchEmbedding), 200);
 
 async function fetchEmbedding(q: string): Promise<string | null> {
-  const key = process.env.OPENAI_API_KEY;
+  const key = process.env.VOYAGEAI_API_KEY;
   if (!key) return null;
   try {
-    const res = await fetch("https://api.openai.com/v1/embeddings", {
+    const res = await fetch("https://ai.mongodb.com/v1/embeddings", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: EMBEDDING_MODEL, input: q }),
+      // input_type "query" aqui, "document" no worker: a Voyage ajusta cada lado da busca para o seu papel.
+      body: JSON.stringify({ model: EMBEDDING_MODEL, input: q, input_type: "query", output_dimension: EMBEDDING_DIMS }),
       signal: AbortSignal.timeout(5000),
       cache: "no-store",
     });
