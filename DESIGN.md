@@ -26,6 +26,13 @@ colors:
   accent-dark: "#30d158"
   accent-hover-dark: "#3ddc64"
   on-accent-dark: "#00230b"
+  canvas: "#f4f4f7"
+  field-cool: "#f0f2f7"
+  field-warm: "#f6f2ed"
+  canvas-dark: "#050506"
+  field-top-dark: "#1e1e22"
+  field-cool-dark: "#0e1117"
+  field-side-dark: "#131316"
   true-dark: "#30d158"
   false-dark: "#ff6961"
 typography:
@@ -106,7 +113,7 @@ spacing:
   list-width: "860px"
   search-width: "760px"
   tiles-width: "1240px"
-  nav-height: "48px"
+  nav-height: "48px (60px desktop: 44px capsule + 8px air)"
 components:
   button-primary:
     backgroundColor: "{colors.accent}"
@@ -193,11 +200,12 @@ The tone is calm and confident with one wink. The name is a programming joke (`r
 Light is the primary theme (white and #f5f5f7 bands, near-black ink). Dark is a full alternate (black and #161617 bands, a brighter green), switched by a sun/moon button and remembered per browser. Both themes are driven by the same CSS custom property names, so components never branch on theme. Confirmed rejections: looking like LinkedIn or Indeed (logo-card grids, corporate blue, sponsored slots), a terminal costume (black screen, green mono everywhere), and a cold, humourless finish.
 
 **Key Characteristics:**
-- Alternating full-width bands: white, #f5f5f7, and one full-bleed inverse (black) band per page at most.
+- A fixed neutral ambient field (the "wallpaper") under every page; alternate bands are a soft `surface` veil over it, plus one full-bleed inverse (black) band per page at most.
+- Liquid Glass (iOS 27) on the control layer only; content stays solid.
 - Display type at 650 weight with tight negative tracking (-0.035em); body at 17px / 1.47.
 - One accent: truthy green, used for the primary action, links, the open state, and saved state.
 - Pills for every control (buttons, chips, search bar, company links); 18px and 28px radii for containers.
-- Flat, soft depth: one ambient shadow token plus 1px hairlines, never hard edges.
+- iOS 27 depth: defined dark edges and a specular top highlight instead of big drop shadows; never hard offset edges.
 - Monospace only for the literal `true` / `false`.
 - Bilingual EN / PT-BR; layouts must survive PT strings that run ~20-30% longer.
 
@@ -215,9 +223,11 @@ A near-monochrome Apple-grey palette with a single green voice and a red reserve
 
 ### Neutral
 - **Page White / Black** (`bg`): default band and page background.
-- **Apple Mist** (`bg-alt`; dark #161617): alternate bands, the listing stage, footer, company-logo placeholders, inner panels inside tiles (flow steps, mini lists), empty states.
+- **Ambient Field** (`canvas` + `field-*`; `--field` on a fixed `body::before`): the page background everywhere. Neutral radial light only, never green; its darkest stop stays at or above #f0f2f6 so `ink-2` keeps 4.5:1 anywhere on it. Dark: near-black with a soft grey glow at the top.
+- **Veil** (`--veil`, `surface` at 45%): alternate bands (`.band.alt`) over the field.
+- **Apple Mist** (`bg-alt`; dark #161617): company-logo placeholders, inner panels inside tiles (flow steps, mini lists), the onboarding progress track.
 - **Inverse Band** (`bg-inverse`, `ink-inverse`, `ink-inverse-2`): the single full-bleed contrast band (black on light theme, #f5f5f7 on dark theme) and the ledger cells inside it.
-- **Surface** (`surface`; dark #1d1d1f): raised cards that sit on `bg-alt`: the job list, tiles, search bar, inputs, company pills.
+- **Surface** (`surface`; dark #1d1d1f): solid content on the field: the job list, tiles, company tiles, auth card, profile sections, empty states, inputs.
 - **Ink** (`ink`): headlines, body, nav links (at 0.82 opacity), selected chip fill.
 - **Ink Secondary** (`ink-2`): leads, meta lines, provenance, salary sub-labels, placeholders, field labels, the closed job title.
 - **Hairline** (`line`): input and chip borders, search-field dividers, swatch outlines. Row dividers use it at 70% mix; the nav border at 60%.
@@ -264,7 +274,7 @@ All numbers (salaries, stats) use `font-variant-numeric: tabular-nums`.
 The page is a vertical stack of full-width bands. Content sits in a centered column `width: min(980px, 100% - 32px)` (16px gutters on mobile). Wider and narrower measures are deliberate: the job list is 860px max, the search bar 760px max, the tile grid 1240px max (`100% - 24px`).
 
 - **Bands:** 120px vertical padding (80px at ≤860px). Order alternates `bg` and `bg-alt`, with at most one `bg-inverse` band. Band content is usually centered text above a component.
-- **Hero:** 88px top padding (56px on mobile), centered. Display → 18px → lead → 40px → search bar → 18px → filter chips (8px gap, wrap, centered) → 22px → provenance line. The listing stage starts 56px below, on `bg-alt`, with 56px top / 72px bottom padding, so the list appears to rest on a grey plinth.
+- **Hero:** 88px top padding (56px on mobile), centered. Display → 18px → lead → 40px → search bar → 18px → filter chips (8px gap, wrap, centered) → 22px → provenance line. The listing stage starts 56px below with 56px top / 72px bottom padding; the solid list rests directly on the ambient field.
 - **Tiles:** two columns at 1.15fr / 1fr with a 12px gap; each tile is 520px min-height with 48px padding and its visual pushed to the bottom (`margin-top: auto`).
 - **Ledger:** three equal columns separated by 1px gaps (the gap shows a 16% ink-inverse mix as the divider), 28px cell padding, 64px below the lead.
 - **Job row grid:** `44px 1fr auto auto` (logo, title + meta, salary, save), 16px gap, 18px / 20px padding.
@@ -281,15 +291,23 @@ One easing for everything: `cubic-bezier(.16, 1, .3, 1)` (fast out, long settle)
 
 ## Elevation & Depth
 
-Depth is soft and mostly tonal: raised surfaces are `surface` on a `bg-alt` stage, separated by a single diffuse ambient shadow plus 1px inset hairlines. Nothing has a hard or offset shadow, and nothing lifts on hover.
+Two layers, following iOS 27 Liquid Glass. The **content layer** (job lists, tiles, cards, forms) is solid `surface` on the ambient field, separated by a defined edge. The **control layer** (nav, search bars, chips, filter pill and panel, company pills, combobox list, bottom bars) is glass floating above it. Nothing has a hard or offset shadow, and nothing lifts on hover.
 
 ### Shadow Vocabulary
-- **Ambient** (`box-shadow: 0 4px 24px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.05)`; dark `0 4px 24px rgba(0,0,0,.5)`): the job list and the search bar. The only shadow token.
-- **Hairline Ring** (`box-shadow: inset 0 0 0 1px var(--line)`): search bar, company pills, swatches. Used instead of `border` so it doesn't affect layout; hover swaps the ring to `ink-2`.
+- **Edge** (`--shadow`: `0 0 0 1px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.05)`; dark a 7% white ring plus `0 8px 28px rgba(0,0,0,.5)`): every solid content card (job list, tiles, company tiles, auth card, profile sections, empty states).
+- **Glass** (`--glass` tint, `--glass-fx: blur(24px) saturate(180%)`, `--glass-edge`): white at 58% (dark: `rgb(72 72 78 / .5)`, lighter than before, as in iOS 27). The edge is a specular 1px top highlight, a light inner rim and the iOS 27 darkened outer edge (`rgba(0,0,0,.08)`; dark `.7`). Hover uses `--glass-strong` (82%). Popovers (combobox) use `--glass-strong` as their resting tint.
+- **Lift** (`--lift: 0 8px 24px rgba(0,0,0,.07)`): only on glass that floats over content (nav capsule, search bars, combobox list).
+- **Bar** (`--bar`, `bg` at 80% with the glass blur and a 60% hairline): the iOS 27 uniform toolbar, used by the scrolled nav, the save bar and the mobile onboarding footer.
+- **Prominent highlight** (`--btn-spec`, inset 1px white at 24%; dark 35%): primary buttons, the tinted-glass reading of the accent.
+- **Hairline Ring** (`box-shadow: inset 0 0 0 1px var(--line)`): segmented controls, choice cards, swatches, and chips placed inside a glass container.
 - **Focus Ring** (`outline: 3px solid var(--focus)`, offset 2px; `--focus` is the accent at 40% light / 45% dark): every focusable element via `:focus-visible`. Inputs use `box-shadow: 0 0 0 4px var(--focus)` with an accent border; the search bar uses an inset 2px accent ring on `:focus-within`.
 
 ### Named Rules
-**The Glass Nav Rule.** The only translucent surface is the sticky 48px nav: `bg` at 80% with `backdrop-filter: saturate(180%) blur(20px)` and a 60% hairline underneath. No other glass panels.
+**The Control Layer Rule.** Glass is only for controls and navigation that float above content. Lists, tiles, cards and forms are never glass.
+
+**The No Glass on Glass Rule.** A control inside a glass container (a chip inside the search bar or the filter panel) drops to the hairline ring.
+
+**The System Decides Transparency Rule.** No in-app transparency control. `prefers-reduced-transparency: reduce` or `prefers-contrast: more` turns every glass and bar token solid (`surface` / `bg`, no blur); `prefers-contrast: more` also swaps the glass edge for a 1px `ink-2` ring.
 
 ## Shapes
 
@@ -311,13 +329,13 @@ Calm, solid pills; colour does the work, not shadow.
 - **Text link with chevron:** accent text plus a 0.7em chevron, underline on hover. Used for outbound and "see all" actions ("Apply on Greenhouse", "Browse all companies").
 
 ### Chips
-- **Style:** 34px pill, 1px `line` border, transparent, 14px ink text, 14px padding.
-- **State:** toggle buttons with `aria-pressed`. Selected inverts to `ink` fill with `bg` text (white chip on dark theme, black chip on light). Hover darkens the border to `ink-2`. Filter only; chips are never used as status badges.
+- **Style:** 34px glass pill (glass + glass edge, transparent 1px border), 14px ink text, 14px padding. Inside a glass container (search bar, filter panel) it is transparent with a 1px `line` border instead.
+- **State:** toggle buttons with `aria-pressed`. Selected inverts to `ink` fill with `bg` text (white chip on dark theme, black chip on light). Hover raises the tint to `--glass-strong` (or darkens the border to `ink-2` for hairline chips). Filter only; chips are never used as status badges.
 
 ### Search Bar (signature)
-- 760px max pill on `surface`, 6px inner padding, ambient shadow plus hairline ring. Grid `1.4fr 1fr auto`: role/skill field, location field (divided by a hairline), primary button.
+- 760px max glass pill (glass + glass edge + lift), 6px inner padding. Grid `1.4fr 1fr auto`: role/skill field, location field (divided by a hairline), primary button.
 - Each field is 52px tall with an `ink-2` 1em outline icon (search, pin) and a borderless 17px input.
-- `:focus-within` swaps the hairline for a 2px inset accent ring. Stacks at ≤860px (see Layout).
+- `:focus-within` adds a 2px inset accent ring. Stacks at ≤860px (see Layout).
 - **Single-field variant** (`.search.one`, jobs page and landing): grid `1fr auto`, one free-text field ("Describe the job") and the primary button. Used once location became a filter instead of a field.
 
 ### Inputs / Fields
@@ -332,8 +350,8 @@ Calm, solid pills; colour does the work, not shadow.
 - Items the user typed in (stack) render as selected chips with a 22px circular remove button (x icon) and enter with a short scale-in.
 
 ### Filter Panel
-- A native `<details>` under the search bar. The summary is a quiet 34px pill ("Filters · 2 active", chevron rotating from down to up), with an 8% ink wash on hover; it starts open when any filter is active.
-- Open, it shows a `surface` panel, 18px radius, 1px inset `line` ring (no shadow; the search bar above keeps the only ambient shadow), 24px padding, 20px between groups: choice chips in fieldsets with 13px `ink-2` legends, then a two-column row of Fields with native `<select>`, then a small primary "Apply filters" and a quiet "Clear filters".
+- A native `<details>` under the search bar. The summary is a 34px glass pill ("Filters · 2 active", chevron rotating from down to up), `--glass-strong` on hover; it starts open when any filter is active.
+- Open, it shows a glass panel (glass + glass edge, no lift), 18px radius, 24px padding; its chips drop to the hairline ring (No Glass on Glass), 20px between groups: choice chips in fieldsets with 13px `ink-2` legends, then a two-column row of Fields with native `<select>`, then a small primary "Apply filters" and a quiet "Clear filters".
 - Works without JavaScript: it lives inside the search `<form>`, which submits with GET.
 
 ### Choice Cards
@@ -346,13 +364,13 @@ Calm, solid pills; colour does the work, not shadow.
 - Two native range inputs stacked on one 4px track. Track is `line`, the selected span is `accent`. Thumbs are 28px `surface` circles with the ambient shadow and a hairline ring; focus adds the 4px `--focus` halo. Thumbs never cross; editable amount fields (field style, currency symbol in `ink-2`, tabular numbers) sit below and stay in sync.
 
 ### Combobox
-- A field with a listbox below: `surface`, 12px radius, ambient shadow plus hairline ring, 6px padding; options 15px with 8px radius, hover/active on `bg-alt`. Arrow keys move, Enter picks, Esc closes.
+- A field with a listbox below: glass at `--glass-strong` with glass edge and lift, 12px radius, 6px padding; options 15px with 6px radius (concentric), hover/active on a 7% ink wash. Arrow keys move, Enter picks, Esc closes.
 
 ### Progress Bar
 - 3px bar pinned under the nav on `bg-alt`; the filled part is `accent` and grows with `transform: scaleX` from the left. Only used in onboarding, which hides the footer and the nav's Finish profile shortcut so the flow stays focused.
 
 ### Save Bar
-- Fixed to the bottom, same translucent blur as the nav, hairline on top. Slides up only when there are unsaved changes, shows the state in 13px `ink-2` and a small primary button. Also the mobile home of the onboarding "Continue" button.
+- Fixed to the bottom, the Bar material (see Elevation), hairline on top. Slides up only when there are unsaved changes, shows the state in 13px `ink-2` and a small primary button. Also the mobile home of the onboarding "Continue" button.
 
 ### Step Transition
 - Onboarding steps slide 48px and fade: out to the left and in from the right when going forward, mirrored when going back (View Transitions API). Single-choice steps advance 300ms after a pointer pick; keyboard selection never advances on its own. All of it is off under `prefers-reduced-motion`.
@@ -372,7 +390,7 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 - **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
 
 ### Saved Page
-- Same frame as the jobs page (hero with headline and lead, then the `bg-alt` stage). Two job lists, "Still open" first and "Closed" below, each under a 21px / 650 heading with its count in `ink-2`, 40px apart; each list goes from most recently saved to oldest. A section with no jobs is not shown.
+- Same frame as the jobs page (hero with headline and lead, then the stage on the ambient field). Two job lists, "Still open" first and "Closed" below, each under a 21px / 650 heading with its count in `ink-2`, 40px apart; each list goes from most recently saved to oldest. A section with no jobs is not shown.
 - Closed rows use the Job Row closed state with the real time: "Closed · removed from <ATS> <time ago>", no link on the title.
 - Removing a save keeps the row (outline bookmark) until the user leaves the page, so a misclick can be undone in place.
 - Empty: the Empty State with "No saved jobs yet." and a quiet "Browse jobs" button.
@@ -387,19 +405,19 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 Inside the inverse band: a 3-column grid of facts on 18px-radius 1px-gap dividers. Each cell is a 14px `ink-inverse-2` label, a 40px Stat figure, and a 15px explanation. Use for durable, verifiable facts only (0 sponsored posts, ATS source, `false` on close); never invented user counts.
 
 ### Company Pill
-Pill link on `surface` with a hairline ring, 30px circular logo initial, company name at 15px / 500 and the ATS name at 13px `ink-2`. Hover darkens the ring; no underline. Wrap in a centered flex row with 10px gaps.
+Glass pill link (glass + glass edge), 30px circular logo initial, company name at 15px / 500 and the ATS name at 13px `ink-2`. Hover raises the tint to `--glass-strong`; no underline. Wrap in a centered flex row with 10px gaps.
 
 ### Empty State
-18px-radius `bg-alt` panel (`surface` when it sits on a `bg-alt` stage), 40px padding, centered, max 520px with a 16px gutter: 21px ink title, `ink-2` explanation that names the likely cause, and one small quiet button to undo it (a second one sits 8px to its right).
+18px-radius `surface` panel with the Edge shadow, 40px padding, centered, max 520px with a 16px gutter: 21px ink title, `ink-2` explanation that names the likely cause, and one small quiet button to undo it (a second one sits 8px to its right).
 
 ### Navigation
-- Sticky 48px glass bar (see The Glass Nav Rule). Content 13px, 28px gap between groups.
+- Desktop (>860px): a 44px glass capsule, `min(1012px, 100% - 16px)` wide, floating 8px below the top (pill radius, glass + lift, 18px / 7px inner padding). As the page scrolls the first 64px it merges into the Bar: the capsule fades out while the full-width bar and its hairline fade in (CSS scroll-driven animation, `animation-timeline: scroll(root)`; browsers without it keep the capsule; reduced motion keeps the capsule). Mobile: always the Bar. Content 13px, 28px gap between groups.
 - Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600. Signed out, the section links are hidden: the bar is only the wordmark, EN/PT, the theme toggle and Sign in.
 - Right: EN / PT segmented toggle (12px, 6px radius; active is 600 weight on an 8% ink wash, `aria-pressed`), a 32px circular sun/moon theme button (`aria-label` names the target theme; choice stored in `localStorage` under `theme`, default light), and a small primary Sign in button.
 - Mobile: see Responsive; nothing wraps and the bar never scrolls sideways.
 
 ### Footer
-`bg-alt`, 12px `ink-2`, a hairline above, tagline left and "truthy · year" right.
+On the ambient field (no fill), 12px `ink-2`, a hairline above, tagline left and "truthy · year" right.
 
 ## Do's and Don'ts
 
@@ -419,6 +437,6 @@ Pill link on `surface` with a hairline ring, 30px circular logo initial, company
 - **Don't** highlight a listing with color, badges, borders or position that the user didn't choose.
 - **Don't** use green as a decorative fill or headline color; it is for action and "true" only.
 - **Don't** put white text on the dark-theme green; use `on-accent` (#00230b).
-- **Don't** add hard or offset shadows, hover lifts, or extra glass panels beyond the nav.
+- **Don't** add hard or offset shadows or hover lifts, and don't put glass on content (lists, tiles, cards) or glass on glass.
 - **Don't** add uppercase eyebrows or kicker labels above headlines.
 - **Don't** invent metrics, logos, or testimonials; show only what the data confirms.
