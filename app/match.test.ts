@@ -143,3 +143,9 @@ test("matchAll: save falhando não derruba o resultado", async () => {
   const out = await settle(matchAll(["1"], "P:", deps));
   assert.equal(out[1].kind, "ok");
 });
+
+test("matchAll: banco falhando depois do take → cacheadas continuam ok, o resto unavailable", async () => {
+  const { deps } = fake({ cache: { "P:1": JSON.stringify(m) }, jobs: async () => { throw new Error("pg down"); } });
+  const out = await settle(matchAll(["1", "2"], "P:", deps));
+  assert.deepEqual(out, { 1: { kind: "ok", match: m }, 2: { kind: "unavailable" } });
+});

@@ -152,7 +152,8 @@ export function matchAll(ids: string[], prefix: string, deps: MatchDeps): Map<st
     if (!t) missing.forEach((id) => rest.set(id, unavailable));
     else if (!t.ok) missing.forEach((id) => rest.set(id, { kind: "limited", minutes: t.minutes }));
     else {
-      const rows = new Map((await deps.jobs(missing)).map((j) => [j.id, j]));
+      // banco fora não derruba as que já estavam no cache
+      const rows = new Map((await deps.jobs(missing).catch(() => [])).map((j) => [j.id, j]));
       missing.forEach((id) => rest.set(id, rows.get(id) ?? unavailable));
     }
     return { cached, missing: rest };
