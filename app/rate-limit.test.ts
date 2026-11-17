@@ -80,3 +80,7 @@ test("limits tem os números da spec", () => {
   assert.deepEqual(limits.loginIp("x"), { key: "rl:login:ip:x", max: 20, windowSec: 900 });
   assert.deepEqual(limits.signupIp("x"), { key: "rl:signup:ip:x", max: 10, windowSec: 3600 });
 });
+
+test("limits.matchUser: 20 por hora, por usuário", () => {
+  assert.deepEqual(limits.matchUser("42"), { key: "rl:match:user:42", max: 20, windowSec: 3600 });
+});
