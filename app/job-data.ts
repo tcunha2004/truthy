@@ -42,9 +42,11 @@ async function fetchEmbedding(q: string): Promise<string | null> {
 // Corte de relevância: com busca por texto, só entram grupos a até RELEVANCE_CUTOFF da distância do melhor
 // resultado (já com os filtros). Relativo e não absoluto porque frases curtas têm distâncias sempre maiores:
 // a melhor vaga para "react" fica a 0,65, mais longe que lixo para frases longas.
-// Calibrado para text-embedding-3-small em 2026-10-16 (+0,15 escondia vagas reais de iOS e Salesforce).
-// Trocou o modelo, recalibre.
-const RELEVANCE_CUTOFF = 0.18;
+// Calibrado para voyage-4 em 2026-11-17, simulando 24 buscas sobre as 7.336 vagas de produção: até +0,15 o que entra
+// ainda é da área (react, java, python, go, .net, iOS, Salesforce: 94–100% citam a tecnologia no título ou na stack);
+// depois disso vem lixo (sap e flutter caem para ~35% em +0,18). Abaixo de +0,12 somem metade das vagas de react,
+// java e python. Trocou o modelo, recalibre.
+const RELEVANCE_CUTOFF = 0.15;
 
 // Um SQL só: filtra, agrupa por empresa + título, corta pela relevância, ordena e pagina. Com vetor ($1),
 // ordena pela versão mais próxima do grupo; sem vetor, dist é NULL em todos, nada é cortado e vale a
