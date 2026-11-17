@@ -36,7 +36,7 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const active = activeFilters(f);
   const clearHref = jobsHref({ ...NO_FILTERS, q: f.q });
   const meta = profile && forYouMeta(profile, locale, t, dicts[lang].ob.where);
-  // A parte lenta (embedding na OpenAI + busca) não segura a página: se passar do orçamento do Stream, o topo sai antes e o resto chega por streaming.
+  // A parte lenta (embedding na Voyage + busca) não segura a página: se passar do orçamento do Stream, o topo sai antes e o resto chega por streaming.
   // Criada por último, para nenhum throw acima deixar a promise sem ninguém esperando.
   const prov = (count: string | false) => (
     <p className="prov">

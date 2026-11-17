@@ -27,7 +27,7 @@ export function Checking({ text }: { text: string }) {
 // Suspense que só faz streaming quando os dados demoram. Depois que um fallback aparece, o React segura a troca
 // pelo conteúdo por 300 ms (throttle interno), mesmo com os dados chegando 10 ms depois: a lista piscava
 // "Carregando" e saía em ~330 ms. Esperando um pouco antes, dado rápido (banco, vetor em cache) sai junto com
-// o topo; só o lento (OpenAI sem cache) vira fallback + streaming.
+// o topo; só o lento (Voyage sem cache) vira fallback + streaming.
 // ponytail: orçamento fixo de 200 ms; remedir se as consultas passarem disso.
 export async function Stream<T>({ data, fallback, children }: { data: Promise<T>; fallback?: ReactNode; children: (value: T) => ReactNode }) {
   const ready = await Promise.race([data, new Promise<undefined>((r) => setTimeout(r, 200))]);
