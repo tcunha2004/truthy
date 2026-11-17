@@ -44,7 +44,9 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
       <span>{[count, lastRead && `${t.checked} ${ago(lastRead, lang)}`, "Lever\u00a0· Greenhouse"].filter(Boolean).join("\u00a0· ")}</span>
     </p>
   );
-  const results = loadResults(user.id, f, profile ? forYouQuery(profile) : f.q || null, fy);
+  // Busca manual sem texto nem filtro não é busca: nada é consultado e a lista pede uma.
+  const idle = f.mode === "search" && !f.q && active === 0;
+  const results = idle ? null : loadResults(user.id, f, profile ? forYouQuery(profile) : f.q || null, fy);
 
   return (
     <main className="co-page">
@@ -128,19 +130,19 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
           )}
 
           {/* Enquanto a busca roda, a linha sai sem a contagem: o carregamento fica só na lista */}
-          <Stream data={results} fallback={prov(false)}>
+          {results ? <Stream data={results} fallback={prov(false)}>
             {({ vector, total, groups }) => (
               <>
                 {fy ? !vector && <p className="jf-notice" role="status">{t.forYouDown}</p> : f.q && !vector && <p className="jf-notice" role="status">{t.textDown}</p>}
                 {prov(groups.length > 0 && `${num.format(total)} ${total === 1 ? t.one : t.many}`)}
               </>
             )}
-          </Stream>
+          </Stream> : prov(false)}
         </div>
       </section>
 
       <div className="co-stage">
-        <Stream data={results} fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
+        {results ? <Stream data={results} fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
           {({ total, groups, savedIds }) => {
             const pages = pageCount(total);
             return groups.length > 0 ? (
@@ -179,7 +181,12 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
               </div>
             );
           }}
-        </Stream>
+        </Stream> : (
+          <div className="empty">
+            <b>{t.idleH}</b>
+            <p>{t.idleP}</p>
+          </div>
+        )}
       </div>
     </main>
   );
