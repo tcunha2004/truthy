@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { useActionState, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "./icons";
@@ -192,15 +192,24 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
   const id = useId();
   const box = useRef<HTMLSpanElement>(null);
   const btn = useRef<HTMLButtonElement>(null);
+  const card = useRef<HTMLDivElement>(null);
   const pointer = useRef(""); // tipo do ponteiro do clique em curso; "" = teclado
   const open = pos !== null;
 
   const show = () => {
     const r = btn.current!.getBoundingClientRect();
-    const left = Math.min(Math.max(16, r.right - CARD_W), innerWidth - CARD_W - 16);
-    setPos(innerHeight - r.bottom < 260 ? { left, bottom: innerHeight - r.top + 8 } : { left, top: r.bottom + 8 });
+    setPos({ left: Math.min(Math.max(16, r.right - CARD_W), innerWidth - CARD_W - 16), top: r.bottom + 8 });
   };
   const hide = () => setPos(null);
+
+  // Abre embaixo; se a altura real do card (que muda quando a análise chega) não couber, vira para cima do ícone.
+  useLayoutEffect(() => {
+    if (!pos || pos.top === undefined) return;
+    const r = btn.current!.getBoundingClientRect();
+    if (r.bottom + 8 + card.current!.offsetHeight > innerHeight - 8 && r.top > innerHeight - r.bottom) {
+      setPos({ left: pos.left, bottom: innerHeight - r.top + 8 });
+    }
+  }, [pos, state]);
 
   useEffect(() => {
     if (!open) return setDrawn(false);
@@ -246,7 +255,7 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
         <Icon name="anthropic" />
       </button>
       {open && (
-        <div id={id} role="dialog" aria-label={t.label} className="ai-card" style={pos}>
+        <div ref={card} id={id} role="dialog" aria-label={t.label} className="ai-card" style={pos}>
           {state === null ? <p>{t.pending}</p>
             : state.kind === "unavailable" ? <p>{t.unavailable}</p>
             : state.kind === "limited" ? <p>{t.limited.replace("{n}", String(state.minutes))}</p>
