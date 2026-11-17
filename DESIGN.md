@@ -430,6 +430,7 @@ On the ambient field (no fill), 12px `ink-2`, a hairline above, tagline left and
 - **Do** write every string in both EN and PT-BR and test layouts with the PT version.
 - **Do** use the single ease `cubic-bezier(.16, 1, .3, 1)` and honour `prefers-reduced-motion`.
 - **Do** inline outline SVG icons at 1em, stroke 1.6, `currentColor`.
+- **Exception:** the AI match button on `/jobs` shows the filled Claude mark in its brand orange (`--claude`, #D97757). That color is used nowhere else. The card it opens is content (solid `surface`, `shadow` + `lift`), not glass, so the analysis stays readable over the list.
 
 ### Don't:
 - **Don't** look like LinkedIn or Indeed: no grids of logo cards, no corporate blue, no sponsored or featured slots.

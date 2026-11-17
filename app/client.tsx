@@ -277,7 +277,7 @@ export function MatchTip({ data, t }: { data: Promise<MatchState>; t: Dict["matc
         // mouse: o hover já abriu, o clique só mantém. Toque e teclado: alterna.
         onClick={() => { if (pointer.current === "mouse" || !open) show(); else hide(); pointer.current = ""; }}
       >
-        <Icon name="anthropic" />
+        <Icon name="claude" />
       </button>
       {open && (
         <div ref={card} id={id} role="dialog" aria-label={t.label} className="ai-card" style={pos}>
