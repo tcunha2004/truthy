@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SaveJob } from "../client";
+import { MatchTip, SaveJob } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
 import { ago, dicts, getLang, locales, type Dict, type Lang } from "../i18n";
@@ -8,7 +8,7 @@ import { forYouFilters, forYouQuery, forYouScope, forYouStack, type ForYouFilter
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters, type RawParams } from "../job-query";
 import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
-import { Checking, JobRow, Logo, MatchSlot, Stream, where } from "../job-row";
+import { Checking, JobRow, Logo, Stream, where } from "../job-row";
 import { MATCH_TOP, type MatchState } from "../match";
 import { loadMatches, matchEnabled } from "../match-data";
 import { getSavedIds } from "../saved";
@@ -24,12 +24,11 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
   const locale = locales[lang];
   const t = dicts[lang].jobs;
   const tj = dicts[lang].job;
-  const [companies, present] = await Promise.all([getCompanies(), getJobCountries()]);
+  // O perfil também entra na busca manual: a análise por IA compara cada vaga com ele.
+  const [companies, present, profile] = await Promise.all([getCompanies(), getJobCountries(), getProfile(user.id, user.name)]);
   const f = parseJobParams(await searchParams, companies.map((c) => c.slug));
 
   // Para você: o perfil vira a frase do embedding e os filtros duros. Busca normal: só o que foi digitado.
-  // O perfil também entra na busca manual: a análise por IA compara cada vaga com ele.
-  const profile = await getProfile(user.id, user.name);
   const fy = f.mode === "forYou" ? forYouFilters(profile) : null;
   const bySlug = new Map(companies.map((c) => [c.slug, c]));
   // Só países que aparecem em alguma vaga; códigos fora do ISO somem aqui em vez de virar opção quebrada.
@@ -200,7 +199,7 @@ async function loadResults(userId: string, f: JobFilters, phrase: string | null,
   const vector = phrase ? await embedQuery(phrase) : null;
   const { total, groups } = await searchJobs(f, vector, fy);
   // Sem await: a lista sai já, e cada ícone das 10 primeiras linhas espera só a sua análise.
-  const matches = matchEnabled && f.page === 1
+  const matches = matchEnabled && f.page === 1 && groups.length > 0
     ? loadMatches(userId, lang, profile, groups.slice(0, MATCH_TOP).map((g) => g.versions[0].id))
     : null;
   const savedIds = await getSavedIds(userId, groups.flatMap((g) => g.versions.map((v) => v.id)));
@@ -252,7 +251,7 @@ function GroupRow({ g, co, savedIds, locale, t, tj, match, tm }: {
             {status}
           </div>
         </div>
-        {match && <MatchSlot data={match} t={tm} />}
+        {match && <MatchTip data={match} t={tm} />}
         {payCell}
         <span className="caret" aria-hidden="true"><Icon name="chev" /></span>
       </summary>

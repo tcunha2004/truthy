@@ -35,19 +35,6 @@ export async function Stream<T>({ data, fallback, children }: { data: Promise<T>
   return ready !== undefined ? children(ready) : <Suspense fallback={fallback}>{data.then(children)}</Suspense>;
 }
 
-async function MatchResolved({ data, t }: { data: Promise<MatchState>; t: Dict["match"] }) {
-  return <MatchTip state={await data} t={t} />;
-}
-
-// Ícone da análise por IA. Suspense próprio (não Stream): cada ícone sai quando a sua análise chega.
-export function MatchSlot({ data, t }: { data: Promise<MatchState>; t: Dict["match"] }) {
-  return (
-    <Suspense fallback={<MatchTip state={null} t={t} />}>
-      <MatchResolved data={data} t={t} />
-    </Suspense>
-  );
-}
-
 export function Logo({ co, name }: { co: Company | undefined; name: string }) {
   return co?.logo
     ? <img className="logo" src={co.logo} alt="" width={44} height={44} />
@@ -80,7 +67,7 @@ export function JobRow({ v, title, company, co, saved, closed, locale, t, tj, ma
             : <span className="status"><Icon name="check" className="ck" /><b>{tj.openVia} {co?.ats ?? ""}</b></span>}
         </div>
       </div>
-      {match && tm && <MatchSlot data={match} t={tm} />}
+      {match && tm && <MatchTip data={match} t={tm} />}
       <div className="pay num">
         {pay ?? "—"}
         <small>{pay ? tj.perMonth : tj.noPay}</small>

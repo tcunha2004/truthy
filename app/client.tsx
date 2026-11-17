@@ -184,9 +184,17 @@ export function OpenStatus({ ats, order, t }: { ats: string; order: number; t: D
 const CARD_W = 300;
 const RING_C = 2 * Math.PI * 19;
 
-// Ícone da análise por IA e o card de vidro. state null = analisando. Abre no hover (mouse), no foco (teclado)
-// e no toque; o card é fixed para escapar do overflow: hidden da lista, e vira para cima perto do fim da tela.
-export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["match"] }) {
+// Ícone da análise por IA e o card de vidro. Abre no hover (mouse), no foco (teclado) e no toque; o card é fixed
+// para escapar do overflow: hidden da lista, e vira para cima perto do fim da tela.
+// Recebe a promise do servidor e fica montado o tempo todo: um fallback de Suspense ainda em streaming não é
+// hidratado (ícone sem handlers), e trocar de componente quando a análise chega fecharia o card aberto.
+export function MatchTip({ data, t }: { data: Promise<MatchState>; t: Dict["match"] }) {
+  const [state, setState] = useState<MatchState | null>(null); // null = analisando
+  useEffect(() => {
+    let live = true;
+    data.then((s) => live && setState(s));
+    return () => { live = false; };
+  }, [data]);
   const [pos, setPos] = useState<CSSProperties | null>(null);
   const [drawn, setDrawn] = useState(false);
   const id = useId();
@@ -194,13 +202,16 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
   const btn = useRef<HTMLButtonElement>(null);
   const card = useRef<HTMLDivElement>(null);
   const pointer = useRef(""); // tipo do ponteiro do clique em curso; "" = teclado
+  const leave = useRef<ReturnType<typeof setTimeout>>(undefined);
   const open = pos !== null;
 
   const show = () => {
     const r = btn.current!.getBoundingClientRect();
     setPos({ left: Math.min(Math.max(16, r.right - CARD_W), innerWidth - CARD_W - 16), top: r.bottom + 8 });
   };
-  const hide = () => setPos(null);
+  const hide = () => { clearTimeout(leave.current); setPos(null); };
+  // o card fica 8px longe do ícone: a espera deixa o mouse atravessar o vão e parar em cima dele (WCAG 1.4.13)
+  const hideSoon = () => { leave.current = setTimeout(hide, 150); };
 
   // Abre embaixo; se a altura real do card (que muda quando a análise chega) não couber, vira para cima do ícone.
   useLayoutEffect(() => {
@@ -211,20 +222,34 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
     }
   }, [pos, state]);
 
-  useEffect(() => {
-    if (!open) return setDrawn(false);
+  // O anel começa vazio e anima até a nota ao abrir, e de novo se a análise chega com o card aberto.
+  useLayoutEffect(() => {
+    setDrawn(false);
+    if (!open) return;
     // dois frames: o anel precisa ser pintado vazio antes, senão a transição não roda
     let f = requestAnimationFrame(() => (f = requestAnimationFrame(() => setDrawn(true))));
+    return () => cancelAnimationFrame(f);
+  }, [open, state]);
+
+  useEffect(() => {
+    if (!open) return;
     // toque fora fecha (no iOS o botão não ganha foco, então o blur não basta)
     const outside = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) hide(); };
+    // Escape fecha mesmo quando o card abriu por hover, com o foco em outro lugar
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      if (box.current?.contains(document.activeElement)) btn.current?.focus();
+      hide();
+    };
     addEventListener("scroll", hide, true);
     addEventListener("resize", hide);
     addEventListener("pointerdown", outside);
+    addEventListener("keydown", esc);
     return () => {
-      cancelAnimationFrame(f);
       removeEventListener("scroll", hide, true);
       removeEventListener("resize", hide);
       removeEventListener("pointerdown", outside);
+      removeEventListener("keydown", esc);
     };
   }, [open]);
 
@@ -233,11 +258,10 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
     <span
       ref={box}
       className="ai"
-      onPointerEnter={(e) => e.pointerType === "mouse" && show()}
-      onPointerLeave={(e) => e.pointerType === "mouse" && hide()}
+      onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; clearTimeout(leave.current); if (!open) show(); }}
+      onPointerLeave={(e) => e.pointerType === "mouse" && hideSoon()}
       onFocus={() => !pointer.current && !open && show()}
-      onBlur={(e) => !box.current?.contains(e.relatedTarget as Node) && hide()}
-      onKeyDown={(e) => { if (e.key === "Escape" && open) { hide(); btn.current?.focus(); } }}
+      onBlur={(e) => { pointer.current = ""; if (!box.current?.contains(e.relatedTarget as Node)) hide(); }}
       // dentro do <summary> de um grupo, nenhum clique aqui (botão ou card) pode abrir/fechar o <details>
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
     >
@@ -249,6 +273,7 @@ export function MatchTip({ state, t }: { state: MatchState | null; t: Dict["matc
         aria-expanded={open}
         aria-controls={id}
         onPointerDown={(e) => { pointer.current = e.pointerType; }}
+        onPointerCancel={() => { pointer.current = ""; }}
         // mouse: o hover já abriu, o clique só mantém. Toque e teclado: alterna.
         onClick={() => { if (pointer.current === "mouse" || !open) show(); else hide(); pointer.current = ""; }}
       >
