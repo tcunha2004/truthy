@@ -237,7 +237,7 @@ A near-monochrome Apple-grey palette with a single green voice and a red reserve
 
 **The Same Names Rule.** Components read only the semantic variables (`--bg`, `--surface`, `--ink`, `--accent`, ...). Theme switching is a `data-theme` attribute on `<html>`; no component carries a `.dark` branch.
 
-**The No Paid Highlight Rule.** No color, border, or badge may single a listing out as featured or sponsored. The only per-row mark is "Applied", in plain ink, and it is the user's own.
+**The No Paid Highlight Rule.** No color, border, or badge may single a listing out as featured or sponsored. No per-row marks at all.
 
 ## Typography
 
@@ -374,7 +374,7 @@ Calm, solid pills; colour does the work, not shadow.
 
 ### Apply Bar
 - The Save Bar's twin (same material, slide and position) that closes the loop with the ATS. Clicking a job's link to its ATS (a single row's title or a location's "Apply via <ATS>") remembers that job; when the tab becomes visible again, the bar slides up with the job ("Title · Company", 15px / 600 ink, one line with ellipsis) over "Did you apply to this job?" in 13px `ink-2`, and two small buttons: quiet "Not yet" and primary "Yes, I applied".
-- Yes records that one location as applied and refreshes the page; a failure keeps the bar and swaps the question for "We couldn't save that. Try again." Not yet just closes it. A job already applied doesn't ask again.
+- Yes records that location as applied and refreshes the page, so the job leaves the list; a failure keeps the bar and swaps the question for "We couldn't save that. Try again." Not yet just closes it.
 - Mobile: the text on top, the two buttons below at equal width.
 
 ### Step Transition
@@ -387,10 +387,10 @@ The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows
 - **Status, open:** 12px / 500 in `true`, check icon, text "Open · via <ATS>".
 - **Status, checking:** `ink-2` text "Checking source…", check icon undrawn; on resolve the check strokes in and color turns `true`.
 - **Status, closed:** title struck through (1.5px) in `ink-2`, logo at 45% opacity, status in `false` with an x icon, "Closed · removed from <ATS> <time ago>".
-- **Applied:** "Applied" in 12px / 600 `ink` (not the accent) at the end of the meta line, or at the end of the location row in a group. An application is one specific location (one ATS posting), never a whole group. Hidden on the Applied page, where every row is applied.
+- **Applied:** a job the user applied to leaves every search and "For you" list, together with its whole group (same company and title): it lives only on the Applied page. The application itself records the one location (ATS posting) that was opened.
 - **Missing data:** shown as missing. Salary renders an em dash with "Salary not listed"; never estimate or hide the slot.
 - **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame with 6px padding; rows are 12px-radius `surface` panels 6px apart (like the flow steps).
-- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines; an applied location shows "Applied" at the end. A single-location row links its title straight to the ATS in a new tab.
+- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines. A single-location row links its title straight to the ATS in a new tab.
 - **Group salary:** shown once if every location pays the same; otherwise "Varies / by location".
 - **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
 

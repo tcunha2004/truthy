@@ -55,6 +55,8 @@ const RELEVANCE_CUTOFF = 0.15;
 // $8 é a senioridade (do perfil no "Para você", do filtro na busca). Na busca o filtro é estrito; no "Para você" ($12)
 // vaga sem nível detectado também passa, porque o nível do perfil é sempre preenchido e esconderia boa parte das vagas.
 // $9–$11 são os filtros do "Para você" (for-you.ts); nulos na busca normal.
+// $13 é o usuário: vaga em que ele já se candidatou some da busca, com o grupo inteiro (mesma empresa + título),
+// porque o grupo é "a vaga" que ele vê como uma linha.
 const SEARCH_SQL = `
 WITH hits AS (
   SELECT j.id, j.company_id, j.title, j.url, j.location, j.is_remote,
@@ -71,6 +73,8 @@ WITH hits AS (
     AND ($9::text IS NULL
          OR ($10::boolean AND j.is_remote AND (j.countries IS NULL OR $9::text = ANY (j.countries)))
          OR ($11::boolean AND j.is_remote IS NOT TRUE AND $9::text = ANY (j.countries)))
+    AND NOT EXISTS (SELECT 1 FROM applied_jobs a JOIN jobs aj ON aj.id = a.job_id
+                    WHERE a.user_id = $13 AND aj.company_id = j.company_id AND aj.title = j.title)
 ),
 grouped AS (
   SELECT h.company_id, h.title, min(h.dist) AS dist, max(h.published_at) AS published_at,
@@ -88,9 +92,9 @@ WHERE g.dist IS NULL OR g.dist <= (SELECT min(dist) FROM grouped) + $7::float8
 ORDER BY g.dist NULLS LAST, g.published_at DESC NULLS LAST, c.slug, g.title
 LIMIT $5 OFFSET $6`;
 
-export async function searchJobs(f: JobFilters, vector: string | null, fy: ForYouFilters | null): Promise<{ total: number; groups: JobGroup[] }> {
+export async function searchJobs(userId: string, f: JobFilters, vector: string | null, fy: ForYouFilters | null): Promise<{ total: number; groups: JobGroup[] }> {
   const { rows } = await db.query(SEARCH_SQL, [vector, f.remote, f.country, f.company, PAGE_SIZE, (f.page - 1) * PAGE_SIZE, RELEVANCE_CUTOFF,
-    fy?.seniority ?? f.seniority, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false, fy !== null]);
+    fy?.seniority ?? f.seniority, fy?.country ?? null, fy?.remote ?? false, fy?.local ?? false, fy !== null, userId]);
   return {
     total: rows[0]?.total ?? 0,
     groups: rows.map((r) => ({ title: r.title, company: r.company, slug: r.slug, versions: r.versions })),

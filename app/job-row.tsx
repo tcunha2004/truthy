@@ -42,9 +42,9 @@ export function Logo({ co, name }: { co: Company | undefined; name: string }) {
 }
 
 // Atributos do link para o ATS que o ApplyPrompt (client.tsx) escuta: ao voltar do site, ele pergunta se a
-// pessoa se candidatou. Vaga já aplicada não ganha os atributos e não pergunta de novo.
-export function applyAttrs(id: string, title: string, company: string, applied: boolean) {
-  return applied ? {} : { "data-apply": id, "data-label": `${title} · ${company}` };
+// pessoa se candidatou. Vaga já aplicada nem aparece na busca (job-data.ts); na /applied a linha não pergunta.
+export function applyAttrs(id: string, title: string, company: string) {
+  return { "data-apply": id, "data-label": `${title} · ${company}` };
 }
 
 // Linha de um local só. closed = texto do estado fechada ("Closed · removed from Lever 2 days ago");
@@ -60,7 +60,7 @@ export function JobRow({ v, title, company, co, applied, closed, locale, t, tj, 
       <div>
         <h3>
           {closed ? title : (
-            <a href={v.url} target="_blank" rel="noopener noreferrer" {...applyAttrs(v.id, title, company, applied)}>
+            <a href={v.url} target="_blank" rel="noopener noreferrer" {...(applied ? {} : applyAttrs(v.id, title, company))}>
               {title}<span className="sr"> {t.newTab}</span>
             </a>
           )}
@@ -71,7 +71,6 @@ export function JobRow({ v, title, company, co, applied, closed, locale, t, tj, 
           {closed
             ? <span className="status"><Icon name="x" /><b>{closed}</b></span>
             : <span className="status"><Icon name="check" className="ck" /><b>{tj.openVia} {co?.ats ?? ""}</b></span>}
-          {applied && <span className="applied">{tj.applied}</span>}
         </div>
       </div>
       {match && tm && <MatchTip data={match} t={tm} />}

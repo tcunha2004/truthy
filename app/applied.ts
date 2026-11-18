@@ -6,16 +6,6 @@ import type { JobVersion } from "./job-data";
 
 export type AppliedJob = JobVersion & { title: string; company: string; slug: string; open: boolean; closedAt: Date | null };
 
-// Quais destas vagas o usuário já aplicou: a linha mostra "Aplicada" e o link não pergunta de novo.
-export async function getAppliedIds(userId: string, jobIds: string[]): Promise<Set<string>> {
-  if (!jobIds.length) return new Set();
-  const { rows } = await db.query(
-    `SELECT job_id::text AS id FROM applied_jobs WHERE user_id = $1 AND job_id = ANY ($2::bigint[])`,
-    [userId, jobIds],
-  );
-  return new Set(rows.map((r) => r.id));
-}
-
 // Tudo em que o usuário se candidatou, do mais recente para o mais antigo. Fechada = is_active falso ou apagada;
 // closedAt é quando isso aconteceu (updated_at só move quando o conteúdo muda, ver 006_jobs_updated_at.sql).
 export async function getAppliedJobs(userId: string): Promise<AppliedJob[]> {

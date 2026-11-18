@@ -240,9 +240,6 @@ code.false { color: var(--false); }
 .status .ck { width: 14px; height: 14px; stroke-width: 2.4; stroke-dasharray: 20; stroke-dashoffset: 0; transition: stroke-dashoffset .6s var(--ease); }
 .status.checking { color: var(--ink-2); }
 .status.checking .ck { stroke-dashoffset: 20; }
-/* the user's own mark: ink, never the accent (No Paid Highlight Rule) */
-.applied { font-size: 12px; font-weight: 600; color: var(--ink); }
-.applied-sec .meta .applied { display: none; } /* every row on /applied is applied */
 .job.closed h3 { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--ink-2); }
 .job.closed .logo { opacity: .45; }
 .job.closed .status { color: var(--false); }
@@ -625,7 +622,6 @@ img.logo { object-fit: cover; }
   .versions { padding: 0 16px 12px; }
   .versions li { grid-template-columns: 1fr auto auto; }
   .versions li a { grid-column: 1 / -1; }
-  .versions .applied { grid-row: 1; grid-column: 3; }
 }
 @media (max-width: 560px) {
   /* phones: tiles turn into rows, art on the left */

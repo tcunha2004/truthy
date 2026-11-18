@@ -38,7 +38,6 @@ const en = {
     closedVia: "Closed · removed from {ats} {ago}",
     noPay: "Salary not listed",
     perMonth: "per month",
-    applied: "Applied",
     note: "Sample jobs. The companies are real; roles and salaries are illustrative.",
   },
   match: {
@@ -341,7 +340,6 @@ const pt: Dict = {
     closedVia: "Fechada · removida de {ats} {ago}",
     noPay: "Salário não informado",
     perMonth: "por mês",
-    applied: "Aplicada",
     note: "Vagas de exemplo. As empresas são reais; cargos e salários são ilustrativos.",
   },
   match: {
