@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MatchTip, SaveJob } from "../client";
+import { MatchTip } from "../client";
 import { getCompanies, type Company } from "../db";
 import { Icon } from "../icons";
 import { ago, dicts, getLang, locales, type Dict, type Lang } from "../i18n";
@@ -8,10 +8,10 @@ import { forYouFilters, forYouQuery, forYouScope, forYouStack, type ForYouFilter
 import { MAX_QUERY, NO_FILTERS, activeFilters, groupPay, jobsHref, pageCount, parseJobParams, payText, type JobFilters, type RawParams } from "../job-query";
 import { FIELD_LABELS, SENIORITIES, countryOptions, type Profile } from "../profile-options";
 import { getProfile } from "../profile";
-import { Checking, JobRow, Logo, Stream, where } from "../job-row";
+import { applyAttrs, Checking, JobRow, Logo, Stream, where } from "../job-row";
 import { MATCH_TOP, type MatchState } from "../match";
 import { loadMatches, matchEnabled } from "../match-data";
-import { getSavedIds } from "../saved";
+import { getAppliedIds } from "../applied";
 import { requireUser } from "../session";
 
 export async function generateMetadata() {
@@ -145,13 +145,13 @@ export default async function JobsPage({ searchParams }: { searchParams: Promise
 
       <div className="co-stage">
         {results ? <Stream data={results} fallback={<div className="empty"><Checking text={fy ? t.loadingForYou : t.loading} /></div>}>
-          {({ total, groups, savedIds, matches }) => {
+          {({ total, groups, appliedIds, matches }) => {
             const pages = pageCount(total);
             return groups.length > 0 ? (
               <>
                 <div className="jobs jobs-list">
                   {groups.map((g) => (
-                    <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} savedIds={savedIds} locale={locale} t={t} tj={tj}
+                    <GroupRow key={`${g.slug}/${g.title}`} g={g} co={bySlug.get(g.slug)} appliedIds={appliedIds} locale={locale} t={t} tj={tj}
                       match={matches?.get(g.versions[0].id)} tm={dicts[lang].match} />
                   ))}
                 </div>
@@ -202,8 +202,8 @@ async function loadResults(userId: string, f: JobFilters, phrase: string | null,
   const matches = matchEnabled && f.page === 1 && groups.length > 0
     ? loadMatches(userId, lang, profile, groups.slice(0, MATCH_TOP).map((g) => g.versions[0].id))
     : null;
-  const savedIds = await getSavedIds(userId, groups.flatMap((g) => g.versions.map((v) => v.id)));
-  return { vector, total, groups, savedIds, matches };
+  const appliedIds = await getAppliedIds(userId, groups.flatMap((g) => g.versions.map((v) => v.id)));
+  return { vector, total, groups, appliedIds, matches };
 }
 
 // Linha de resumo do perfil no Para você: área · nível · modelos · país · stack. O país vem da lista completa:
@@ -215,13 +215,13 @@ function forYouMeta(p: Profile, locale: string, t: Dict["jobs"], where: Dict["ob
   return [FIELD_LABELS[p.field!], t.levels[p.seniority!], ...p.workModels.map((m) => where[m]), country, stack].join("\u00a0· ");
 }
 
-function GroupRow({ g, co, savedIds, locale, t, tj, match, tm }: {
-  g: JobGroup; co: Company | undefined; savedIds: Set<string>; locale: string; t: Dict["jobs"]; tj: Dict["job"];
+function GroupRow({ g, co, appliedIds, locale, t, tj, match, tm }: {
+  g: JobGroup; co: Company | undefined; appliedIds: Set<string>; locale: string; t: Dict["jobs"]; tj: Dict["job"];
   match?: Promise<MatchState>; tm: Dict["match"];
 }) {
   if (g.versions.length === 1) {
     const v = g.versions[0];
-    return <JobRow v={v} title={g.title} company={g.company} co={co} saved={savedIds.has(v.id)} locale={locale} t={t} tj={tj} match={match} tm={tm} />;
+    return <JobRow v={v} title={g.title} company={g.company} co={co} applied={appliedIds.has(v.id)} locale={locale} t={t} tj={tj} match={match} tm={tm} />;
   }
 
   const ats = co?.ats ?? "";
@@ -260,10 +260,10 @@ function GroupRow({ g, co, savedIds, locale, t, tj, match, tm }: {
           <li key={v.id}>
             <span className="where"><Icon name={v.isRemote ? "globe" : "pin"} />{where(v, t)}</span>
             {payText(v, locale) ? <span className="pay num">{payText(v, locale)}</span> : <span className="pay missing">{tj.noPay}</span>}
-            <a href={v.url} target="_blank" rel="noopener noreferrer">
+            <a href={v.url} target="_blank" rel="noopener noreferrer" {...applyAttrs(v.id, g.title, g.company, appliedIds.has(v.id))}>
               {t.applyVia.replace("{ats}", ats)}<span className="sr"> {t.newTab}</span>
             </a>
-            <SaveJob jobId={v.id} saved={savedIds.has(v.id)} t={tj} />
+            {appliedIds.has(v.id) && <span className="applied">{tj.applied}</span>}
           </li>
         ))}
       </ul>

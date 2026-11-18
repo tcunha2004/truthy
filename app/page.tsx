@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { OpenStatus, SaveButton, SearchForm } from "./client";
+import { OpenStatus, SearchForm } from "./client";
 import { Icon } from "./icons";
 import { getCompanies } from "./db";
 import { dicts, getLang, locales } from "./i18n";
@@ -9,9 +9,9 @@ import { getUser } from "./session";
 type Pay = { cur: string; min: number; max: number } | null;
 
 // ponytail: sample rows until the jobs query exists; companies are real (db/init/002_seed.sql), roles and pay are illustrative and labeled on the page.
-const sampleJobs: { logo: string; title: string; company: string; remote: boolean; where: [string, string]; ats: string; pay: Pay; saved?: boolean; closed?: boolean }[] = [
+const sampleJobs: { logo: string; title: string; company: string; remote: boolean; where: [string, string]; ats: string; pay: Pay; closed?: boolean }[] = [
   { logo: "A", title: "Senior Software Engineer, Backend", company: "Airbnb", remote: true, where: ["Remote · Brazil", "Remoto · Brasil"], ats: "Greenhouse", pay: null },
-  { logo: "In", title: "Desenvolvedor(a) Front-end Pleno", company: "Inter", remote: false, where: ["Belo Horizonte · Hybrid", "Belo Horizonte · Híbrido"], ats: "Greenhouse", pay: { cur: "BRL", min: 9000, max: 12000 }, saved: true },
+  { logo: "In", title: "Desenvolvedor(a) Front-end Pleno", company: "Inter", remote: false, where: ["Belo Horizonte · Hybrid", "Belo Horizonte · Híbrido"], ats: "Greenhouse", pay: { cur: "BRL", min: 9000, max: 12000 } },
   { logo: "C", title: "Data Engineer", company: "CI&T", remote: true, where: ["Remote · Brazil", "Remoto · Brasil"], ats: "Lever", pay: { cur: "BRL", min: 14000, max: 18000 } },
   { logo: "T", title: "Staff Engineer, Messaging", company: "Twilio", remote: true, where: ["Remote · Americas", "Remoto · Américas"], ats: "Greenhouse", pay: { cur: "USD", min: 12400, max: 15800 } },
   { logo: "S", title: "Mobile Engineer (iOS)", company: "Swile", remote: false, where: ["São Paulo · On-site", "São Paulo · Presencial"], ats: "Lever", pay: null, closed: true },
@@ -61,7 +61,6 @@ export default async function Home() {
                   {j.pay ? money(j.pay) : "—"}
                   <small>{j.pay ? t.job.perMonth : t.job.noPay}</small>
                 </div>
-                <SaveButton saved={j.saved} disabled={j.closed} t={t.job} />
               </article>
             ))}
           </div>

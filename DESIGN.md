@@ -203,7 +203,7 @@ Light is the primary theme (white and #f5f5f7 bands, near-black ink). Dark is a 
 - A fixed neutral ambient field (the "wallpaper") under every page; alternate bands are a soft `surface` veil over it, plus one full-bleed inverse (black) band per page at most.
 - Liquid Glass (iOS 27) on the control layer only; content stays solid.
 - Display type at 650 weight with tight negative tracking (-0.035em); body at 17px / 1.47.
-- One accent: truthy green, used for the primary action, links, the open state, and saved state.
+- One accent: truthy green, used for the primary action, links and the open state.
 - Pills for every control (buttons, chips, search bar, company links); 18px and 28px radii for containers.
 - iOS 27 depth: defined dark edges and a specular top highlight instead of big drop shadows; never hard offset edges.
 - Monospace only for the literal `true` / `false`.
@@ -214,7 +214,7 @@ Light is the primary theme (white and #f5f5f7 bands, near-black ink). Dark is a 
 A near-monochrome Apple-grey palette with a single green voice and a red reserved for closed jobs and errors. All values are exposed as CSS custom properties on `:root` (light) and overridden under `[data-theme="dark"]`; the `-dark` keys in the frontmatter are the dark-theme values of the same variables, not separate tokens to reference directly.
 
 ### Primary
-- **Truthy Green** (`accent`; dark `accent-dark`): the primary button fill, ghost button stroke and text, inline links (`--link` equals `--accent`), the saved bookmark fill, the search bar's focus ring, text caret and selection tint (22% mix). On light it is a deep green with white text; on dark it is the bright system green with very dark green text (`on-accent-dark`), never white.
+- **Truthy Green** (`accent`; dark `accent-dark`): the primary button fill, ghost button stroke and text, inline links (`--link` equals `--accent`), the search bar's focus ring, text caret and selection tint (22% mix). On light it is a deep green with white text; on dark it is the bright system green with very dark green text (`on-accent-dark`), never white.
 - **Truthy Green, Pressed** (`accent-hover`; dark `accent-hover-dark`): hover fill for primary buttons. Light goes darker; dark goes lighter.
 
 ### Secondary
@@ -237,7 +237,7 @@ A near-monochrome Apple-grey palette with a single green voice and a red reserve
 
 **The Same Names Rule.** Components read only the semantic variables (`--bg`, `--surface`, `--ink`, `--accent`, ...). Theme switching is a `data-theme` attribute on `<html>`; no component carries a `.dark` branch.
 
-**The No Paid Highlight Rule.** No color, border, or badge may single a listing out as featured or sponsored. Saved (filled accent bookmark) is the only per-row emphasis, and it is the user's own.
+**The No Paid Highlight Rule.** No color, border, or badge may single a listing out as featured or sponsored. The only per-row mark is "Applied", in plain ink, and it is the user's own.
 
 ## Typography
 
@@ -277,13 +277,13 @@ The page is a vertical stack of full-width bands. Content sits in a centered col
 - **Hero:** 88px top padding (56px on mobile), centered. Display → 18px → lead → 40px → search bar → 18px → filter chips (8px gap, wrap, centered) → 22px → provenance line. The listing stage starts 56px below with 56px top / 72px bottom padding; the solid list rests directly on the ambient field.
 - **Tiles:** two columns at 1.15fr / 1fr with a 12px gap; each tile is 520px min-height with 48px padding and its visual pushed to the bottom (`margin-top: auto`).
 - **Ledger:** three equal columns separated by 1px gaps (the gap shows a 16% ink-inverse mix as the divider), 28px cell padding, 64px below the lead.
-- **Job row grid:** `44px 1fr auto auto` (logo, title + meta, salary, save), 16px gap, 18px / 20px padding.
+- **Job row grid:** `44px 1fr auto` (logo, title + meta, salary); in a list that also has grouped rows, single rows pad 72px on the right so their salary lines up with the groups', 16px gap, 18px / 20px padding.
 - **Recurring spacing:** 6, 8, 12, 16, 18, 20, 24, 28, 40, 48, 56, 72, 88, 120px. Small gaps (6-10px) inside controls; 12-18px between siblings; 40-64px between a lead and its component.
 
 ### Responsive (single breakpoint, 860px)
-- Nav becomes two rows (88px): the wordmark left and EN/PT, theme toggle, Sign in (or Finish profile and the avatar) on the right with 8px gaps; below, Jobs / Companies / Saved as equal-width 32px pill tabs at 14px, the current one on an 8% ink wash. The first name and Sign out leave the bar; Sign out lives at the bottom of the profile page.
+- Nav becomes two rows (88px): the wordmark left and EN/PT, theme toggle, Sign in (or Finish profile and the avatar) on the right with 8px gaps; below, Jobs / Companies / Applied as equal-width 32px pill tabs at 14px, the current one on an 8% ink wash. The first name and Sign out leave the bar; Sign out lives at the bottom of the profile page.
 - Search bar stacks into one column, radius drops from pill to 18px, fields are divided by top hairlines, and the button goes full width with a 12px radius.
-- Job row becomes `40px 1fr auto`, top-aligned: salary moves under the title on one line with its sub-label ("R$ 9.000–12.000 per month"), save stays top-right; logo shrinks to 40px; padding 16px, gap 6px / 12px. Lists on a stage keep a 16px gutter.
+- Job row becomes `40px 1fr auto`, top-aligned: salary moves under the title on one line with its sub-label ("R$ 9.000–12.000 per month"); logo shrinks to 40px; padding 16px, gap 6px / 12px. Lists on a stage keep a 16px gutter.
 - Tiles, ledger and mini lists collapse to one column; tiles lose min-height and pad 32px / 24px.
 
 ### Motion
@@ -297,7 +297,7 @@ Two layers, following iOS 27 Liquid Glass. The **content layer** (job lists, til
 - **Edge** (`--shadow`: `0 0 0 1px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04), 0 8px 28px rgba(0,0,0,.05)`; dark a 7% white ring plus `0 8px 28px rgba(0,0,0,.5)`): every solid content card (job list, tiles, company tiles, auth card, profile sections, empty states).
 - **Glass** (`--glass` tint, `--glass-fx: blur(24px) saturate(180%)`, `--glass-edge`): white at 58% (dark: `rgb(72 72 78 / .5)`, lighter than before, as in iOS 27). The edge is a specular 1px top highlight, a light inner rim and the iOS 27 darkened outer edge (`rgba(0,0,0,.08)`; dark `.7`). Hover uses `--glass-strong` (82%). Popovers (combobox) use `--glass-strong` as their resting tint.
 - **Lift** (`--lift: 0 8px 24px rgba(0,0,0,.07)`): only on glass that floats over content (nav capsule, search bars, combobox list).
-- **Bar** (`--bar`, `bg` at 80% with the glass blur and a 60% hairline): the iOS 27 uniform toolbar, used by the scrolled nav, the save bar and the mobile onboarding footer.
+- **Bar** (`--bar`, `bg` at 80% with the glass blur and a 60% hairline): the iOS 27 uniform toolbar, used by the mobile nav, the save bar, the apply bar and the mobile onboarding footer.
 - **Prominent highlight** (`--btn-spec`, inset 1px white at 24%; dark 35%): primary buttons, the tinted-glass reading of the accent.
 - **Hairline Ring** (`box-shadow: inset 0 0 0 1px var(--line)`): segmented controls, choice cards, swatches, and chips placed inside a glass container.
 - **Focus Ring** (`outline: 3px solid var(--focus)`, offset 2px; `--focus` is the accent at 40% light / 45% dark): every focusable element via `:focus-visible`. Inputs use `box-shadow: 0 0 0 4px var(--focus)` with an accent border; the search bar uses an inset 2px accent ring on `:focus-within`.
@@ -313,7 +313,7 @@ Two layers, following iOS 27 Liquid Glass. The **content layer** (job lists, til
 
 Soft, Apple-style geometry with two families: anything you press is a full pill (980px radius) or a circle; anything that contains is a rounded rectangle that gets rounder as it gets bigger. Inputs and inner panels 12px; lists, empty states, ledgers, mini lists 18px; tiles 28px. Logos are 12px squircles in rows and circles inside company pills. Icons are 24-unit outline SVGs at 1em, stroke 1.6 (2.4 for the small status check and link chevron), round caps and joins, `currentColor`.
 
-**The Press Is Round Rule.** Buttons, chips, the search bar, company links, the save button and the theme toggle are pills or circles. Only the stacked mobile search button squares off to 12px.
+**The Press Is Round Rule.** Buttons, chips, the search bar, company links and the theme toggle are pills or circles. Only the stacked mobile search button squares off to 12px.
 
 ## Components
 
@@ -372,28 +372,32 @@ Calm, solid pills; colour does the work, not shadow.
 ### Save Bar
 - Fixed to the bottom, the Bar material (see Elevation), hairline on top. Slides up only when there are unsaved changes, shows the state in 13px `ink-2` and a small primary button. Also the mobile home of the onboarding "Continue" button.
 
+### Apply Bar
+- The Save Bar's twin (same material, slide and position) that closes the loop with the ATS. Clicking a job's link to its ATS (a single row's title or a location's "Apply via <ATS>") remembers that job; when the tab becomes visible again, the bar slides up with the job ("Title · Company", 15px / 600 ink, one line with ellipsis) over "Did you apply to this job?" in 13px `ink-2`, and two small buttons: quiet "Not yet" and primary "Yes, I applied".
+- Yes records that one location as applied and refreshes the page; a failure keeps the bar and swaps the question for "We couldn't save that. Try again." Not yet just closes it. A job already applied doesn't ask again.
+- Mobile: the text on top, the two buttons below at equal width.
+
 ### Step Transition
 - Onboarding steps slide 48px and fade: out to the left and in from the right when going forward, mirrored when going back (View Transitions API). Single-choice steps advance 300ms after a pointer pick; keyboard selection never advances on its own. All of it is off under `prefers-reduced-motion`.
 
 ### Job List and Job Row (signature)
 The product shot. A `surface` card, 18px radius, ambient shadow, 860px max, rows divided by hairlines at 70%.
-- **Row:** logo placeholder (44px, 12px radius, `bg-alt`, initial at 17px / 650), then the item title and a meta line (company, location with globe/pin icon, status), then salary (15px / 500, right aligned, tabular, with a 12px `ink-2` sub-label such as "per month"), then a 36px circular save button.
+- **Row:** logo placeholder (44px, 12px radius, `bg-alt`, initial at 17px / 650), then the item title and a meta line (company, location with globe/pin icon, status), then salary (15px / 500, right aligned, tabular, with a 12px `ink-2` sub-label such as "per month"). No per-row buttons: applying happens on the ATS and is confirmed by the Apply Bar.
 - **Hover:** 3% ink wash on the row, 0.2s.
 - **Status, open:** 12px / 500 in `true`, check icon, text "Open · via <ATS>".
 - **Status, checking:** `ink-2` text "Checking source…", check icon undrawn; on resolve the check strokes in and color turns `true`.
-- **Status, closed:** title struck through (1.5px) in `ink-2`, logo at 45% opacity, status in `false` with an x icon, "Closed · removed from <ATS> <time ago>", save disabled.
-- **Saved:** bookmark filled with `accent` (`aria-pressed="true"`). Unsaved is an `ink-2` outline that darkens with a 7% circular wash on hover. A save is one specific location (one ATS posting), never a whole group. The button flips as soon as it is pressed and flips back if the server refuses. A closed job can't be saved, but a closed job that is already saved keeps an enabled bookmark so it can be removed.
+- **Status, closed:** title struck through (1.5px) in `ink-2`, logo at 45% opacity, status in `false` with an x icon, "Closed · removed from <ATS> <time ago>".
+- **Applied:** "Applied" in 12px / 600 `ink` (not the accent) at the end of the meta line, or at the end of the location row in a group. An application is one specific location (one ATS posting), never a whole group. Hidden on the Applied page, where every row is applied.
 - **Missing data:** shown as missing. Salary renders an em dash with "Salary not listed"; never estimate or hide the slot.
 - **Compact variant (mini list):** title + meta only, single column, inside an 18px `bg-alt` frame with 6px padding; rows are 12px-radius `surface` panels 6px apart (like the flow steps).
-- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines; each location has its own save button at the end. The group summary has no save button. A single-location row links its title straight to the ATS in a new tab and has the save button in its fourth column.
+- **Grouped row (jobs page):** the same job posted in several places (same company and title) is one row. The row is a `<details>` summary showing "N locations" with a pin icon and a chevron in a fourth column; open, it lists each location in 14px rows (location with globe/pin, its salary or "Salary not listed", and an accent "Apply via <ATS>" link), indented to the title column and divided by hairlines; an applied location shows "Applied" at the end. A single-location row links its title straight to the ATS in a new tab.
 - **Group salary:** shown once if every location pays the same; otherwise "Varies / by location".
 - **Pagination:** below the list, 860px wide, 14px `ink-2`: "Previous" (chevron flipped) on the left, "Page n of m" centered, "Next" on the right. Plain links; missing ends leave an empty slot.
 
-### Saved Page
-- Same frame as the jobs page (hero with headline and lead, then the stage on the ambient field). Two job lists, "Still open" first and "Closed" below, each under a 21px / 650 heading with its count in `ink-2`, 40px apart; each list goes from most recently saved to oldest. A section with no jobs is not shown.
+### Applied Page
+- Same frame as the jobs page (hero with headline and lead, then the stage on the ambient field). Two job lists, "Still open" first and "Closed" below, each under a 21px / 650 heading with its count in `ink-2`, 40px apart; each list goes from most recently applied to oldest. A section with no jobs is not shown.
 - Closed rows use the Job Row closed state with the real time: "Closed · removed from <ATS> <time ago>", no link on the title.
-- Removing a save keeps the row (outline bookmark) until the user leaves the page, so a misclick can be undone in place.
-- Empty: the Empty State with "No saved jobs yet." and a quiet "Browse jobs" button.
+- Empty: the Empty State with "No applications yet." and a quiet "Browse jobs" button.
 
 ### Provenance Line
 13px `ink-2` text preceded by an 8px `true`-colored pulsing dot: "Sources checked <time> · Lever · Greenhouse". Place it near any list of jobs; it is the system's promise made visible.
@@ -411,8 +415,8 @@ Glass pill link (glass + glass edge), 30px circular logo initial, company name a
 18px-radius `surface` panel with the Edge shadow, 40px padding, centered, max 520px with a 16px gutter: 21px ink title, `ink-2` explanation that names the likely cause, and one small quiet button to undo it (a second one sits 8px to its right).
 
 ### Navigation
-- Desktop (>860px): a 44px glass capsule, `min(1012px, 100% - 16px)` wide, floating 8px below the top (pill radius, glass + lift, 18px / 7px inner padding). As the page scrolls the first 64px it merges into the Bar: the capsule fades out while the full-width bar and its hairline fade in (CSS scroll-driven animation, `animation-timeline: scroll(root)`; browsers without it keep the capsule; reduced motion keeps the capsule). Mobile: always the Bar. Content 13px, 28px gap between groups.
-- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Saved links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600. Signed out, the section links are hidden: the bar is only the wordmark, EN/PT, the theme toggle and Sign in.
+- Desktop (>860px): a 44px glass capsule, `min(1012px, 100% - 16px)` wide, floating 8px below the top (pill radius, glass + lift, 18px / 7px inner padding). It stays a capsule while the page scrolls under it, never merging into a full-width bar. Mobile: always the Bar. Content 13px, 28px gap between groups.
+- Left: wordmark "truthy" in lowercase, 21px / 650 / -0.03em, followed by a 7px `true`-colored dot. Then Jobs / Companies / Applied links in ink at 0.82 opacity, full opacity on hover, no underline; the current section (`aria-current="page"`) is full opacity at 600. Signed out, the section links are hidden: the bar is only the wordmark, EN/PT, the theme toggle and Sign in.
 - Right: EN / PT segmented toggle (12px, 6px radius; active is 600 weight on an 8% ink wash, `aria-pressed`), a 32px circular sun/moon theme button (`aria-label` names the target theme; choice stored in `localStorage` under `theme`, default light), and a small primary Sign in button.
 - Mobile: see Responsive; nothing wraps and the bar never scrolls sideways.
 

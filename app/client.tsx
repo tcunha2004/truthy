@@ -1,13 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, useTransition, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "./icons";
 import type { Dict, Lang } from "./i18n";
 import type { MatchState } from "./match";
 import { fold } from "./profile-options";
-import { setSaved } from "./saved-action";
+import { markApplied } from "./applied-action";
 
 export function LangToggle({ lang, label }: { lang: Lang; label: string }) {
   const router = useRouter();
@@ -78,29 +78,56 @@ export function SearchForm({ t }: { t: Dict["hero"] }) {
   );
 }
 
-export function SaveButton({ saved = false, disabled = false, t }: { saved?: boolean; disabled?: boolean; t: Dict["job"] }) {
-  const [on, setOn] = useState(saved);
-  return (
-    <button type="button" className="save" aria-pressed={on} aria-label={t.save} disabled={disabled} onClick={() => setOn(!on)}>
-      <Icon name="save" />
-    </button>
-  );
-}
+// Pergunta "você se candidatou?" quando a pessoa volta de um link de vaga (atributos de applyAttrs, job-row.tsx).
+// Escuta cliques no documento inteiro, então as linhas continuam componentes de servidor. Aparece quando a aba volta
+// a ficar visível (o link abre o ATS em outra aba); com cmd/ctrl-clique, aparece quando ela visitar a aba e voltar.
+// Sim grava e atualiza a página (a linha passa a mostrar "Aplicada"); Ainda não só fecha.
+export function ApplyPrompt({ t }: { t: Dict["apply"] }) {
+  const router = useRouter();
+  const [job, setJob] = useState<{ id: string; label: string } | null>(null);
+  const [show, setShow] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [pending, start] = useTransition();
 
-// Marcador de verdade: grava no banco pela server action. Funciona sem JavaScript (o form posta para ela).
-// Enquanto o servidor responde, já mostra o estado novo; se falhar, o estado devolvido é o anterior.
-// Desativado só em vaga fechada que não está salva: a salva precisa poder sair dos salvos.
-export function SaveJob({ jobId, saved, closed = false, t }: { jobId: string; saved: boolean; closed?: boolean; t: Dict["job"] }) {
-  const [state, action, pending] = useActionState(setSaved, saved);
-  const shown = pending ? !state : state;
+  useEffect(() => {
+    const pick = (e: MouseEvent) => {
+      const a = (e.target as Element).closest?.("a[data-apply]");
+      if (!(a instanceof HTMLElement)) return;
+      setJob({ id: a.dataset.apply!, label: a.dataset.label! });
+      setShow(false);
+      setFailed(false);
+    };
+    const back = () => document.visibilityState === "visible" && setShow(true);
+    addEventListener("click", pick);
+    addEventListener("auxclick", pick); // clique do meio também abre a vaga
+    document.addEventListener("visibilitychange", back);
+    return () => {
+      removeEventListener("click", pick);
+      removeEventListener("auxclick", pick);
+      document.removeEventListener("visibilitychange", back);
+    };
+  }, []);
+
+  const close = () => setShow(false);
+  const yes = () => start(async () => {
+    if (!job) return;
+    if (!(await markApplied(job.id))) return setFailed(true);
+    close();
+    router.refresh();
+  });
+
   return (
-    <form action={action} className="save-form">
-      <input type="hidden" name="jobId" value={jobId} />
-      <input type="hidden" name="saved" value={shown ? "0" : "1"} />
-      <button className="save" aria-pressed={shown} aria-label={t.save} disabled={closed && !shown}>
-        <Icon name="save" />
-      </button>
-    </form>
+    <div className="savebar apply-bar" data-show={show && !!job} role="region" aria-label={t.label} inert={!show}>
+      <div className="wrap">
+        <p aria-live="polite">
+          {show && job && <><b>{job.label}</b><span>{failed ? t.failed : t.ask}</span></>}
+        </p>
+        <div className="apply-go">
+          <button type="button" className="btn sm quiet" onClick={close}>{t.no}</button>
+          <button type="button" className="btn sm" onClick={yes} disabled={pending}>{t.yes}</button>
+        </div>
+      </div>
+    </div>
   );
 }
 

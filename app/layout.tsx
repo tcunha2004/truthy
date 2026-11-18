@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { LangToggle, NavLinks, ThemeToggle } from "./client";
+import { ApplyPrompt, LangToggle, NavLinks, ThemeToggle } from "./client";
 import { dicts, getLang, locales } from "./i18n";
 import { getUser, logout } from "./session";
 import "./globals.css";
@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 items={[
                   { href: "/jobs", match: "/jobs", text: t.nav.jobs },
                   { href: "/companies", match: "/companies", text: t.nav.companies },
-                  { href: "/saved", match: "/saved", text: t.nav.saved },
+                  { href: "/applied", match: "/applied", text: t.nav.applied },
                 ]}
               />
             ) : (
@@ -66,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </header>
         {children}
+        {user && <ApplyPrompt t={t.apply} />}
         <footer>
           <div className="wrap">
             <span>{t.foot}</span>
